@@ -6,7 +6,7 @@ weight = 1
 rtl = false
 
 title = "tahmidul612"
-# description = "Hi! I'm Tahmidul"
+description = "Hi! I'm Tahmidul"
 copyright = "Copy, _right?_ :thinking_face:"
 
 dateFormat = "2 January 2006"
