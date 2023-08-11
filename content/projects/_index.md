@@ -42,8 +42,31 @@ I use a Ubuntu Server to store and host my Anime collection, using multiple soft
 One of my best buddies lives in a different city, and we wanted to play games together. Since NVIDIA GPUs recently unlocked GPU-P support, I decided that was a great opportunity for me to learn more and let my friend play games.
 I used Hyper-V in Windows to setup a guest Windows system and shared my GPU partition with it. My friend can now remotely access the guest system with Parsec and play games, while I have full access to my PC.
 
-<!-- ---
-
 ## University Projects
 
-### COMP4478 - Game Programming -->
+### COMP4478 - Game Programming
+
+{{< alert "github" >}}
+<https://github.com/tahmidul612/COMP4478_Project_2>
+{{< /alert >}}
+
+Our second project for the course was to develop a game using Unity. We chose to make a simple puzzle platformer. My responsibilty was to write the code and use unity editor to implement the user interface for the game.
+
+I also played a part in overseeing the collaboration on github, to merge the PRs and fix any conflicts. Although not a part of our final grade, I used GameCI to build the game for webGL and deploy it to github pages.
+
+{{< columns >}}
+
+**Tech Used**
+
+- Unity
+- C#
+- Github
+
+<--->
+
+ **&nbsp;**
+
+- GameCI
+- Github Pages
+
+{{< /columns >}}
