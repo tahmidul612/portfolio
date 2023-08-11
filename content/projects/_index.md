@@ -1,7 +1,8 @@
 ---
 title: "Hi! I'm Tahmidul!"
 description: "What have I been up to!"
-layout: simple
+layout: single
+showTableOfContents: true
 ---
 {{< lead >}}
 I am currently studying Computer Science at Lakehead University, and hoping to graduate in April 2024. My laziness compels me to learn more about automation so that I can do less work. So my current field of interest is automation.
@@ -17,6 +18,24 @@ You can find some of my projects on Github [@tahmidul612](https://github.com/tah
 ### Media Server
 
 I use a Ubuntu Server to store and host my Anime collection, using multiple softwares to make the process automated. Github and Docker are a major part of my entire system. I store my docker compose files in Github and deploy my containers to multiple nodes in a Docker swarm through Portainer.
+
+{{< columns >}}
+
+**Tech Used**
+
+- Ubuntu Server
+- Bash
+- Python
+
+<--->
+
+ **&nbsp;**
+
+- Docker
+- Portainer
+- Multiple Open Source Projects
+
+{{< /columns >}}
 
 ### Game Server
 
