@@ -1,0 +1,16 @@
+{{/*  https://github.com/thegeeklab/hugo-geekdoc/blob/8c251c30e384ed666cf9294104305476380e16fa/layouts/shortcodes/columns.html  */}}
+
+{{- $size := default "regular" (.Get "size" | lower) }}
+
+{{- if not (in (slice "regular" "large" "small") $size) }}
+  {{- $size = "regular" }}
+{{- end }}
+
+
+<div class="gdoc-columns gdoc-columns--{{ $size }} flex flex-gap flex-mobile-column">
+  {{- range split .Inner "<--->" }}
+    <div class="gdoc-columns__content gdoc-markdown--nested flex-even" >
+      {{ . | $.Page.RenderString -}}
+    </div>
+  {{- end }}
+</div>
