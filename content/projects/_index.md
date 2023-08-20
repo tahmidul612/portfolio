@@ -8,7 +8,7 @@ showReadingTime: false
 ---
 
 {{< lead >}}
-I am currently studying Computer Science at Lakehead University, and hoping to graduate in April 2024. My laziness compels me to learn more about automation so that I can do less work. So my current field of interest is automation.
+I am currently studying Computer Science at Lakehead University, and hoping to graduate in April 2024. My laziness compels me to learn more about automation so that I can do less work. I'm usually occupied trying to automate some of my personal projects, by using various scripting languages. DevOps is also another skill I am trying to master, since it would automate a lot of my work.
 {{< /lead >}}
 {{< alert "github" >}}
 You can find some of my projects on Github [@tahmidul612](https://github.com/tahmidul612).
