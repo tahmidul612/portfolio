@@ -3,7 +3,10 @@ title: "Hi! I'm Tahmidul!"
 description: "What have I been up to!"
 layout: single
 showTableOfContents: true
+showDate: false
+showReadingTime: false
 ---
+
 {{< lead >}}
 I am currently studying Computer Science at Lakehead University, and hoping to graduate in April 2024. My laziness compels me to learn more about automation so that I can do less work. So my current field of interest is automation.
 {{< /lead >}}
