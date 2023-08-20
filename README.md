@@ -6,14 +6,15 @@ The source code for my personal [tahmidul612.com](https://tahmidul612.com) homep
 
 ### Prerequisites
 
-Install Hugo, Yarn and NodeJS
+Install Hugo and NodeJS
 
-> On Windows
+> Scoop works best on Windows
+>
+> [How to install scoop](#install-scoop)
 
 ```console
-winget install OpenJS.NodeJS
-winget install Yarn.Yarn
-winget install Hugo.Hugo.Extended
+scoop install nodejs
+scoop install hugo-extended
 ```
 
 ### Setup project
@@ -28,7 +29,7 @@ cd portfolio
 Install project dependencies
 
 ```console
-yarn
+npm install
 ```
 
 > Installs prettier and prettier-plugin-go-template
@@ -46,3 +47,14 @@ Install recommended vscode extensions
 Hit `F5` to launch the project in a browser window (refreshes when source is edited) or `Ctrl + Shift + B` to build static files
 
 > Or, Run `hugo server` to serve project or `hugo` to build static files
+
+### Install scoop
+
+Scoop is a package manager for Windows. It installs packages only for the current user (does not need admin privileges) and adds command line alias for the package when needed. The terminal does not have to be restarted to use the alias.
+
+> Run these commands in a non-elevated powershell/terminal (regular powershell without admin privileges)
+
+```console
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+iwr -useb get.scoop.sh | iex
+```
