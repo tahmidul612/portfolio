@@ -7,7 +7,10 @@ baseURL = "https://tahmidul612.com/"
 defaultContentLanguage = "en"
 
 enableRobotsTXT = true
-paginate = 10
+[pagination]
+  disableAliases = false
+  pagerSize = 10
+  path = 'page'
 summaryLength = 0
 
 [outputs]
