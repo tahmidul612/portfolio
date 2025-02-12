@@ -264,4 +264,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/git,hugo,node,windows,visualstudiocode,macos,linux
-content/resume/build/
+!content/resume/build
+content/resume/build/*
+!content/resume/build/resume.pdf
