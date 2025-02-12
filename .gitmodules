@@ -8,3 +8,6 @@
 [submodule "themes/hugo-shortcode-gallery"]
 	path = themes/hugo-shortcode-gallery
 	url = https://github.com/tahmidul612/hugo-shortcode-gallery.git
+[submodule "functions"]
+	path = functions
+	url = https://github.com/milkey-mouse/git-lfs-client-worker
