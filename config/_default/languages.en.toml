@@ -14,7 +14,7 @@ dateFormat = "2 January 2006"
 [params]
   # mainSections = ["section1", "section2"]
 
-[author]
+[params.author]
   name = "Tahmidul Islam"
   image = "img/profile.jpg"
   headline = "I love computers, coding, scifi books, and isekai anime"
