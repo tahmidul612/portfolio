@@ -1,0 +1,145 @@
+\documentclass[letterpaper]{article}
+    \usepackage{fullpage}
+    \usepackage{amsmath}
+    \usepackage{amssymb}
+    \usepackage{textcomp}
+    \usepackage[utf8]{inputenc}
+    \usepackage[default]{opensans}
+    \usepackage[T1]{fontenc}
+    \usepackage{microtype}
+    \usepackage{adjustbox}  % new addition
+    \usepackage{setspace}
+    \linespread{1.1}
+    \textheight=10in
+    \pagestyle{empty}
+    \raggedright
+    \usepackage[left=0.8in,right=0.8in,bottom=0.8in,top=0.8in]{geometry}
+
+    %\renewcommand{\encodingdefault}{cg}
+%\renewcommand{\rmdefault}{lgrcmr}
+
+\def\bull{\vrule height 0.8ex width .7ex depth -.1ex }
+
+% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\area} [2] {
+    \vspace*{-9pt}
+    \begin{verse}
+        \textbf{#1}   #2
+    \end{verse}
+}
+
+\newcommand{\lineunder} {
+    \vspace*{-8pt} \\
+    \hspace*{-18pt} \hrulefill \\
+}
+
+\newcommand{\header} [1] {
+    {\hspace*{-18pt}\vspace*{5pt}
+    % \textsc{#1}
+    #1}
+    \vspace*{-3pt} \lineunder
+    \vspace*{5pt}
+}
+
+\newcommand{\employer} [3] {
+    { \textbf{#1} (#2)\\ \underline{\textbf{\emph{#3}}}\\  }
+}
+
+\newcommand{\contact} [3] {
+    \vspace*{-10pt}
+    \begin{center}
+        {\Huge \scshape {#1}}\\
+        #2 \\ #3
+    \end{center}
+    \vspace*{-8pt}
+}
+
+\newenvironment{achievements}{
+    \begin{list}
+        {$\bullet$}{\topsep 0pt \itemsep -2pt}}{\vspace*{4pt}
+    \end{list}
+}
+
+\newcommand{\schoolwithcourses} [4] {
+    \textbf{#1} #2 $\bullet$ #3\\
+    #4 \\
+    \vspace*{5pt}
+}
+
+\newcommand{\school} [4] {
+    \textbf{#1} #2 $\bullet$ #3\\
+    #4 \\
+}
+% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{sloppypar}
+    \vspace*{-40pt}
+    \sloppy
+    \setlength{\emergencystretch}{5em}
+
+
+    %==== Profile ====%
+    \vspace*{-10pt}
+    \begin{center}
+        {\Huge
+            % \textsc{Tahmidul Islam}
+            Tahmidul Islam} \\
+        Toronto, Ontario $\cdot$ tahmidul612@gmail.com $\cdot$ (437)-223-0422 $\cdot$ linkedin.com/in/tahmidul612\\
+    \end{center}
+
+    %==== Education ====%
+    \header{Education}
+    \textbf{Lakehead University}\hfill Thunder Bay, Ontario\\
+    HBSc Computer Science \hfill January 2019 - April 2024\\
+    \vspace{2mm}
+
+    %==== Experience ====%
+    \header{Work Experience}
+    \vspace{1mm}
+
+    \textbf{Raphael Stone USA} \hfill Online\\
+    \textit{Freelance Automation Developer} \hfill Jun 2018 - July 2018\\
+    \vspace{-1mm}
+    \begin{itemize} \itemsep 1pt
+        \item Use Google App Script to automate parsing and importing data from email to Google sheets
+        \item Implement automation on Zapier with twilio integration
+    \end{itemize}
+
+    \header{Skills}
+    \begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{p{0.28\textwidth} p{0.72\textwidth}}
+        Programming Languages:   & Python, Java, C++, JavaScript, Bash, Powershell \\
+        Tools \& Frameworks:     & Git, Docker, Zapier, Google/Microsoft Office Suite, CI/CD with Github Actions \\
+        Server Management/Cloud: & Ubuntu Server, Hyper-V Virtual Machines, Docker Swarm Cluster Management, Container Deployment \& Management with Portainer, Homelab (7 years) \\
+        Operating Systems:       & Windows 7/8/10/11, MacOS, Debian based distros, Arch based distros \\
+    \end{tabular}
+    \end{adjustbox}
+    \vspace{2mm}
+
+    \header{Projects}
+    {\textbf{Advanced Game Programming}} {\sl Unity, C-sharp, Github, GameCI, Github Pages} \hfill https://github.com/tahmidul612/COMP4478\_Project\_2\\
+    \vspace*{4pt}
+    As part of a six-person team in the Advanced Game Programming course, I developed two games using HaxeFlixel and Unity, writing game logic in Haxe and C\# to implement core mechanics and features. I collaborated through GitHub for version control and leveraged GameCI for continuous integration and deployment. The final game was successfully deployed to GitHub Pages, allowing seamless browser-based gameplay.\\
+    \vspace*{2mm}
+    {\textbf{Advanced Project}} {\sl Python, Opensource AI Model, AWS EC2} \hfill https://github.com/tahmidul612/memlink.to\\
+    \vspace*{4pt}
+    As part of the Advanced Project course, I developed a web application using Python and Django for an AI-powered URL-shortening service. I collaborated with two team members to deploy the website on AWS and integrated a pre-trained RoBERTa model to generate URL slugs based on webpage content, enhancing usability and relevance.\\
+    \vspace*{2mm}
+    {\textbf{Webpage to Calendar Data Importer}} {\sl Python, Google App Script, Github Actions} \hfill https://github.com/tahmidul612/rcmusic-free\\
+    \vspace*{4pt}
+    Developed a Python-based script to automate calendar updates for free entry concerts at the Royal Conservatory of Music in Toronto. Used web scraping to parse the schedule page and generate an .ics file, with GitHub Actions handling periodic updates. Additionally, implemented a Google Apps Script to sync changes with a shared Google Calendar.\\
+    \vspace*{2mm}
+
+    \header{Awards}
+    \textbf{Dean\textquotesingle{}s List} \hfill Lakehead University\\
+    Recognized for excellent academic results in the 2020-21 academic year. \hfill 2021\\
+    \vspace*{2mm}
+    \textbf{Level 3 of Lakehead Makes Leaders} \hfill Lakehead University\\
+    Me and my team won the Think Like a Boss module, which had us compete with other teams with a simulated investment portfolio. The month long module taught us teamwork, conflict resolution, investor presentation, and many other relevant skills. \hfill November 2021\\
+    \vspace*{2mm}
+
+    \
+\end{sloppypar}
+\end{document}
