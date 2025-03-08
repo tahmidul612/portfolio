@@ -1,9 +1,9 @@
-name: Build LaTeX PDFs
+name: Build LaTeX PDF on Push
 
 on:
   push:
     paths:
-      - '**.tex'  # Trigger when any .tex file changes
+      - '**.tex'  # Trigger on any .tex file push
 
 jobs:
   build_pdf:
@@ -28,29 +28,15 @@ jobs:
             sudo apt-get install -y texlive texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-xetex
           fi
 
-      - name: Find modified .tex files
-        id: get_tex_files
-        run: |
-          TEX_FILES=$(git diff --name-only ${{ github.event.before }} HEAD -- | grep '\.tex$' || true)
-          if [ -z "$TEX_FILES" ]; then
-            echo "No .tex files changed. Exiting."
-            exit 0
-          fi
-          echo "TEX_FILES<<EOF" >> $GITHUB_ENV
-          echo "$TEX_FILES" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
       - name: Build PDFs
-        if: env.TEX_FILES != ''
         run: |
           mkdir -p build
-          for TEX_FILE in $TEX_FILES; do
+          for TEX_FILE in $(find . -name "*.tex"); do
             FILE_NAME=$(basename "$TEX_FILE" .tex)
             pdflatex -output-directory=build "$TEX_FILE"
           done
 
       - name: Commit and push PDFs
-        if: env.TEX_FILES != ''
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
