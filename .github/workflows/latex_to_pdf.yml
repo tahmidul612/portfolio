@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - '**.tex'  # Trigger when any .tex file changes
-  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   build_pdf:
@@ -32,17 +31,11 @@ jobs:
       - name: Find modified .tex files
         id: get_tex_files
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TEX_FILES=$(find . -name "*.tex")
-          else
-            TEX_FILES=$(git diff --name-only ${{ github.event.before }} HEAD -- | grep '\.tex$' || true)
-          fi
-
+          TEX_FILES=$(git diff --name-only ${{ github.event.before }} HEAD -- | grep '\.tex$' || true)
           if [ -z "$TEX_FILES" ]; then
-            echo "No .tex files found. Exiting."
+            echo "No .tex files changed. Exiting."
             exit 0
           fi
-
           echo "TEX_FILES<<EOF" >> $GITHUB_ENV
           echo "$TEX_FILES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
