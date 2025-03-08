@@ -31,7 +31,7 @@ jobs:
       - name: Find modified .tex files
         id: get_tex_files
         run: |
-          TEX_FILES=$(git diff --name-only HEAD^ HEAD | grep '\.tex$' || true)
+          TEX_FILES=$(git diff --name-only ${{ github.event.before }} HEAD -- | grep '\.tex$' || true)
           if [ -z "$TEX_FILES" ]; then
             echo "No .tex files changed. Exiting."
             exit 0
