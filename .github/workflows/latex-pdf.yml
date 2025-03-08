@@ -29,7 +29,7 @@ jobs:
       if: steps.cache-texlive.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update && \
-        sudo apt-get install texlive-base texlive-fonts-recommended texlive-latex-base texlive-latex-extra texlive-fontutils --no-install-recommends -y
+        sudo apt-get install texlive-base texlive-fonts-recommended texlive-latex-base texlive-latex-extra texlive-fonts-extra --no-install-recommends -y
         
     # Recursively search for .tex files and compile them
     - name: Compile LaTeX to PDF
