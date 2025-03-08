@@ -16,16 +16,21 @@ jobs:
       - name: Cache LaTeX dependencies
         uses: actions/cache@v4
         with:
-          path: /usr/share/texlive
+          path: |
+            ~/.texlive
+            /usr/local/texlive
+            /usr/bin
           key: texlive-${{ runner.os }}-${{ hashFiles('**/*.tex') }}
           restore-keys: |
             texlive-${{ runner.os }}-
 
-      - name: Install LaTeX (if not cached)
+      - name: Install LaTeX (minimal setup)
         run: |
-          if [ ! -d "/usr/share/texlive" ]; then
+          # Install TeX Live only if not already installed
+          if ! command -v pdflatex &> /dev/null; then
+            echo "Installing TeX Live..."
             sudo apt-get update
-            sudo apt-get install -y texlive texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-xetex
+            sudo apt-get install -y texlive-base texlive-fonts-recommended texlive-latex-base
           fi
 
       - name: Build PDFs
