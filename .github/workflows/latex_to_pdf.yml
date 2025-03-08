@@ -1,50 +1,53 @@
-name: Build LaTeX PDF on Push
+name: LaTeX to PDF
 
 on:
   push:
     paths:
-      - '**.tex'  # Trigger on any .tex file push
+      - '**/*.tex'
+      - '.github/workflows/latex-pdf.yml'
 
 jobs:
-  build_pdf:
+  build-pdf:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Cache LaTeX dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.texlive
-            /usr/local/texlive
-            /usr/bin
-          key: texlive-${{ runner.os }}-${{ hashFiles('**/*.tex') }}
-          restore-keys: |
-            texlive-${{ runner.os }}-
-
-      - name: Install LaTeX (minimal setup)
-        run: |
-          # Install TeX Live only if not already installed
-          if ! command -v pdflatex &> /dev/null; then
-            echo "Installing TeX Live..."
-            sudo apt-get update
-            sudo apt-get install -y texlive-base texlive-fonts-recommended texlive-latex-base
-          fi
-
-      - name: Build PDFs
-        run: |
-          mkdir -p build
-          for TEX_FILE in $(find . -name "*.tex"); do
-            FILE_NAME=$(basename "$TEX_FILE" .tex)
-            pdflatex -output-directory=build "$TEX_FILE"
-          done
-
-      - name: Commit and push PDFs
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add build/*.pdf
-          git commit --amend --no-edit || echo "No changes to commit"
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    # Cache TeX Live installation to speed up subsequent builds
+    - name: Cache TeX Live setup
+      id: cache-texlive
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.texlive
+          /usr/local/texlive
+          /usr/bin
+        key: ${{ runner.os }}-latex-${{ hashFiles('**/*.tex') }}
+      
+    - name: Install minimal TeX Live setup
+      if: steps.cache-texlive.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update && \
+        sudo apt-get install texlive-base texlive-fonts-recommended texlive-latex-base --no-install-recommends -y
+        
+    # Recursively search for .tex files and compile them
+    - name: Compile LaTeX to PDF
+      run: |
+        find . -type f -name "*.tex" | while read file; do
+          mkdir -p "$(dirname "$file")/build"
+          pdflatex -output-directory="$(dirname "$file")/build" "$file"
+        done
+      
+    # Commit the generated PDFs and force-push them to the repository
+    - name: Commit and push PDFs
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        find . -type f -name "*.pdf" | while read pdf_file; do
+          git add "$pdf_file"
+        done
+        if [[ $(git status --porcelain) ]]; then
+          git commit -m "Automatically generated PDFs for latest changes"
           git push --force
+        fi
