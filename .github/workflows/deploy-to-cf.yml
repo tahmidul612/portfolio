@@ -66,6 +66,8 @@ jobs:
 
   deploy-to-cloudflare:
     runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: build-pdf
     steps:
       - name: Deploy to Cloudflare Pages
         run: |
