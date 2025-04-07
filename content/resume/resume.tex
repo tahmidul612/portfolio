@@ -1,17 +1,19 @@
 \documentclass[letterpaper]{article}
-\usepackage{fullpage}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{textcomp}
-\usepackage[utf8]{inputenc}
 \usepackage[default]{opensans}
 \usepackage[T1]{fontenc}
-\usepackage{microtype}
+\usepackage[utf8]{inputenc}
 \usepackage{adjustbox}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{fullpage}
+\usepackage{microtype}
 \usepackage{setspace}
+\usepackage{textcomp}
 \linespread{1.1}
 \textheight=10in
 \pagestyle{empty}
+\setlist[itemize]{nosep, itemsep=2pt}
 \raggedright
 \usepackage[left=0.8in,right=0.8in,bottom=0.8in,top=0.8in]{geometry}
 
@@ -36,15 +38,17 @@
     \header{Education}
     \textbf{Lakehead University}\hfill Thunder Bay, Ontario\\
     HBSc Computer Science \hfill January 2019 - April 2024\\
-    \vspace{2mm}
+    \vspace{1.5mm}
 
     \header{Work Experience}
     \textbf{Raphael Stone USA} \hfill Online\\
     \textit{Freelance Automation Developer} \hfill Jun 2018 - July 2018\\
-    \begin{itemize} \itemsep 1pt
+    \vspace{1.5mm}
+    \begin{itemize}
         \item Developed Google Apps Script automation for parsing and importing email data into Google Sheets.
         \item Implemented Zapier automation with Twilio integration to streamline workflows.
     \end{itemize}
+    \vspace{1.5mm}
 
     \header{Skills}
     \begin{adjustbox}{max width=\textwidth}
@@ -56,7 +60,7 @@
             Operating Systems:     & Windows 7/8/10/11, MacOS, Debian-based distros, Arch-based distros                                         \\
         \end{tabular}
     \end{adjustbox}
-    \vspace{2mm}
+    \vspace{1.5mm}
 
     \header{Projects}
     \textbf{Full-Stack AI-Powered URL Shortener} {\sl Python, Flask, AWS EC2, Django, NLP, GitHub Actions} \\
@@ -68,6 +72,7 @@
     \textbf{Automated Calendar Data Importer} {\sl Python, Google App Script, Web Scraping, CI/CD} \\
     Created a Python-based script to automate calendar updates for free concerts in Toronto. Utilized web scraping to parse schedule data and generate ICS files. Implemented Google Apps Script integration for automatic synchronization with Google Calendar.
 
+    \vspace{1.5mm}
     \header{Awards}
     \begin{tabular}{@{}p{0.78\textwidth}p{0.19\textwidth}@{}}
         \textbf{Dean's List}                                                                                                                                                    & Lakehead University \\
