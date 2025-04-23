@@ -50,7 +50,7 @@ jobs:
         run: |
           find . -type f -name "*.tex" | while read file; do
             mkdir -p "$(dirname "$file")/build"
-            pdflatex -output-directory="$(dirname "$file")/build" "$file"
+            xelatex -output-directory="$(dirname "$file")/build" "$file"
           done
       - name: Commit and push PDFs
         run: |
