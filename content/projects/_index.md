@@ -18,23 +18,27 @@ You can find some of my projects on Github [@tahmidul612](https://github.com/tah
 
 ## Personal Projects
 
-### Media Server
+### Homelab/Media Server
 
-I use a Ubuntu Server to store and host my Anime collection, using multiple softwares to make the process automated. Github and Docker are a major part of my entire system. I store my docker compose files in Github and deploy my containers to multiple nodes in a Docker swarm through Portainer.
+I have had a homelab for personal self-hosted applications for the last eight years. Currently I am using Ubuntu Server in Hyper-V on my primary Windows PC to host a number of applications, mostly as Docker containers. My experience with the homelab has allowed me to learn a lot about networking, server management, virtualization, automation, scripting, and more.
+Two of the most important applications I have running are Immich (for photo and video backup) and Paperless-ngx (for document management). Adding AI into the mix through Ollama and N8N has allowed me to automate a lot of my tasks, and explore a lot of new possibilities.
 
 {{< columns >}}
 
 **Tech Used**
 
 - Ubuntu Server
+- Hyper-V
 - Bash
 - Python
+- Docker
 
 <--->
 
  **&nbsp;**
 
-- Docker
+- Ollama
+- N8N
 - Portainer
 - Multiple Open Source Projects
 
