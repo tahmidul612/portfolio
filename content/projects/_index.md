@@ -68,6 +68,14 @@ I created a script to scrape the Royal Conservatory of Music's website for free 
 
 {{< /columns >}}
 
+### Application Setup Guides
+
+{{< alert "github" >}}
+[playnite-config](https://github.com/tahmidul612/playnite-config) || [plexHTPC-config](https://github.com/tahmidul612/plexHTPC-config) || [pwsh-config](https://github.com/tahmidul612/pwsh-config) || [fish-config](<https://github.com/tahmidul612/fish-config>)
+{{< /alert >}}
+
+I have created a number of setup guides for various applications I use. These guides are written in Markdown and are hosted on Github. They include instructions for setting up Playnite, Plex, PowerShell, and Fish Shell.
+
 ## University Projects
 
 ### COMP4478 - Game Programming
