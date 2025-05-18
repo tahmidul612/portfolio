@@ -44,11 +44,6 @@ Two of the most important applications I have running are Immich (for photo and 
 
 {{< /columns >}}
 
-### Game Server
-
-One of my best buddies lives in a different city, and we wanted to play games together. Since NVIDIA GPUs have GPU-P support, I decided that was a great opportunity for me to learn more and let my friend play games.
-I used Hyper-V in Windows to setup a guest Windows system and shared my GPU partition with it. My friend can now remotely access the guest system with Parsec and play games, while I have full access to my PC.
-
 ## University Projects
 
 ### COMP4478 - Game Programming
