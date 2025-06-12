@@ -5,5 +5,6 @@
       "strings": "on"
     }
   },
-  "latex-workshop.latex.outDir": "%DIR%/build"
+  "latex-workshop.latex.outDir": "%DIR%/build",
+  "latex-workshop.formatting.latex": "tex-fmt"
 }
