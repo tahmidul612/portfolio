@@ -4,5 +4,6 @@
       "other": "on",
       "strings": "on"
     }
-  }
+  },
+  "latex-workshop.latex.outDir": "%DIR%/build"
 }
