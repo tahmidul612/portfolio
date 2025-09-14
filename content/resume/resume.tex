@@ -1,4 +1,4 @@
-\documentclass[letterpaper]{article}
+\documentclass[letterpaper,10pt]{article}
 \usepackage[default]{opensans}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -6,9 +6,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{enumitem}
-\usepackage{fullpage}
 \usepackage{microtype}
-\usepackage{setspace}
 \usepackage{textcomp}
 \usepackage{silence}
 \WarningFilter{latex}{Command \showhyphens has changed}
@@ -16,9 +14,9 @@
 \linespread{1.1}
 \textheight=10in
 \pagestyle{empty}
-\setlist[itemize]{nosep, itemsep=2pt}
+\setlist[itemize]{nosep, itemsep=1pt, leftmargin=*}
 \raggedright
-\usepackage[left=0.8in,right=0.8in,bottom=0.8in,top=0.8in]{geometry}
+\usepackage[left=0.6in,right=0.6in,bottom=0.4in,top=0.6in]{geometry}
 
 \def\bull{\vrule height 0.8ex width .7ex depth -.1ex }
 
@@ -29,7 +27,7 @@
 
 \begin{document}
 \begin{sloppypar}
-  \vspace*{-40pt}
+  \vspace*{-30pt}
   \sloppy
   \setlength{\emergencystretch}{5em}
 
@@ -44,7 +42,7 @@
   \vspace{1.5mm}
 
   \header{Work Experience}
-  \textbf{Raphael Stone USA} \hfill Online\\
+  \textbf{Raphael Stone USA} \hfill Remote\\
   \textit{Freelance Automation Developer} \hfill Jun 2018 - July 2018\\
   \vspace{1.5mm}
   \begin{itemize}
@@ -56,48 +54,35 @@
   \textit{Automation Development Intern} \hfill May 2025 - Current\\
   \vspace{1.5mm}
   \begin{itemize}
-    \item Built AI agents and automation pipelines in n8n
+    \item Built AI agents and automation pipelines in n8n.
     \item Wrote Ansible scripts and CD workflows in Github Actions for deployment automation.
   \end{itemize}
   \vspace{1.5mm}
 
   \header{Skills}
-  \begin{adjustbox}{max width=\textwidth}
-    \begin{tabular}{p{0.25\textwidth} p{0.75\textwidth}}
-      Programming Languages: & Python, Java, C++, JavaScript, Bash, Powershell                                                            \\
-      Tools \& Frameworks:   & n8n
-    , Flask, Git, Docker, Zapier, GameCI, CI/CD with Github Actions                                              \\
-      Cloud Platforms:       & Google Cloud Platform (GCP), AWS (EC2, S3)                                                                 \\
-      Server Management:     & Ubuntu Server, Hyper-V, Docker Swarm, Container Deployment \& Management with Portainer, Ansible, Homelab (7 years) \\
-      Operating Systems:     & Windows 7/8/10/11, MacOS, Debian distros, Archvsc distros                                         \\
-    \end{tabular}
-  \end{adjustbox}
-
-  \vspace{1.5mm}
-  \begin{itemize}
-    \item Demonstrated problem-solving skills and patience, evident through managing complex automation workflows and homelab environments.
-    \item High adaptability and eagerness to learn new technologies; consistently self-taught across tools like Docker, GCP, and AWS.
-    \item Customer-oriented mindset with freelance experience delivering reliable automation solutions to clients.
-  \end{itemize}
-  \vspace{1.5mm}
+  \textbf{Programming Languages:} Python, Java, C++, JavaScript, Bash, Powershell \\
+  \textbf{Tools and Frameworks:} n8n, Flask, Git, Docker, Zapier, GameCI, CI/CD with Github Actions \\
+  \textbf{Cloud Platforms:} Google Cloud Platform (GCP), AWS (EC2, S3) \\
+  \textbf{Server Management:} Ubuntu Server, Hyper-V, Docker Swarm, Portainer, Ansible, Homelab (7 years) \\
+  \textbf{Operating Systems:} Windows 7/8/10/11, MacOS, Debian distros, Arch distros
 
   \header{Projects}
   \textbf{Full-Stack AI-Powered URL Shortener} {\sl Python, Flask, AWS EC2, Django, NLP, GitHub Actions} \\
-  Developed an AI-powered URL shortening service using Flask and Django. Integrated a pre-trained RoBERTa model to generate relevant slugs, enhancing user experience. Deployed the application on AWS EC2, automating updates and scaling using GitHub Actions.
+  Developed an AI-powered URL shortening service using Flask and Django. Integrated a pre-trained RoBERTa model to generate relevant slugs, enhancing user experience. Deployed on AWS EC2, automating updates and scaling using GitHub Actions.
 
   \textbf{Cloud-Based Game Development Workflow} {\sl Unity, C\#, GameCI, GitHub Actions, GitHub Pages} \\
-  Built and deployed two games using Unity and HaxeFlixel, implementing game mechanics in C\# and Haxe. Leveraged GameCI for automated builds and deployments. Used GitHub Actions for CI/CD and deployed the final game to GitHub Pages for browser-based gameplay.
+  Built and deployed two games using Unity and HaxeFlixel, implementing game mechanics in C\# and Haxe. Leveraged GameCI for automated builds and deployments. Used GitHub Actions for CI/CD and deployed the final game to GitHub Pages.
 
   \textbf{Automated Calendar Data Importer} {\sl Python, Google App Script, Web Scraping, CI/CD} \\
-  Created a Python-based script to automate calendar updates for free concerts in Toronto. Utilized web scraping to parse schedule data and generate ICS files. Implemented Google Apps Script integration for automatic synchronization with Google Calendar.
+  Created a Python script to automate calendar updates for free concerts in Toronto. Utilized web scraping to parse schedule data and generate ICS files. Implemented Google Apps Script integration for automatic synchronization with Google Calendar.
 
   \vspace{1.5mm}
   \header{Awards}
   \begin{tabular}{@{}p{0.78\textwidth}p{0.19\textwidth}@{}}
-    \textbf{Dean's List}                                                                                                                                                    & Lakehead University \\
-    Recognized for excellent academic performance in the 2020-21 academic year.                                                                                             & 2021                \\[5pt]
-    \textbf{Level 3 of Lakehead Makes Leaders}                                                                                                                              & Lakehead University \\
-    Won the "Think Like a Boss" module, competing in a simulated investment portfolio challenge. Developed teamwork, conflict resolution, and investor presentation skills. & November 2021       \\
+    \textbf{Dean's List} & Lakehead University \\
+    Recognized for excellent academic performance in the 2020-21 academic year. & 2021 \\
+    \textbf{Level 3 of Lakehead Makes Leaders} & Lakehead University \\
+    Won the "Think Like a Boss" module, competing in a simulated investment portfolio challenge. & November 2021 \\
   \end{tabular}
 
   \vspace{1.5mm}
