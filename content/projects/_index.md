@@ -94,6 +94,21 @@ Inspired by art galleries, this project aims to create wallpapers that evoke the
     caption="This photo I took at the MET museum is a good example of what I want"
     >}}
 
+{{< columns >}}
+
+**Tech Used**
+
+- Python
+- OpenCV
+
+<--->
+
+**&nbsp;**
+
+- Gemini Python SDK
+
+{{< /columns >}}
+
 ## University Projects
 
 ### COMP4478 - Game Programming
