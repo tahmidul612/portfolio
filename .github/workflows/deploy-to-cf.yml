@@ -3,6 +3,18 @@ name: LaTeX Build and Cloudflare Pages Deployment
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      build_pdf:
+        description: 'Manually trigger PDF build'
+        required: true
+        type: boolean
+        default: false
+      deploy:
+        description: 'Manually trigger Cloudflare deployment'
+        required: true
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,6 +29,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Check for PDF build changes
+        if: github.event_name == 'push'
         id: filter
         uses: dorny/paths-filter@v2
         with:
@@ -26,9 +39,9 @@ jobs:
               - '.github/workflows/latex-pdf.yml'
 
   build-pdf:
-    if: ${{ needs.check-files.outputs.pdf == 'true' }}
     runs-on: ubuntu-latest
     needs: check-files
+    if: ${{ (github.event_name == 'push' && needs.check-files.outputs.pdf == 'true') || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_pdf) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -66,8 +79,8 @@ jobs:
 
   deploy-to-cloudflare:
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     needs: build-pdf
+    if: ${{ always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy)) }}
     steps:
       - name: Deploy to Cloudflare Pages
         run: |
