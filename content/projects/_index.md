@@ -89,7 +89,7 @@ This project is a work in progress.
 Inspired by visits to art galleries, this project aims to create a desktop wallpaper that evokes the feeling of viewing paintings in a virtual gallery. The main challenge is programmatically generating ornate frames for the artwork. The current approach involves using cloud-based image-to-image AI models like Gemini to generate a full frame from a single corner piece. The generated frame is then validated for correct dimensions before being combined with a gallery wall background and informational text to create the final wallpaper.
 
 {{< figure
-    src="img/art-gallery-wallpaper-met.jpg"
+    src="art-gallery-wallpaper-met.jpg"
     alt="A painting in an ornate frame in a museum."
     caption="This photo I took at the MET museum is a good example of what I want"
     >}}
