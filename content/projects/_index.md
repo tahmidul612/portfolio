@@ -76,6 +76,30 @@ I created a script to scrape the Royal Conservatory of Music's website for free 
 
 I have created a number of setup guides for various applications I use. These guides are written in Markdown and are hosted on Github. They include instructions for setting up Playnite, Plex, PowerShell, and Fish Shell.
 
+### Plex Poster Downloader (tpdb)
+
+{{< alert "github" >}}
+[tpdb](https://github.com/tahmidul612/tpdb)
+{{< /alert >}}
+
+This project automates downloading and organizing movie and TV show posters from ThePosterDB for use with Plex. The Python script uses fuzzy matching and the Plex API to correctly match poster sets to media files. It streamlines the process of updating posters, either by placing them directly in the media directory for Plex to use or by organizing them for use with Kometa, a Plex metadata management tool.
+
+{{< columns >}}
+
+**Tech Used**
+
+- Python
+- Requests
+
+<--->
+
+ **&nbsp;**
+
+- PlexAPI
+- TheFuzz
+
+{{< /columns >}}
+
 ### Art Gallery Wallpaper
 
 {{< alert "github" >}}
