@@ -90,12 +90,13 @@ This project automates downloading and organizing movie and TV show posters from
 
 - Python
 - Requests
-- PlexAPI
-- TheFuzz
 
 <--->
 
  **&nbsp;**
+
+- PlexAPI
+- TheFuzz
 
 {{< /columns >}}
 
