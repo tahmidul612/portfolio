@@ -80,7 +80,7 @@ jobs:
   deploy-to-cloudflare:
     runs-on: ubuntu-latest
     needs: build-pdf
-    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.deploy) }}
+    if: ${{ always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy)) }}
     steps:
       - name: Deploy to Cloudflare Pages
         run: |
