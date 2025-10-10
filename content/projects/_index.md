@@ -81,12 +81,12 @@ I have created a number of setup guides for various applications I use. These gu
 {{< alert "github" >}}
 [artgallery-wallpaper](https://github.com/tahmidul612/artgallery-wallpaper)
 {{< /alert >}}
-
+<br>
 {{< alert "triangle-exclamation" >}}
 This project is a work in progress.
 {{< /alert >}}
 
-Inspired by visits to art galleries, this project aims to create a desktop wallpaper that evokes the feeling of viewing paintings in a virtual gallery. The main challenge is programmatically generating ornate frames for the artwork. The current approach involves using cloud-based image-to-image AI models like Gemini to generate a full frame from a single corner piece. The generated frame is then validated for correct dimensions before being combined with a gallery wall background and informational text to create the final wallpaper.
+Inspired by art galleries, this project aims to create wallpapers that evoke the feeling of viewing paintings in a virtual gallery. The main challenge is programmatically generating ornate frames for the artwork. The current approach involves using cloud-based image-to-image AI models like Gemini to generate a full frame from a single corner piece. The generated frame is then validated for correct dimensions before being combined with a gallery wall background and informational text to create the final wallpaper.
 
 {{< figure
     src="art-gallery-wallpaper-met.jpg"
