@@ -76,6 +76,24 @@ I created a script to scrape the Royal Conservatory of Music's website for free 
 
 I have created a number of setup guides for various applications I use. These guides are written in Markdown and are hosted on Github. They include instructions for setting up Playnite, Plex, PowerShell, and Fish Shell.
 
+### Art Gallery Wallpaper
+
+{{< alert "github" >}}
+[artgallery-wallpaper](https://github.com/tahmidul612/artgallery-wallpaper)
+{{< /alert >}}
+
+{{< alert "triangle-exclamation" >}}
+This project is a work in progress.
+{{< /alert >}}
+
+Inspired by visits to art galleries, this project aims to create a desktop wallpaper that evokes the feeling of viewing paintings in a virtual gallery. The main challenge is programmatically generating ornate frames for the artwork. The current approach involves using cloud-based image-to-image AI models like Gemini to generate a full frame from a single corner piece. The generated frame is then validated for correct dimensions before being combined with a gallery wall background and informational text to create the final wallpaper.
+
+{{< figure
+    src="img/art-gallery-wallpaper-met.jpg"
+    alt="A painting in an ornate frame in a museum."
+    caption="This photo I took at the MET museum is a good example of what I want"
+    >}}
+
 ## University Projects
 
 ### COMP4478 - Game Programming
