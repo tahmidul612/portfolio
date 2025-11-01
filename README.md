@@ -1,60 +1,77 @@
 # Personal Portfolio Website
 
-The source code for my personal [tahmidul612.com](https://tahmidul612.com) homepage. Built with Hugo with the Congo theme.
+[![LaTeX Build and Cloudflare Pages Deployment](https://github.com/tahmidul612/portfolio/actions/workflows/deploy-to-cf.yml/badge.svg)](https://github.com/tahmidul612/portfolio/actions/workflows/deploy-to-cf.yml)
+[![Hugo](https://img.shields.io/badge/Hugo-0.125.4-blue?style=flat&logo=hugo)](https://gohugo.io/)
+
+Source code for my personal portfolio at [tahmidul612.com](https://tahmidul612.com). This README is a personal guide for setting up and managing the project.
+
+## Essential Commands
+
+- **Run dev server**: `hugo server`
+- **Build static files**: `hugo`
+- **Format code**: `npx prettier --write .`
+- **Initialize themes**: `git submodule update --init --recursive`
+- **Update themes**: `git submodule update --remote themes/congo`
 
 ## Getting Started
 
-### Prerequisites
+1.  **Prerequisites**:
+    - [Hugo (Extended version)](https://gohugo.io/installation/)
+    - [Node.js](https://nodejs.org/en/download/) (for formatting)
 
-Install Hugo and NodeJS
+2.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/tahmidul612/portfolio.git
+    cd portfolio
+    ```
 
-> Scoop works best on Windows
->
-> [How to install scoop](#install-scoop)
+3.  **Initialize themes (Git Submodules)**:
+    ```bash
+    git submodule update --init --recursive
+    ```
 
-```console
-scoop install nodejs
-scoop install hugo-extended
-```
+4.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+    This installs Prettier and the Go template plugin for code formatting.
 
-### Setup project
+5.  **Run the dev server**:
+    ```bash
+    hugo server
+    ```
+    The site will be available at `http://localhost:1313`.
 
-Clone the repo and change to the project directory
+### VS Code Integration
 
-```console
-git clone https://github.com/tahmidul612/portfolio.git
-cd portfolio
-```
+This project is configured for a seamless VS Code experience:
+- Press `F5` to launch the dev server.
+- Press `Ctrl+Shift+B` to build the static files.
+- The editor will recommend extensions for Hugo and Prettier.
 
-Install project dependencies
+## Architecture Overview
 
-```console
-npm install
-```
+This project has a few key architectural patterns to be aware of:
 
-> Installs prettier and prettier-plugin-go-template
+-   **Dual-Theme System**: The site uses two themes as Git submodules:
+    -   `congo`: The primary theme for styling and layout.
+    -   `hugo-embed-pdf-shortcode`: Adds the `{{< embed-pdf >}}` shortcode.
+    Theme files should not be modified directly. Use the root `layouts/` directory for overrides.
 
-Install recommended vscode extensions
+-   **Modular Configuration**: The Hugo configuration is split into multiple files in the `config/_default/` directory. The main theme parameters are in `params.toml`.
 
-```console
-(Get-Content -Path .\.vscode\extensions.json | ConvertFrom-Json).recommendations | Foreach -Process {code --install-extension $_ --force} | Select-String -Pattern "\[lua\]*" -NotMatch
-```
+-   **Content Structure**:
+    -   The main portfolio content is in a single file: `content/projects/_index.md`.
+    -   The resume's LaTeX source is at `content/resume/resume.tex`.
 
-> Run this command in powershell to install the recommended extensions
->
-> Or, install the recommended extensions from the vscode prompt
+-   **Custom Shortcodes**: The project includes a custom `columns` shortcode, implemented in `layouts/shortcodes/columns.html`.
 
-Hit `F5` to launch the project in a browser window (refreshes when source is edited) or `Ctrl + Shift + B` to build static files
+## Automation
 
-> Or, Run `hugo server` to serve project or `hugo` to build static files
+This project uses GitHub Actions for CI/CD:
 
-### Install scoop
+-   **LaTeX to PDF**: Any changes to `.tex` files in `content/resume/` will automatically trigger a GitHub Action that compiles them into PDFs and commits them back to the repository.
 
-Scoop is a package manager for Windows. It installs packages only for the current user (does not need admin privileges) and adds command line alias for the package when needed. The terminal does not have to be restarted to use the alias.
+-   **Cloudflare Pages Deployment**: After the PDF build, a webhook is called to trigger a new deployment on Cloudflare Pages.
 
-> Run these commands in a non-elevated powershell/terminal (regular powershell without admin privileges)
-
-```console
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-iwr -useb get.scoop.sh | iex
-```
+The full workflow is defined in `.github/workflows/deploy-to-cf.yml`.
