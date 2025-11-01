@@ -8,8 +8,9 @@ showReadingTime: false
 ---
 
 {{< lead >}}
-I am currently studying Computer Science at Lakehead University, and hoping to graduate in April 2024. My laziness compels me to learn more about automation so that I can do less work. I'm usually occupied trying to automate some of my personal projects, by using various scripting languages. DevOps is also another skill I am trying to master, since it would automate a lot of my work.
+I focus on automation and DevOps, using scripting, containers, and CI/CD to reduce manual work and streamline projects. My laziness compels me to learn more about automation so that I can do less work. I'm usually occupied trying to automate some of my personal projects using various scripting languages. Using AI tools to assist in my work is another area I am exploring, and I am constantly amazed at how much they have accelerated my work. My main programming language is Python, but I also have experience with C#, Java, JavaScript, Bash, and PowerShell. I hold an HBSc in Computer Science from Lakehead University (April 2024). I am self-employed as a freelance developer, currently working for Raphael Porcelain, creating n8n workflows for market analysis with AI integration and automating various other tasks. DevOps is another skill I am trying to master.
 {{< /lead >}}
+
 {{< alert "github" >}}
 You can find some of my projects on Github [@tahmidul612](https://github.com/tahmidul612).
 {{< /alert >}}
