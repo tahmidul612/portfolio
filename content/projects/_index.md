@@ -50,7 +50,7 @@ Two of the most important applications I have running are Immich (for photo and 
 [RCMusic-Free](https://github.com/tahmidul612/rcmusic-free)
 {{< /alert >}}
 
-I created a script to scrape the Royal Conservatory of Music's website for free concerts and events. The script generates a calendar file that can be imported into Google Calendar, making it easy to keep track of upcoming events. The script is written in Python and uses BeautifulSoup for web scraping.
+This Python script scrapes the Royal Conservatory of Music's website for free student recitals and community performances, generating an iCalendar (.ics) file. This allows you to easily subscribe and stay updated with the latest free concert schedules in your favorite calendar application. The public calendar is updated automatically every hour.
 
 {{< columns >}}
 
@@ -58,13 +58,14 @@ I created a script to scrape the Royal Conservatory of Music's website for free 
 
 - Python
 - BeautifulSoup
+- iCalendar
 
 <--->
 
-**&nbsp;**
+ **&nbsp;**
 
-- Regex
-- Google Calendar API
+- GitHub Actions
+- Cloudflare Workers
 
 {{< /columns >}}
 
@@ -82,21 +83,23 @@ I have created a number of setup guides for various applications I use. These gu
 [tpdb](https://github.com/tahmidul612/tpdb)
 {{< /alert >}}
 
-This project automates downloading and organizing movie and TV show posters from ThePosterDB for use with Plex. The Python script uses fuzzy matching and the Plex API to correctly match poster sets to media files. It streamlines the process of updating posters, either by placing them directly in the media directory for Plex to use or by organizing them for use with Kometa, a Plex metadata management tool.
+TPDB is a powerful Python utility that streamlines the management of movie and TV show posters for your Plex media server. It downloads, organizes, and syncs custom artwork from ThePosterDB using intelligent fuzzy matching and automated folder organization. The tool is perfect for Plex enthusiasts who use metadata managers like Kometa or prefer managing posters directly in their media library. It features a modern, interactive CLI for a smooth user experience.
 
 {{< columns >}}
 
 **Tech Used**
 
 - Python
-- Requests
+- PlexAPI
+- RapidFuzz
 
 <--->
 
  **&nbsp;**
 
-- PlexAPI
-- TheFuzz
+- Typer
+- Rich
+- Requests
 
 {{< /columns >}}
 
