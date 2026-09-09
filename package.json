@@ -1,0 +1,8 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "description": "Pins the Hugo version used by the Cloudflare Pages build. Congo v2.14.0 requires Hugo >= 0.158.0, and the Pages build image ships 0.147.7 by default. Hugo has no file-based version override, so the pinned binary comes from npm instead.",
+  "devDependencies": {
+    "hugo-extended": "0.165.0"
+  }
+}
