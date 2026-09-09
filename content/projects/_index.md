@@ -126,7 +126,7 @@ Turns any artwork into a desktop wallpaper that looks like a painting hanging in
 It works offline with the bundled corner scans and no API keys, and the same input and seed always produce the same image byte for byte. With an OpenAI key it will identify the piece and write the placard text, and it can generate frames with OpenAI, Gemini, or a local SDXL model if you want something other than the reconstruction. Version 1.0.0 shipped in June 2026.
 
 {{< figure
-    src="art-gallery-wallpaper-met.jpg"
+    src="images/art-gallery-wallpaper-met.jpg"
     alt="A painting in an ornate frame in a museum."
     caption="This photo I took at the MET museum is what I was going for"
     >}}
