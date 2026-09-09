@@ -17,7 +17,3 @@ Email is the fastest way to reach me. Everything else works too.
 ## Save my contact card
 
 {{< button href="/vcard" download="Tahmidul_Islam.vcf" >}}Add to contacts{{< /button >}}
-
-The card also carries my phone number and alternate email addresses. On a phone it
-opens straight into the "Add contact" sheet; on a desktop it downloads a `.vcf` you
-can import into any address book.
