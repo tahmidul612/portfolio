@@ -12,7 +12,7 @@
 \usepackage{silence}
 \WarningFilter{latex}{Command \showhyphens has changed}
 
-\linespread{1.05}
+\linespread{1.0}
 \textheight=10in
 \pagestyle{empty}
 \setlist[itemize]{nosep, itemsep=0.5pt, leftmargin=*}
@@ -50,7 +50,8 @@
     \item Architect and maintain 15+ production automation workflows using n8n, processing competitive intelligence data from 6+ social media platforms daily
     \item Design AI-powered analysis pipelines integrating OpenAI API with vector databases (Qdrant/MongoDB) for Retrieval Augmented Generation
     \item Build lead generation automation with Clay.com and Salesforce CRM, reducing manual data entry by 20+ hours/week
-    \item Develop Python and JavaScript scrapers for business intelligence gathering, achieving 95%+ data accuracy
+    \item Develop Python and JavaScript scrapers for business intelligence gathering, achieving 95\%+ data accuracy
+    \item Rebuilt lead enrichment as a FastAPI and React app on the OpenAI Batch API with RBAC, a review UI, and CI/CD deployment
     \item Collaborate with cross-functional stakeholders to translate business requirements into scalable technical solutions
   \end{itemize}
   \vspace{1mm}
@@ -58,31 +59,29 @@
   \textit{Automation Development Intern} \hfill May 2025 - October 2025\\
   \vspace{1mm}
   \begin{itemize}
-    \item Built AI agents and automation pipelines in n8n.
-    \item Wrote Ansible scripts and CD workflows in Github Actions for deployment automation.
+    \item Built n8n AI agents and a FastAPI content pipeline that chains five LLMs in sequence
+    \item Published insta\_rag, a configuration-driven RAG library, to PyPI with tests and an automated release workflow
+    \item Wrote Ansible playbooks and GitHub Actions CD for a kubeadm Kubernetes cluster with Tailscale and cert-manager
   \end{itemize}
   \vspace{1mm}
 
   \header{Skills}
-  \textbf{Programming Languages:} Python, Java, C++, JavaScript, Bash, Powershell \\
-  \textbf{Tools and Frameworks:} n8n, Flask, Git, Docker, Zapier, Clay.com, Salesforce CRM, GameCI, CI/CD with Github Actions \\
-  \textbf{AI/ML:} OpenAI API, RAG Pipelines, Vector Databases (Qdrant/MongoDB), Ollama \\
-  \textbf{Cloud Platforms:} Google Cloud Platform (GCP), AWS (EC2, S3) \\
-  \textbf{Server Management:} Ubuntu Server, Hyper-V, Docker Swarm, Portainer, Ansible, Homelab (5 years) \\
+  \textbf{Programming Languages:} Python, JavaScript, TypeScript, Java, C++, Bash, PowerShell \\
+  \textbf{Tools and Frameworks:} n8n, FastAPI, React, Docker, Traefik, Ansible, Kubernetes, Clay.com, Salesforce CRM, GitHub Actions CI/CD \\
+  \textbf{AI/ML:} OpenAI API (Batch, structured outputs), Claude API, RAG pipelines, Qdrant, MongoDB, Ollama \\
+  \textbf{Cloud Platforms:} Google Cloud Platform (GCP), AWS (EC2, S3), Cloudflare (Pages, Workers, Tunnel), Vercel \\
+  \textbf{Server Management:} Arch and Ubuntu Server, Docker Compose, Portainer, Ansible, Homelab (8 years) \\
   \textbf{Operating Systems:} Windows 7/8/10/11, MacOS, Debian distros, Arch distros
 
   \header{Projects}
-  \textbf{Enterprise Automation \& Intelligence System} {\sl n8n, Python, JavaScript, OpenAI API, Vector Databases} \\
-  Designed automation workflows for multi-platform data collection. Implemented AI pipelines using RAG architecture. Developed integrations reducing manual data entry by 20+ hours/week.
+  \textbf{Competitive Intelligence Pipeline} {\sl n8n, Python, JavaScript, OpenAI API, MongoDB, Qdrant} \\
+  Scrapes nine social platforms weekly, runs two-stage AI analysis with RAG over prior weeks, emails HTML and PDF reports.
 
-  \textbf{Full-Stack AI-Powered URL Shortener} {\sl Python, Flask, AWS EC2, Django, NLP, GitHub Actions} \\
-  URL shortening service with RoBERTa model for AI-generated slugs. Deployed on AWS EC2 with CI/CD automation.
+  \textbf{Should I Get Gas} {\sl Python, React, Claude API, GitHub Actions, Vercel} \\
+  Gas price timing advisor for 62 regions: scheduled Python data pipeline and a React PWA, live at \href{https://shouldigetgas.vercel.app}{shouldigetgas.vercel.app}.
 
-  \textbf{Cloud-Based Game Development Workflow} {\sl Unity, C\#, GameCI, GitHub Actions, GitHub Pages} \\
-  Built games using Unity with automated GameCI builds and CI/CD pipeline for GitHub Pages deployment.
-
-  \textbf{Automated Calendar Data Importer} {\sl Python, Google App Script, Web Scraping, CI/CD} \\
-  Automated calendar updates using web scraping and Google Apps Script for synchronization.
+  \textbf{Art Gallery Wallpaper} {\sl Python, OpenCV, OpenAI and Gemini SDKs, Stable Diffusion XL} \\
+  Rebuilds a full frame from one scanned corner and composites artwork into a museum-style wallpaper, offline by default.
 
   \vspace{1mm}
   \header{Awards}
