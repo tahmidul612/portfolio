@@ -1,0 +1,76 @@
+{{- /*
+  Renders the downloadable contact card.
+
+  Identity is parsed out of the .vcf itself so the page and the file it
+  serves can never drift apart. Update vcard.vcf and this follows.
+
+  Params:
+    src      path to the vCard, relative to the project root
+    href     URL the card links to
+    download filename browsers save it as
+*/ -}}
+{{- $src := .Get "src" | default "static/vcard.vcf" -}}
+{{- $href := .Get "href" | default "/vcard" -}}
+{{- $download := .Get "download" | default "Tahmidul_Islam.vcf" -}}
+
+{{- $name := "" -}}
+{{- $role := "" -}}
+{{- $org := "" -}}
+{{- with (readFile $src) -}}
+  {{- range (split . "\n") -}}
+    {{- $line := chomp . -}}
+    {{- if hasPrefix $line "FN:" -}}
+      {{- $name = strings.TrimPrefix "FN:" $line -}}
+    {{- else if hasPrefix $line "TITLE:" -}}
+      {{- $role = strings.TrimPrefix "TITLE:" $line -}}
+    {{- else if hasPrefix $line "ORG:" -}}
+      {{- /* ORG may carry organisational units after a semicolon */ -}}
+      {{- $org = index (split (strings.TrimPrefix "ORG:" $line) ";") 0 -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- errorf "[vcard] Cannot read %q. Check the src parameter." $src -}}
+{{- end -}}
+
+{{- /* vCard escapes commas and semicolons with a backslash */ -}}
+{{- $unescape := dict "\\," "," "\\;" ";" -}}
+{{- range $from, $to := $unescape -}}
+  {{- $name = replace $name $from $to -}}
+  {{- $role = replace $role $from $to -}}
+  {{- $org = replace $org $from $to -}}
+{{- end -}}
+
+{{- /* not-prose opts out of Congo's link-highlight hover, which would
+       otherwise flood the whole card with the primary colour */ -}}
+<a
+  class="vcard not-prose"
+  href="{{ $href }}"
+  download="{{ $download }}"
+  aria-label="Save {{ $name }} as a contact card"
+>
+  <span class="vcard__identity">
+    <span class="vcard__name">{{ $name }}</span>
+    {{- with $role }}<span class="vcard__role">{{ . }}</span>{{ end }}
+    {{- with $org }}<span class="vcard__org">{{ . }}</span>{{ end }}
+  </span>
+  <span class="vcard__action">
+    <svg
+      class="vcard__icon"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 21h14" />
+    </svg>
+    <span class="vcard__cta">Save contact card</span>
+    <span class="vcard__ext">.vcf</span>
+  </span>
+</a>

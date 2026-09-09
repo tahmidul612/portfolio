@@ -14,6 +14,4 @@ Email is the fastest way to reach me. Everything else works too.
 - {{< icon "instagram" >}} &nbsp; [instagram.com/thelittolprince](https://instagram.com/thelittolprince)
 - {{< icon "facebook" >}} &nbsp; [facebook.com/tahmidul612](https://facebook.com/tahmidul612)
 
-## Save my contact card
-
-{{< button href="/vcard" download="Tahmidul_Islam.vcf" >}}Add to contacts{{< /button >}}
+{{< vcard >}}
