@@ -1,0 +1,9 @@
+# Serve the vCard as a contact file rather than plain text, so phones
+# open the "Add contact" sheet instead of rendering the raw VCARD body.
+/vcard
+  Content-Type: text/vcard; charset=utf-8
+  Content-Disposition: attachment; filename="Tahmidul_Islam.vcf"
+
+/vcard.vcf
+  Content-Type: text/vcard; charset=utf-8
+  Content-Disposition: attachment; filename="Tahmidul_Islam.vcf"

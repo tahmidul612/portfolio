@@ -1,0 +1,3 @@
+# Extensionless vCard URL (matches the QR code on the printed card).
+# 200 = rewrite, so the browser stays on /vcard and the _headers rules apply.
+/vcard   /vcard.vcf   200

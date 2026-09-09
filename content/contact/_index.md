@@ -1,0 +1,23 @@
+---
+title: "Contact"
+description: "How to reach me — email, socials, and a downloadable contact card"
+layout: simple
+---
+
+{{< lead >}}
+Email is the fastest way to reach me. Everything else works too.
+{{< /lead >}}
+
+- {{< icon "email" >}} &nbsp; [me@tahmidul612.com](mailto:me@tahmidul612.com)
+- {{< icon "github" >}} &nbsp; [github.com/tahmidul612](https://github.com/tahmidul612)
+- {{< icon "linkedin" >}} &nbsp; [linkedin.com/in/tahmidul612](https://linkedin.com/in/tahmidul612)
+- {{< icon "instagram" >}} &nbsp; [instagram.com/thelittolprince](https://instagram.com/thelittolprince)
+- {{< icon "facebook" >}} &nbsp; [facebook.com/tahmidul612](https://facebook.com/tahmidul612)
+
+## Save my contact card
+
+{{< button href="/vcard" download="Tahmidul_Islam.vcf" >}}Add to contacts{{< /button >}}
+
+The card also carries my phone number and alternate email addresses. On a phone it
+opens straight into the "Add contact" sheet; on a desktop it downloads a `.vcf` you
+can import into any address book.
