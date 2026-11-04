@@ -1,3 +1,6 @@
 # Extensionless vCard URL (matches the QR code on the printed card).
 # 200 = rewrite, so the browser stays on /vcard and the _headers rules apply.
 /vcard   /vcard.vcf   200
+
+# Short link for the temporary Windows SSH tunnel script: irm tahmidul612.com/ssh|iex
+/ssh     https://gist.githubusercontent.com/tahmidul612/e6568891e45cce1feb9ec2b3b9aefe72/raw   302
