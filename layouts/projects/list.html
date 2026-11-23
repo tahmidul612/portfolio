@@ -1,9 +1,12 @@
 {{/* Projects overview: intro, then project cards grouped by the `group`
-     front matter param (work | personal), then the headless "smaller"
-     bundle. Each project is a page bundle under content/projects/<slug>/. */}}
+  front matter param (work | personal), then the headless "smaller"
+  bundle. Each project is a page bundle under content/projects/<slug>/.
+*/}}
 {{ define "main" }}
   <header>
-    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+      {{ .Title }}
+    </h1>
   </header>
   <section class="prose max-w-full dark:prose-invert">
     <div class="min-w-0 max-w-prose">{{ .Content | emojify }}</div>
@@ -14,7 +17,11 @@
     {{ $pages := where $.Pages "Params.group" .key }}
     {{ if $pages }}
       <section>
-        <h2 id="{{ .title | anchorize }}" class="mt-12 text-2xl font-bold text-neutral-700 dark:text-neutral-300">{{ .title }}</h2>
+        <h2
+          id="{{ .title | anchorize }}"
+          class="mt-12 text-2xl font-bold text-neutral-700 dark:text-neutral-300">
+          {{ .title }}
+        </h2>
         <hr class="w-36 border-dotted border-neutral-400" />
         {{ range $pages.ByWeight }}
           {{ partial "project-card.html" . }}

@@ -1,6 +1,10 @@
 public/
 resources/
 themes/
-static/demos/
+static/demos/_vendor/
 tools/
 content/resume/build/
+node_modules/
+package-lock.json
+.playwright-mcp/
+*.tex

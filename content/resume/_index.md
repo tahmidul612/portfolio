@@ -2,7 +2,6 @@
 title: "Resume"
 description: "My resume"
 layout: simple
-
 ---
 
 <!-- {{< alert "circle-info" >}}

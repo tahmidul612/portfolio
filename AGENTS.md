@@ -73,8 +73,8 @@ Left column content
 Right column content
 {{< /columns >}}
 {{< embed-pdf url="./file.pdf" >}}
-{{< status "wip-private" >}}            <!-- status badge on a project page -->
-{{< demo src="/demos/forg/" title="…" poster="poster.webp" >}}  <!-- click-to-load iframe -->
+{{< status "wip-private" >}} <!-- status badge on a project page -->
+{{< demo src="/demos/forg/" title="…" poster="poster.webp" >}} <!-- click-to-load iframe -->
 {{< video src="explainer.mp4" poster="explainer-poster.webp" caption="…" >}}
 ```
 
@@ -136,7 +136,7 @@ Deployment workflow: `.github/workflows/deploy-to-cf.yml`
 Site generates multiple formats defined in `config.toml`: `["HTML", "RSS", "JSON"]`
 
 - HTML for browsing
-- RSS for feed readers  
+- RSS for feed readers
 - JSON for API consumption
 
 ## VS Code Integration

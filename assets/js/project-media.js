@@ -7,7 +7,10 @@ document.querySelectorAll(".pdemo__frame").forEach((frame) => {
     iframe.src = frame.dataset.src;
     iframe.title = frame.dataset.title;
     iframe.allow = "fullscreen; autoplay";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-forms");
+    iframe.setAttribute(
+      "sandbox",
+      "allow-scripts allow-same-origin allow-popups allow-forms",
+    );
     frame.replaceChildren(iframe);
     iframe.focus();
   });

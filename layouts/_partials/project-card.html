@@ -1,5 +1,6 @@
 {{/* One project on the overview. Like Congo's article-link, minus dates,
-     plus badges. Context: the project page. */}}
+  plus badges. Context: the project page.
+*/}}
 <article class="mt-6 flex max-w-prose flex-row">
   {{- $images := .Resources.ByType "image" }}
   {{- $feature := $images.GetMatch (.Params.feature | default "*feature*") }}
@@ -13,8 +14,7 @@
           src="{{ (.Fill "160x120 smart").RelPermalink }}"
           width="160"
           height="120"
-          loading="lazy"
-        />
+          loading="lazy" />
       </a>
     </div>
   {{- end }}

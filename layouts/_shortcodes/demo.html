@@ -1,29 +1,38 @@
-{{/*
-  Click-to-load interactive demo.
-    {{< demo src="/demos/forg/" title="forg, replayed" poster="demo-poster.webp" ratio="16/10" >}}
-  src     page path or URL of the demo (required)
-  title   accessible title, also the caption
-  poster  page resource (or URL) shown before the demo loads (optional)
-  ratio   aspect ratio of the frame on wide screens, default 16/10
-  The iframe only loads after a click, so a long page stays light.
-*/}}
+{{/* Click-to-load interactive demo.
+  {{< demo src="/demos/forg/" title="forg, replayed" poster="demo-poster.webp" ratio="16/10"
+>}}
+src page path or URL of the demo (required) title accessible title, also the
+caption poster page resource (or URL) shown before the demo loads (optional)
+ratio aspect ratio of the frame on wide screens, default 16/10 The iframe only
+loads after a click, so a long page stays light. */}}
 {{- $src := .Get "src" -}}
 {{- $title := .Get "title" | default "Interactive demo" -}}
 {{- $ratio := .Get "ratio" | default "16/10" -}}
 {{- $poster := "" -}}
 {{- with .Get "poster" -}}
-  {{- with $.Page.Resources.GetMatch . }}{{ $poster = .RelPermalink }}{{ else }}{{ $poster = . }}{{ end -}}
+  {{- with $.Page.Resources.GetMatch . }}
+    {{ $poster = .RelPermalink }}
+  {{ else }}
+    {{ $poster = . }}
+  {{ end -}}
 {{- end -}}
 {{- .Page.Store.Set "projectMedia" true -}}
 <figure class="pdemo" style="--pdemo-ratio: {{ $ratio | safeCSS }}">
   <div class="pdemo__frame" data-src="{{ $src }}" data-title="{{ $title }}">
-    {{- with $poster }}<img class="pdemo__poster" src="{{ . }}" alt="" loading="lazy" />{{ end }}
-    <button class="pdemo__play" type="button" aria-label="Load the interactive demo: {{ $title }}">
+    {{- with $poster }}
+      <img class="pdemo__poster" src="{{ . }}" alt="" loading="lazy" />
+    {{ end }}
+    <button
+      class="pdemo__play"
+      type="button"
+      aria-label="Load the interactive demo: {{ $title }}">
       <span aria-hidden="true">▶</span> Try the demo
     </button>
   </div>
   <figcaption>
     {{ $title }} ·
-    <a href="{{ $src }}" target="_blank" rel="noopener">Open full screen&nbsp;↗</a>
+    <a href="{{ $src }}" target="_blank" rel="noopener"
+      >Open full screen&nbsp;↗</a
+    >
   </figcaption>
 </figure>

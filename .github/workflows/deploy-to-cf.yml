@@ -2,16 +2,16 @@ name: LaTeX Build and Cloudflare Pages Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
     inputs:
       build_pdf:
-        description: 'Manually trigger PDF build'
+        description: "Manually trigger PDF build"
         required: true
         type: boolean
         default: false
       deploy:
-        description: 'Manually trigger Cloudflare deployment'
+        description: "Manually trigger Cloudflare deployment"
         required: true
         type: boolean
         default: false
