@@ -7,10 +7,14 @@ document.querySelectorAll(".pdemo__frame").forEach((frame) => {
     iframe.src = frame.dataset.src;
     iframe.title = frame.dataset.title;
     iframe.allow = "fullscreen; autoplay";
-    iframe.setAttribute(
-      "sandbox",
-      "allow-scripts allow-same-origin allow-popups allow-forms",
-    );
+    // Our own demos are trusted pages on this origin. Third-party sites get a sandbox,
+    // where allow-same-origin keeps their own origin, not this one.
+    if (new URL(iframe.src, location.href).origin !== location.origin) {
+      iframe.setAttribute(
+        "sandbox",
+        "allow-scripts allow-same-origin allow-popups allow-forms",
+      );
+    }
     frame.replaceChildren(iframe);
     iframe.focus();
   });

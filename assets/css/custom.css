@@ -239,3 +239,11 @@
   font-size: 0.875rem;
   color: rgb(var(--color-neutral-500));
 }
+
+/* Give demos room to use their desktop layout on wide screens. */
+@media (min-width: 1100px) {
+  .pdemo {
+    width: min(64rem, calc(100vw - 10rem));
+    max-width: none;
+  }
+}
