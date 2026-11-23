@@ -13,7 +13,7 @@ Personal portfolio website at <https://tahmidul612.com> built with Hugo static s
 ```bash
 hugo server                    # Start dev server with live reload (http://localhost:1313)
 hugo                           # Build static files to public/ directory
-npx prettier --write .         # Format files (Go template support via prettier-plugin-go-template)
+npm run format                 # Format files (run npm install first; format:check to verify)
 ```
 
 ### VS Code Shortcuts
@@ -129,7 +129,7 @@ Deployment workflow: `.github/workflows/deploy-to-cf.yml`
 
 ### Prettier Configuration
 
-`.prettierrc` specifies `prettier-plugin-go-template` for Hugo template syntax. Run formatting before commits to avoid template syntax breaking.
+`.prettierrc` uses `prettier-plugin-go-template`, with the `go-template` parser for `layouts/**/*.html`. `.prettierignore` skips themes, build output, `static/demos/_vendor/` and `.tex`. Run `npm run format` before commits.
 
 ## Output Formats
 
