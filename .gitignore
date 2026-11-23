@@ -267,3 +267,5 @@ $RECYCLE.BIN/
 !content/resume/build
 content/resume/build/*
 !content/resume/build/resume.pdf
+# Playwright MCP screenshots and logs
+.playwright-mcp/

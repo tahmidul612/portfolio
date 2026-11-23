@@ -1,0 +1,31 @@
+---
+title: "Manhwa Discovery"
+summary: "Matches my AniList reading lists to MangaDex and searches both at once."
+group: personal
+weight: 100
+oldAnchor: "manhwa-discovery"
+---
+
+{{< alert "github" >}}
+[manhwa-discovery](https://github.com/tahmidul612/manhwa-discovery)
+{{< /alert >}}
+
+I track what I read on AniList and read it on MangaDex, and the two never agree on what anything is called. This app pulls my AniList lists, matches each entry to MangaDex using fuzzy title matching and release dates, and lets me fix the ones it gets wrong. From there I can search both catalogs at once, sort and filter by rating, chapter count, or unread chapters, and add new finds straight to AniList with the MangaDex link already attached. Redis and MongoDB cache everything so it rarely asks either API for the same thing twice.
+
+{{< columns >}}
+
+**Tech Used**
+
+- Python
+- FastAPI
+- React
+
+<--->
+
+**&nbsp;**
+
+- MongoDB
+- Redis
+- Docker
+
+{{< /columns >}}

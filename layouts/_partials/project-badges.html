@@ -1,0 +1,14 @@
+{{/* Badges for a project page: status (front matter `status`), plus Demo and
+     Video when the page has them (front matter `demo: true`, or an .mp4 in
+     the bundle). Context: the project page. */}}
+{{- $badges := slice -}}
+{{- with .Params.status -}}
+  {{- $badges = $badges | append (partial "project-status-text.html" .) -}}
+{{- end -}}
+{{- if .Params.demo -}}{{- $badges = $badges | append "interactive demo" -}}{{- end -}}
+{{- if .Resources.GetMatch "*.mp4" -}}{{- $badges = $badges | append "video" -}}{{- end -}}
+{{- with $badges -}}
+  <span class="project-badges">
+    {{- range . }}<span class="project-badge">{{ . }}</span>{{ end -}}
+  </span>
+{{- end -}}
