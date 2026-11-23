@@ -1,0 +1,29 @@
+WEBVTT
+
+1
+00:00:00.600 --> 00:00:04.600
+forg is a file organiser I wrote in Rust, because my drives were a mess.
+
+2
+00:00:05.000 --> 00:00:11.800
+forg scan walks the drive and records every file with its BLAKE3 hash in a SQLite catalog.
+
+3
+00:00:12.200 --> 00:00:18.300
+Same hash, same file. The oldest copy stays and the rest are marked for quarantine.
+
+4
+00:00:18.700 --> 00:00:26.600
+forg propose writes a plan, plus a token: the first 8 hex characters of the plan's hash.
+
+5
+00:00:27.000 --> 00:00:34.600
+Change anything in the plan and the token changes, so an old approval can't run it.
+
+6
+00:00:35.000 --> 00:00:44.600
+apply --execute moves each file, checks its hash and journals it. Duplicates go to quarantine. Nothing is deleted.
+
+7
+00:00:45.000 --> 00:00:50.600
+undo replays the journal backwards, newest first, and everything is back where it was.

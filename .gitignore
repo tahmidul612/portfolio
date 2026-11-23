@@ -269,3 +269,6 @@ content/resume/build/*
 !content/resume/build/resume.pdf
 # Playwright MCP screenshots and logs
 .playwright-mcp/
+
+# Explainer preview frames
+tools/explainers/*/preview/

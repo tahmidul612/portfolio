@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>forg explainer</title>
+    <!-- Rendered by ../render.py. Open in a browser and add ?play to watch it live. -->
+    <style>
+      :root {
+        --bg: #0b1620;
+        --panel: #122230;
+        --line: #24384a;
+        --ink: #e3ebf2;
+        --muted: #8ea3b6;
+        --accent: #38bdf8;
+        --amber: #fbbf24;
+        --green: #4ade80;
+        --red: #f87171;
+        --mono: "JetBrains Mono", "DejaVu Sans Mono", ui-monospace, monospace;
+        --sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+      }
+      .abs {
+        position: absolute;
+      }
+      .step {
+        left: 100px;
+        top: 56px;
+        font: 600 44px var(--mono);
+        color: var(--accent);
+        opacity: 0;
+      }
+      .colhead {
+        top: 150px;
+        font: 600 27px var(--mono);
+        color: var(--muted);
+        opacity: 0;
+      }
+      .chip {
+        width: 640px;
+        height: 60px;
+        border-radius: 10px;
+        border: 2px solid var(--line);
+        background: var(--panel);
+        font: 25px/56px var(--mono);
+        padding: 0 16px;
+        opacity: 0;
+        z-index: 2;
+      }
+      .chip .n {
+        position: absolute;
+        left: 16px;
+        right: 160px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .chip .n2 {
+        opacity: 0;
+      }
+      .chip .h {
+        position: absolute;
+        right: 14px;
+        font-size: 22px;
+        color: var(--muted);
+        opacity: 0;
+      }
+      .chip .h.dup {
+        color: var(--amber);
+      }
+      .folder {
+        font: 600 23px var(--mono);
+        color: var(--muted);
+        opacity: 0;
+      }
+      .folder.q {
+        color: var(--amber);
+      }
+      .slot {
+        width: 640px;
+        height: 60px;
+        border: 2px dashed var(--line);
+        border-radius: 10px;
+        opacity: 0;
+      }
+      .slot.q {
+        border-color: #5c4614;
+      }
+      svg {
+        position: absolute;
+        inset: 0;
+      }
+      .card {
+        left: 752px;
+        width: 418px;
+        border-radius: 14px;
+        border: 2px solid var(--line);
+        background: #0f1d29;
+        padding: 18px 20px;
+        opacity: 0;
+        font: 24px/1.5 var(--mono);
+      }
+      .card .t {
+        font: 600 18px var(--mono);
+        color: var(--muted);
+        margin-bottom: 10px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .db {
+        left: 860px;
+        top: 360px;
+        width: 200px;
+        height: 230px;
+        opacity: 0;
+      }
+      .db .body {
+        position: absolute;
+        inset: 22px 0 0;
+        background: #10283a;
+        border: 3px solid var(--accent);
+        border-top: 0;
+        border-radius: 0 0 100px 100px / 0 0 30px 30px;
+      }
+      .db .top {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 44px;
+        border: 3px solid var(--accent);
+        border-radius: 50%;
+        background: #163a52;
+      }
+      .db .label {
+        position: absolute;
+        top: 110px;
+        width: 100%;
+        text-align: center;
+        font: 600 22px var(--mono);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        white-space: nowrap;
+      }
+      .box {
+        width: 24px;
+        height: 24px;
+        margin-top: 6px;
+        border: 2px solid var(--accent);
+        border-radius: 5px;
+        position: relative;
+        flex: none;
+      }
+      .box i {
+        position: absolute;
+        inset: 3px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+      .tok {
+        position: relative;
+        height: 34px;
+        margin-top: 12px;
+        font: 600 26px var(--mono);
+      }
+      .tok span {
+        position: absolute;
+        left: 92px;
+        color: var(--accent);
+      }
+      .stamp {
+        margin-top: 14px;
+        color: var(--red);
+        font-size: 21px;
+        opacity: 0;
+      }
+      .jl {
+        opacity: 0;
+        font-size: 21px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .jl b {
+        color: var(--green);
+        font-weight: 600;
+      }
+      .strike {
+        position: absolute;
+        height: 2px;
+        background: var(--amber);
+        transform-origin: left;
+        transform: scaleX(0);
+      }
+      .caption {
+        left: 120px;
+        width: 1680px;
+        bottom: 36px;
+        text-align: center;
+        font: 500 42px/1.35 var(--sans);
+        opacity: 0;
+      }
+      .caption span {
+        background: rgba(5, 12, 18, 0.86);
+        padding: 6px 18px;
+        border-radius: 10px;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+      .title {
+        left: 0;
+        width: 1920px;
+        top: 360px;
+        text-align: center;
+        opacity: 0;
+      }
+      .title h1 {
+        margin: 0;
+        font: 700 150px var(--mono);
+        color: var(--accent);
+      }
+      .title p {
+        margin: 10px 0 0;
+        font: 40px var(--sans);
+        color: var(--muted);
+      }
+      .end p {
+        font-size: 34px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="../_vendor/gsap.min.js"></script>
+    <script>
+      // Data from a real forg run on a folder of fake files (2026-11-23).
+      // Hashes are the first 8 hex characters of each file's BLAKE3 hash in forg's catalog.
+      const FILES = [
+        { name: "IMG_20250114_09301.jpg", hash: "286de9e4", to: 0, newName: "2025-01-14_000000_img-20250114-09301.jpg" },
+        { name: "IMG_20250114_09301 (1).jpg", hash: "286de9e4", dup: true, to: "q0" },
+        { name: "IMG_20250214_09302.jpg", hash: "7cef3f4c", to: 1, newName: "2025-02-14_000000_img-20250214-09302.jpg" },
+        { name: "photo copy.jpg", hash: "7cef3f4c", dup: true, to: "q1" },
+        { name: "lease-final-FINAL.pdf", hash: "1bdbd67a", to: 2, newName: "2025-03-20_other_lease-final-final.pdf" },
+        { name: "untitled.txt", hash: "0 bytes", dup: true, to: "q2" },
+        { name: "The.Grand.Budapest.Hotel.2014.1080p.BluRay.x264.mkv", hash: "1d4da9a7", to: 3, newName: "The Grand Budapest Hotel (2014).mkv" },
+      ];
+      const FOLDERS = ["archive/Photos/2025/2025-01/", "archive/Photos/2025/2025-02/", "archive/Documents/", "archive/Movies/"];
+      const TOKEN = "38def7c7";
+      const TOKEN_EDITED = "701b1e10"; // forg's token with the lease item unticked
+
+      const CAPTIONS = [
+        { start: 0.6, end: 4.6, text: "forg is a file organiser I wrote in Rust, because my drives were a mess." },
+        { start: 5.0, end: 11.8, text: "forg scan walks the drive and records every file with its BLAKE3 hash in a SQLite catalog." },
+        { start: 12.2, end: 18.3, text: "Same hash, same file. The oldest copy stays and the rest are marked for quarantine." },
+        { start: 18.7, end: 26.6, text: "forg propose writes a plan, plus a token: the first 8 hex characters of the plan's hash." },
+        { start: 27.0, end: 34.6, text: "Change anything in the plan and the token changes, so an old approval can't run it." },
+        { start: 35.0, end: 44.6, text: "apply --execute moves each file, checks its hash and journals it. Duplicates go to quarantine. Nothing is deleted." },
+        { start: 45.0, end: 50.6, text: "undo replays the journal backwards, newest first, and everything is back where it was." },
+      ];
+
+      const stage = document.getElementById("stage");
+      const el = (html) => {
+        const t = document.createElement("template");
+        t.innerHTML = html.trim();
+        const n = t.content.firstChild;
+        stage.append(n);
+        return n;
+      };
+
+      // Layout
+      const LEFT = 100,
+        RIGHT = 1180,
+        TOP = 210,
+        GAP = 78;
+      const slotY = (i) => 225 + i * 112;
+      const qY = (i) => 225 + 4 * 112 + 12 + i * 68;
+
+      const title = el(`<div class="abs title"><h1>forg</h1><p>audit, organise and verify your drives</p></div>`);
+      const steps = Object.fromEntries(
+        ["scan", "dedupe", "propose", "review", "apply --execute", "undo"].map((s) => [s, el(`<div class="abs step">$ forg ${s}</div>`)]),
+      );
+      const headL = el(`<div class="abs colhead" style="left:${LEFT}px">media/Downloads/</div>`);
+      const headR = el(`<div class="abs colhead" style="left:${RIGHT}px;display:none"></div>`);
+      const folders = FOLDERS.map((f, i) => el(`<div class="abs folder" style="left:${RIGHT}px;top:${slotY(i) - 33}px">${f}</div>`));
+      const slots = FOLDERS.map((f, i) => el(`<div class="abs slot" style="left:${RIGHT}px;top:${slotY(i)}px"></div>`));
+      const qFolder = el(`<div class="abs folder q" style="left:${RIGHT}px;top:${qY(0) - 33}px">media/_Quarantine/Downloads/</div>`);
+      const qSlots = [0, 1, 2].map((i) => el(`<div class="abs slot q" style="left:${RIGHT}px;top:${qY(i)}px;height:60px"></div>`));
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", 1920);
+      svg.setAttribute("height", 1080);
+      stage.append(svg);
+
+      const db = el(`<div class="abs db"><div class="body"></div><div class="top"></div><div class="label">catalog.db</div></div>`);
+
+      const chips = FILES.map((f, i) => {
+        const c = el(
+          `<div class="abs chip" style="left:${LEFT}px;top:${TOP + i * GAP}px"><span class="n n1">${f.name}</span><span class="n n2">${f.newName || f.name}</span><span class="h${f.dup ? " dup" : ""}">${f.hash}</span></div>`,
+        );
+        f.el = c;
+        f.home = { left: LEFT, top: TOP + i * GAP };
+        f.dest =
+          typeof f.to === "number"
+            ? { left: RIGHT, top: slotY(f.to) }
+            : { left: RIGHT, top: qY(Number(f.to.slice(1))) };
+        return c;
+      });
+
+      const arrows = FILES.map((f) => {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const y1 = f.home.top + 30,
+          y2 = f.dest.top + 30;
+        p.setAttribute("d", `M ${LEFT + 650} ${y1} C 960 ${y1}, 960 ${y2}, ${RIGHT - 10} ${y2}`);
+        p.setAttribute("fill", "none");
+        p.setAttribute("stroke", f.dup ? "#fbbf24" : "#38bdf8");
+        p.setAttribute("stroke-width", "3");
+        p.setAttribute("stroke-opacity", "0.7");
+        const len = 1200;
+        p.setAttribute("stroke-dasharray", len);
+        p.setAttribute("stroke-dashoffset", len);
+        svg.append(p);
+        return p;
+      });
+
+      const manifest = el(`<div class="abs card" style="top:300px">
+        <div class="t">manifest.json</div>
+        <div class="row"><span class="box"><i></i></span>quarantine 3</div>
+        <div class="row"><span class="box"><i></i></span>move photos 2</div>
+        <div class="row"><span class="box" id="leaseBox"><i></i></span>move lease.pdf</div>
+        <div class="row"><span class="box"><i></i></span>move movie 1</div>
+        <div class="tok">token<span id="tokA">${TOKEN}</span><span id="tokB" style="opacity:0">${TOKEN_EDITED}</span></div>
+        <div class="stamp" id="stamp">--confirm ${TOKEN}<br>refused: plan changed</div>
+      </div>`);
+
+      const journal = el(`<div class="abs card" style="top:250px"><div class="t">journal</div></div>`);
+      const order = [0, 2, 4, 6, 1, 3, 5];
+      const jLines = order.map((i) => {
+        const f = FILES[i];
+        const verb = f.dup ? "quarantine" : "move";
+        const line = document.createElement("div");
+        line.className = "jl";
+        line.style.position = "relative";
+        line.innerHTML = `<b>✓</b> ${verb} ${f.name.length > 18 ? f.name.slice(0, 16) + "…" : f.name}<span class="strike" style="left:0;right:0;top:17px"></span>`;
+        journal.append(line);
+        return line;
+      });
+      const batch = document.createElement("div");
+      batch.className = "jl";
+      batch.style.marginTop = "10px";
+      batch.innerHTML = `<b>batch ${TOKEN}</b>`;
+      journal.append(batch);
+
+      const captions = CAPTIONS.map((c) => el(`<div class="abs caption"><span>${c.text}</span></div>`));
+      const end = el(`<div class="abs title end"><h1>forg</h1><p>Rust · SQLite · private repo for now</p><p>tahmidul612.com</p></div>`);
+
+      // Timeline
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.out", duration: 0.5 } });
+      const showStep = (name, at, until) => {
+        tl.fromTo(steps[name], { opacity: 0, y: 10 }, { opacity: 1, y: 0 }, at).to(steps[name], { opacity: 0, duration: 0.3 }, until);
+      };
+
+      CAPTIONS.forEach((c, i) => {
+        tl.fromTo(captions[i], { opacity: 0 }, { opacity: 1, duration: 0.3 }, c.start).to(captions[i], { opacity: 0, duration: 0.3 }, c.end - 0.3);
+      });
+
+      // Title
+      tl.fromTo(title, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.8 }, 0.2).to(title, { opacity: 0, duration: 0.5 }, 4.3);
+
+      // Scan
+      showStep("scan", 4.8, 11.9);
+      tl.to(headL, { opacity: 1 }, 5.0);
+      tl.fromTo(chips, { opacity: 0, x: -30 }, { opacity: 1, x: 0, stagger: 0.18 }, 5.2);
+      tl.fromTo(db, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1 }, 6.2);
+      FILES.forEach((f, i) => tl.to(f.el.querySelector(".h"), { opacity: 1, duration: 0.3 }, 7.4 + i * 0.4));
+      tl.to(db, { opacity: 0, duration: 0.4 }, 11.6);
+
+      // Dedupe
+      showStep("dedupe", 12.0, 18.4);
+      [[0, 1], [2, 3]].forEach(([a, b], k) => {
+        const t = 12.6 + k * 1.6;
+        tl.to([FILES[a].el, FILES[b].el], { borderColor: "#4ade80", duration: 0.4 }, t)
+          .to(FILES[b].el, { borderColor: "#fbbf24", duration: 0.4 }, t + 0.9)
+          .to(FILES[a].el, { borderColor: "#24384a", duration: 0.4 }, t + 0.9);
+      });
+      tl.to(FILES[5].el, { borderColor: "#fbbf24", duration: 0.4 }, 16.0);
+
+      // Propose
+      showStep("propose", 18.6, 26.7);
+      tl.to([headR, ...folders, ...slots, qFolder, ...qSlots], { opacity: 1, stagger: 0.06 }, 18.8);
+      arrows.forEach((a, i) => tl.to(a, { attr: { "stroke-dashoffset": 0 }, duration: 0.9, ease: "power1.inOut" }, 19.8 + i * 0.25));
+      tl.fromTo(manifest, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, 22.4);
+      tl.fromTo("#tokA", { opacity: 0 }, { opacity: 1 }, 23.4);
+
+      // Review: untick the lease, token changes, the old token is refused, tick it again
+      showStep("review", 27.0, 34.7);
+      const leaseTick = document.querySelector("#leaseBox i");
+      tl.to(leaseTick, { opacity: 0, duration: 0.2 }, 28.0)
+        .to(arrows[4], { attr: { "stroke-opacity": 0.12 }, duration: 0.3 }, 28.0)
+        .to("#tokA", { opacity: 0, duration: 0.3 }, 28.6)
+        .to("#tokB", { opacity: 1, duration: 0.3 }, 28.8)
+        .to("#stamp", { opacity: 1, duration: 0.3 }, 30.0)
+        .to("#stamp", { opacity: 0, duration: 0.3 }, 32.6)
+        .to(leaseTick, { opacity: 1, duration: 0.2 }, 33.0)
+        .to(arrows[4], { attr: { "stroke-opacity": 0.7 }, duration: 0.3 }, 33.0)
+        .to("#tokB", { opacity: 0, duration: 0.3 }, 33.4)
+        .to("#tokA", { opacity: 1, duration: 0.3 }, 33.6);
+
+      // Apply
+      showStep("apply --execute", 35.0, 44.7);
+      tl.to(manifest, { opacity: 0, duration: 0.3 }, 35.0);
+      tl.to(arrows, { attr: { "stroke-opacity": 0 }, duration: 0.4 }, 35.2);
+      tl.to(journal, { opacity: 1 }, 35.6);
+      order.forEach((i, k) => {
+        const f = FILES[i],
+          t = 36.2 + k * 0.95;
+        tl.to(f.el, { left: f.dest.left, top: f.dest.top, duration: 0.8, ease: "power2.inOut" }, t);
+        if (f.newName) {
+          tl.to(f.el.querySelector(".n1"), { opacity: 0, duration: 0.3 }, t + 0.5).to(f.el.querySelector(".n2"), { opacity: 1, duration: 0.3 }, t + 0.6);
+        }
+        tl.to(f.el, { borderColor: f.dup ? "#fbbf24" : "#4ade80", duration: 0.3 }, t + 0.6);
+        tl.to(jLines[k], { opacity: 1, duration: 0.3 }, t + 0.7);
+      });
+      tl.to(batch, { opacity: 1, duration: 0.3 }, 43.4);
+
+      // Undo, newest first
+      showStep("undo", 45.0, 50.7);
+      [...order].reverse().forEach((i, k) => {
+        const f = FILES[i],
+          t = 45.4 + k * 0.62,
+          line = jLines[order.length - 1 - k];
+        tl.to(line.querySelector(".strike"), { scaleX: 1, duration: 0.3 }, t);
+        tl.to(line, { opacity: 0.45, duration: 0.3 }, t + 0.2);
+        tl.to(f.el, { left: f.home.left, top: f.home.top, borderColor: "#24384a", duration: 0.6, ease: "power2.inOut" }, t);
+        if (f.newName) {
+          tl.to(f.el.querySelector(".n2"), { opacity: 0, duration: 0.2 }, t + 0.3).to(f.el.querySelector(".n1"), { opacity: 1, duration: 0.2 }, t + 0.35);
+        }
+      });
+
+      // End card
+      const all = [headL, headR, ...folders, ...slots, qFolder, ...qSlots, ...chips, journal];
+      tl.to(all, { opacity: 0, duration: 0.5 }, 50.8);
+      tl.fromTo(end, { opacity: 0 }, { opacity: 1, duration: 0.6 }, 51.4);
+      tl.set({}, {}, 55);
+
+      window.EXPLAINER = { duration: 55, poster: 40.6, captions: CAPTIONS };
+      window.seek = (t) => {
+        tl.seek(t, false);
+      };
+      tl.seek(0);
+      if (location.search.includes("play")) tl.play();
+    </script>
+  </body>
+</html>
