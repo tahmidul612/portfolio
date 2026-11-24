@@ -27,7 +27,7 @@ const { src, title = "Interactive demo", poster, ratio = "16 / 10" } = Astro.pro
     </button>
   </div>
   <figcaption>
-    {title} ·
+    {title} ·{" "}
     <a class="link" href={src} target="_blank" rel="noopener">
       Open full screen <Icon name="arrow-up-right" />
     </a>
@@ -59,6 +59,7 @@ const { src, title = "Interactive demo", poster, ratio = "16 / 10" } = Astro.pro
         "load",
         () => {
           frame.replaceChildren(iframe);
+          frame.classList.remove("is-loading");
           iframe.focus();
         },
         { once: true },
