@@ -61,6 +61,34 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 </html>
 
 <script>
+  // Return-to-list. Opening a project from Home or Projects remembers that
+  // page and its scroll position; the project page's back controls use it
+  // (see projects/[slug].astro). Coming back by link rather than the
+  // browser's Back restores the position here.
+  const lists = ["/", "/projects/"];
+  const KEY = "returnTo";
+  if (lists.includes(location.pathname)) {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(KEY) ?? "null");
+      if (saved?.restore && saved.path === location.pathname) {
+        scrollTo({ top: saved.y, behavior: "instant" });
+        sessionStorage.setItem(KEY, JSON.stringify({ ...saved, restore: false }));
+      }
+    } catch {}
+    document.addEventListener("click", (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>("a[href^='/projects/']");
+      if (!a || a.pathname === "/projects/") return;
+      try {
+        sessionStorage.setItem(
+          KEY,
+          JSON.stringify({ path: location.pathname, y: scrollY, restore: false }),
+        );
+      } catch {}
+    });
+  }
+</script>
+
+<script>
   // Pointer light. A mouse or pen moves the lamp, and the .lit element under
   // it gets a glow at the pointer. Touch screens and reduced motion skip it.
   const fine = matchMedia("(pointer: fine)").matches;

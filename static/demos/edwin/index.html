@@ -325,7 +325,9 @@
         backface-visibility: hidden;
       }
       .device {
-        width: min(372px, 100%);
+        /* Never taller than the screen minus the stage padding, so the whole
+           phone fits in short windows and in the 4:3 frame on the project page. */
+        width: min(372px, 100%, max(260px, calc((100svh - 120px) * 9 / 18.6)));
         aspect-ratio: 9 / 18.6;
         max-width: 100%;
         border-radius: 48px;
