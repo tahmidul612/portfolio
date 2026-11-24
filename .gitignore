@@ -272,3 +272,7 @@ content/resume/build/*
 
 # Explainer preview frames
 tools/explainers/*/preview/
+!content/resume/build/resume.png
+
+# Astro
+.astro/

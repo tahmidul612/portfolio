@@ -1,0 +1,72 @@
+---
+import Icon from "./Icon.astro";
+import { email, socials } from "@lib/site";
+---
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p class="foot__note">
+      Copy, <em>right?</em> 🤔
+    </p>
+    <ul class="foot__links" aria-label="Elsewhere">
+      <li>
+        <a href={`mailto:${email}`} aria-label="Email">
+          <Icon name="mail" />
+        </a>
+      </li>
+      {socials.map((s) => (
+        <li>
+          <a href={s.url} aria-label={s.label} rel="me noopener">
+            <Icon name={s.icon} />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(4rem, 10vw, 7rem);
+    border-top: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .foot__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.75rem;
+  }
+  .foot__note {
+    margin: 0;
+    color: var(--text-3);
+    font-size: var(--step--1);
+  }
+  .foot__links {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .foot__links a {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    color: var(--text-3);
+    transition: color 200ms var(--ease-out);
+  }
+  .foot__links a:hover {
+    color: var(--glow);
+  }
+  .foot__links :global(.icon) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+</style>

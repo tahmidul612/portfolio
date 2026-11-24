@@ -1,0 +1,212 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Icon from "@components/Icon.astro";
+import ProjectItem from "@components/ProjectItem.astro";
+import { projectsIn } from "@lib/projects";
+import { email } from "@lib/site";
+import profile from "../assets/profile.jpg";
+
+const work = await projectsIn("work");
+const featured = (await projectsIn("personal")).filter((p) => p.data.featured);
+---
+
+<Base>
+  <section class="wrap hero">
+    <div class="hero__id rise">
+      <div class="avatar">
+        <Image src={profile} alt="Tahmidul Islam" width={160} height={160} priority />
+      </div>
+      <h1 class="hero__name">Tahmidul Islam</h1>
+    </div>
+    <p class="hero__role rise" style="--i: 1">
+      Automation engineer at <span>Raphael Porcelain</span>, working remotely from Toronto.
+    </p>
+    <p class="hero__bio rise" style="--i: 2">
+      Right now that means building n8n workflows, AI pipelines, and internal web apps for a
+      porcelain tile wholesaler. Before that I interned at AI Buddy Catalyst Labs building AI agents
+      and deployment automation. I finished my HBSc in Computer Science at Lakehead University in
+      2024.
+    </p>
+    <ul class="hero__cta rise" style="--i: 3">
+      <li>
+        <a class="btn btn--primary" href="/resume/">
+          <Icon name="file" />
+          Resume
+        </a>
+      </li>
+      <li>
+        <a class="btn" href="https://github.com/tahmidul612" rel="me noopener">
+          <Icon name="github" />
+          GitHub
+        </a>
+      </li>
+      <li>
+        <a class="btn" href="https://linkedin.com/in/tahmidul612" rel="me noopener">
+          <Icon name="linkedin" />
+          LinkedIn
+        </a>
+      </li>
+      <li>
+        <a class="btn" href={`mailto:${email}`}>
+          <Icon name="mail" />
+          Email
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="wrap block" aria-labelledby="work">
+    <h2 class="section-head" id="work">
+      Work
+    </h2>
+    <div class="list">
+      {work.map((p) => (
+        <ProjectItem project={p} layout="row" />
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="selected">
+    <h2 class="section-head" id="selected">
+      Selected projects
+    </h2>
+    <div class="features">
+      {featured.map((p) => (
+        <ProjectItem project={p} layout="feature" />
+      ))}
+    </div>
+    <a class="more link" href="/projects/">
+      Everything else I've built <Icon name="arrow-right" />
+    </a>
+  </section>
+
+  <section class="wrap block reach">
+    <p>Email is the fastest way to reach me. Everything else works too.</p>
+    <div class="reach__actions">
+      <a class="btn btn--primary" href={`mailto:${email}`}>
+        <Icon name="mail" />
+        {email}
+      </a>
+      <a class="btn" href="/contact/">
+        Contact card and socials
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-top: clamp(3rem, 10vw, 7.5rem);
+    padding-bottom: clamp(2.5rem, 7vw, 5rem);
+  }
+  .hero__id {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  @media (min-width: 48rem) {
+    .hero__id {
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
+  /* Portrait inside a ring of light. */
+  .avatar {
+    position: relative;
+    width: clamp(4.5rem, 12vw, 6.5rem);
+    aspect-ratio: 1;
+    flex: none;
+    border-radius: 50%;
+    padding: 3px;
+    background: conic-gradient(
+      from 210deg,
+      var(--glow),
+      var(--accent),
+      color-mix(in oklch, var(--glow) 10%, transparent),
+      var(--glow)
+    );
+    box-shadow: 0 0 40px -6px color-mix(in oklch, var(--glow) 55%, transparent);
+  }
+  .avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--bg);
+  }
+  .hero__name {
+    font-size: var(--step-4);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+  }
+  .hero__role {
+    margin: 1.75rem 0 0;
+    max-width: 36ch;
+    font-size: var(--step-2);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+  .hero__role span {
+    color: var(--glow);
+  }
+  .hero__bio {
+    margin: 1.25rem 0 0;
+    max-width: 60ch;
+    color: var(--text-2);
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .block {
+    margin-top: clamp(3.5rem, 9vw, 6rem);
+  }
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 2rem;
+    font-weight: 500;
+  }
+  .more :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .reach {
+    padding-block: clamp(2rem, 6vw, 3.5rem);
+    border-top: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
+  }
+  .reach p {
+    margin: 0;
+    max-width: 24ch;
+    font: 400 var(--step-3) / 1.15 var(--font-display);
+    letter-spacing: -0.035em;
+  }
+  .reach__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+  }
+</style>

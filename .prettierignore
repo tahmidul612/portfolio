@@ -1,10 +1,9 @@
-public/
-resources/
-themes/
+dist/
+.astro/
+node_modules/
 static/demos/_vendor/
 tools/
 content/resume/build/
-node_modules/
 package-lock.json
 .playwright-mcp/
 *.tex

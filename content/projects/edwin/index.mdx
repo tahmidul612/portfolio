@@ -1,0 +1,42 @@
+---
+title: "Edwin, My Phone Agent"
+summary: "Claude writes a brief and places the call. Edwin talks to the business and hands the call to me when it gets stuck."
+group: personal
+weight: 30
+featured: true
+status: "wip-private"
+demo: true
+thumbnail: "demo-poster.webp"
+thumbnailAlt: "The Edwin demo: a phone showing a call between Edwin and a salon receptionist."
+tech:
+  - "Vapi"
+  - "Claude"
+  - "Telnyx SIP"
+  - "Python"
+  - "ElevenLabs"
+  - "Soniox"
+  - "n8n"
+---
+
+import Video from "@components/Video.astro";
+import explainerPoster from "./explainer-poster.webp";
+import explainerCaptions from "./explainer.vtt?url";
+import Demo from "@components/Demo.astro";
+import demoPoster from "./demo-poster.webp";
+
+<Video
+  src="/projects/edwin/explainer.mp4"
+  poster={explainerPoster}
+  captions={explainerCaptions}
+  caption="How a call with Edwin works, in under a minute"
+/>
+
+I don't like making phone calls, so I built something that makes them for me. I tell Claude what I need, like booking a haircut for Saturday or asking the dealer whether a repair is under warranty. Claude writes a short brief, shows it to me, and places the call once I say yes. Edwin, the voice agent, does the talking. If it gets stuck or the other person asks for me, it rings my cell and hands the call over. Afterwards Claude reads the transcript back to me, and an optional n8n workflow emails the call report and puts any booking in my Google Calendar.
+
+Edwin runs on Vapi, with Soniox for speech to text, Claude Haiku 5.5 for the conversation, and an ElevenLabs voice. It started on Opus 4.6, but Opus spent more than half of every reply just getting to its first word, so I moved to Haiku and tightened the prompt instead. It deals with voicemail, call screeners, and phone menus. Calls go out from a Telnyx number over a SIP trunk, because Vapi's free numbers are US only and can't dial out. One base assistant holds my standing details, and each call fills in four variables: who is being called, the task, extra context, and a label for the voicemail. A Python script renders the config and pushes it to Vapi, and a Claude skill lets me place a call from any conversation. At my volume it costs about five to ten dollars a month.
+
+Outbound calls, voicemail, and the per-call brief have been tested on real calls. The newer handover, scheduling, call reports, and calls in Bengali are built but not tested live yet.
+
+The demo below plays two calls I ran as simulations, so nobody real is on them. The receptionists are AI testers from Vapi, and Sam is a made-up owner. Edwin is the real thing, with its own prompt and voice. The transcripts follow the audio, and each call has notes on what went well and what didn't.
+
+<Demo src="/demos/edwin/" title="Edwin, two demo calls" poster={demoPoster} />

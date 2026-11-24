@@ -1,0 +1,123 @@
+---
+import { getEntry, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import ProjectItem from "@components/ProjectItem.astro";
+import { projectsIn } from "@lib/projects";
+
+const work = await projectsIn("work");
+const personal = await projectsIn("personal");
+const smaller = await getEntry("projects", "smaller");
+const { Content: Smaller } = smaller ? await render(smaller) : { Content: null };
+
+// The projects used to be one long page. Send old /projects/#anchor links to
+// the project's own page.
+const oldAnchors = Object.fromEntries(
+  [...work, ...personal]
+    .filter((p) => p.data.oldAnchor)
+    .map((p) => [p.data.oldAnchor, `/projects/${p.id}/`]),
+);
+---
+
+<Base title="Projects" description="Work and personal projects by Tahmidul Islam.">
+  <script is:inline define:vars={{ oldAnchors }}>
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (id && oldAnchors[id]) location.replace(oldAnchors[id]);
+  </script>
+
+  <header class="wrap intro">
+    <h1 class="rise">Projects</h1>
+    <p class="rise" style="--i: 1">
+      My laziness compels me to learn more about automation so that I can do less work. Most of what
+      I build outside of work exists because I got tired of doing something by hand. Python is my
+      main language, and I also write JavaScript and TypeScript, Rust, Bash, PowerShell, C#, and
+      Java depending on what the job needs. I lean on Claude Code a lot these days, and I say so in
+      the READMEs.
+    </p>
+    <p class="rise" style="--i: 2">
+      More of it is on GitHub at{" "}
+      <a class="link" href="https://github.com/tahmidul612">
+        @tahmidul612
+      </a>
+      .
+    </p>
+  </header>
+
+  <section class="wrap block" aria-labelledby="work">
+    <h2 class="section-head" id="work">
+      Work
+    </h2>
+    <div class="list">
+      {work.map((p) => (
+        <ProjectItem project={p} layout="row" />
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="personal-projects">
+    <h2 class="section-head" id="personal-projects">
+      Personal projects
+    </h2>
+    <div class="features">
+      {personal
+        .filter((p) => p.data.thumbnail)
+        .map((p) => (
+          <ProjectItem project={p} />
+        ))}
+    </div>
+    <div class="list list--rows">
+      {personal
+        .filter((p) => !p.data.thumbnail)
+        .map((p) => (
+          <ProjectItem project={p} />
+        ))}
+    </div>
+  </section>
+
+  {Smaller && (
+    <section class="wrap block" aria-labelledby="smaller-things">
+      <h2 class="section-head" id="smaller-things">
+        Smaller things
+      </h2>
+      <div class="prose smaller">
+        <Smaller />
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .intro {
+    padding-top: clamp(3rem, 9vw, 6rem);
+  }
+  .intro h1 {
+    font-size: var(--step-4);
+    letter-spacing: -0.045em;
+  }
+  .intro p {
+    max-width: 62ch;
+    margin: 1.25rem 0 0;
+    color: var(--text-2);
+  }
+  .block {
+    margin-top: clamp(3.5rem, 9vw, 5.5rem);
+  }
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .list--rows {
+    margin-top: clamp(2rem, 5vw, 3rem);
+    border-top: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+  }
+  .smaller :global(h3:first-child) {
+    margin-top: 0;
+  }
+  .smaller :global(.tech) {
+    margin-top: 1.25rem;
+  }
+</style>

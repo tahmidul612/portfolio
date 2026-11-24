@@ -1,0 +1,57 @@
+---
+// Inline SVG icons, rendered at build time (no icon font, no runtime JS).
+// UI icons come from lucide-static (ISC). Brand marks in src/icons/ are
+// Font Awesome Free brand icons (CC BY 4.0), carried over from Congo.
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Clapperboard,
+  Download,
+  FileText,
+  Mail,
+  Moon,
+  MousePointerClick,
+  Play,
+  Sun,
+} from "lucide-static";
+import github from "../icons/github.svg?raw";
+import linkedin from "../icons/linkedin.svg?raw";
+import instagram from "../icons/instagram.svg?raw";
+import facebook from "../icons/facebook.svg?raw";
+
+const icons = {
+  "arrow-left": ArrowLeft,
+  "arrow-right": ArrowRight,
+  "arrow-up-right": ArrowUpRight,
+  video: Clapperboard,
+  download: Download,
+  file: FileText,
+  mail: Mail,
+  moon: Moon,
+  demo: MousePointerClick,
+  play: Play,
+  sun: Sun,
+  github,
+  linkedin,
+  instagram,
+  facebook,
+};
+
+export type IconName = keyof typeof icons;
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const svg = icons[name]
+  .replace(/\sclass="[^"]*"/, "")
+  .replace(
+    "<svg",
+    `<svg aria-hidden="true" focusable="false" class="icon${className ? ` ${className}` : ""}"`,
+  );
+---
+
+<Fragment set:html={svg} />

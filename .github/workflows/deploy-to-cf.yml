@@ -65,6 +65,11 @@ jobs:
             mkdir -p "$(dirname "$file")/build"
             pdflatex -output-directory="$(dirname "$file")/build" "$file"
           done
+      # The resume page shows the PDF's first page as an image (src/pages/resume.astro).
+      - name: Render resume page image
+        run: |
+          sudo apt-get install poppler-utils --no-install-recommends -y
+          pdftoppm -png -r 200 -singlefile -hide-annotations content/resume/build/resume.pdf content/resume/build/resume
       - name: Commit and push PDFs
         run: |
           git config --local user.email "action@github.com"
@@ -72,6 +77,7 @@ jobs:
           find . -type f -name "*.pdf" | while read pdf_file; do
             git add "$pdf_file"
           done
+          git add content/resume/build/resume.png
           if [[ $(git status --porcelain) ]]; then
             git commit -m "Automatically generated PDFs for latest changes"
             git push --force

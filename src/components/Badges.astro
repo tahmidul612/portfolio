@@ -1,0 +1,74 @@
+---
+// Status, Demo and Video badges for a project. Cards get short labels that
+// stay on one line; the project page spells the status out.
+import Icon from "./Icon.astro";
+import { hasVideo, statusLabels, type Project } from "@lib/projects";
+
+interface Props {
+  project: Project;
+  long?: boolean;
+}
+const { project, long = false } = Astro.props;
+const { status, demo } = project.data;
+const statusText = status && (long ? statusLabels[status] : statusLabels[status].split(" · ")[0]);
+const video = hasVideo(project);
+---
+
+{(status || demo || video) && (
+  <ul class="badges" aria-label="Project details">
+    {status && (
+      <li class="badge badge--status">
+        <span class="badge__dot" aria-hidden="true" />
+        {statusText}
+      </li>
+    )}
+    {demo && (
+      <li class="badge">
+        <Icon name="demo" />
+        Demo
+      </li>
+    )}
+    {video && (
+      <li class="badge">
+        <Icon name="video" />
+        Video
+      </li>
+    )}
+  </ul>
+)}
+
+<style>
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--text-2);
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .badge :global(.icon) {
+    width: 0.85rem;
+    height: 0.85rem;
+    color: var(--glow);
+  }
+  .badge__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--glow);
+    box-shadow: 0 0 6px var(--glow);
+  }
+</style>

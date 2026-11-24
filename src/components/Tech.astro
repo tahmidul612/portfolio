@@ -1,0 +1,48 @@
+---
+// "Built with" list for a project.
+interface Props {
+  items: string[];
+  label?: string;
+}
+const { items, label = "Built with" } = Astro.props;
+---
+
+{items.length > 0 && (
+  <section class="tech" aria-label={label}>
+    <h2 class="tech__label">{label}</h2>
+    <ul>
+      {items.map((t) => (
+        <li>{t}</li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .tech {
+    margin-top: 2.5rem;
+  }
+  .tech__label {
+    margin-bottom: 0.75rem;
+    color: var(--text-3);
+    font: 500 var(--step--1) / 1.4 var(--font-body);
+    letter-spacing: 0;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-sunk);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    color: var(--text-2);
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+</style>

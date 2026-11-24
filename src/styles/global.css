@@ -1,0 +1,408 @@
+/* Design tokens and base styles.
+
+   Two moods from the same blue/cyan palette:
+   - dark: the deep sea at night, near-black blue with cyan light that glows
+     where you point or scroll, like bioluminescence;
+   - light: sunlit shallows, pale blue-white with the same light as caustics.
+   light-dark() picks a value from the active color-scheme, which follows the
+   device unless the visitor picked one (html[data-theme], see Base.astro). */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: light-dark(oklch(0.975 0.01 225), oklch(0.155 0.026 255));
+  --bg-raised: light-dark(oklch(0.993 0.005 225), oklch(0.195 0.03 255));
+  --bg-sunk: light-dark(oklch(0.945 0.016 230), oklch(0.13 0.024 255));
+  --line: light-dark(oklch(0.86 0.02 240), oklch(0.3 0.03 250));
+  --line-strong: light-dark(oklch(0.76 0.03 245), oklch(0.42 0.04 248));
+
+  --text: light-dark(oklch(0.24 0.04 258), oklch(0.94 0.012 230));
+  --text-2: light-dark(oklch(0.4 0.035 256), oklch(0.79 0.022 238));
+  --text-3: light-dark(oklch(0.5 0.03 252), oklch(0.66 0.028 244));
+
+  --accent: light-dark(oklch(0.5 0.19 260), oklch(0.74 0.14 250));
+  --accent-strong: light-dark(oklch(0.42 0.18 262), oklch(0.84 0.1 245));
+  --glow: light-dark(oklch(0.64 0.13 212), oklch(0.85 0.13 200));
+  --glow-rgb-a: light-dark(oklch(0.72 0.12 212 / 0.22), oklch(0.78 0.14 205 / 0.16));
+  --deep-a: light-dark(oklch(0.7 0.14 255 / 0.18), oklch(0.5 0.18 262 / 0.22));
+  --on-accent: light-dark(oklch(0.99 0.005 225), oklch(0.16 0.03 255));
+
+  /* Type scale, 1.25+ between steps, fluid at the top. */
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.4rem, 1.1rem + 1.3vw, 1.85rem);
+  --step-3: clamp(1.9rem, 1.3rem + 2.8vw, 2.9rem);
+  --step-4: clamp(2.4rem, 1.4rem + 5vw, 4.6rem);
+
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --page: 72rem;
+  --measure: 66ch;
+  --radius: 0.875rem;
+  --radius-sm: 0.5rem;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* quint */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+video,
+iframe {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--glow);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--glow) 35%, transparent);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+main {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* The sea: two slow drifting pools of light behind everything, and a faint
+   grain so the gradients don't band on dark screens. */
+.sea {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sea::before,
+.sea::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(10px);
+  will-change: transform;
+}
+
+.sea::before {
+  width: 70vmax;
+  height: 55vmax;
+  left: -25vmax;
+  top: -28vmax;
+  background: radial-gradient(closest-side, var(--glow-rgb-a), transparent);
+  animation: drift-a 38s var(--ease-out) infinite alternate;
+}
+
+.sea::after {
+  width: 65vmax;
+  height: 60vmax;
+  right: -30vmax;
+  top: 30vh;
+  background: radial-gradient(closest-side, var(--deep-a), transparent);
+  animation: drift-b 46s var(--ease-out) infinite alternate;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(12vw, 10vh, 0) scale(1.15);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-14vw, -12vh, 0) scale(0.9);
+  }
+}
+
+/* Pointer light: a soft cyan lamp that follows a mouse or pen. Positioned by
+   the script in Base.astro; touch screens don't get one. */
+.lamp {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 44rem;
+  height: 44rem;
+  margin: -22rem 0 0 -22rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, var(--glow-rgb-a), transparent 70%);
+  opacity: 0;
+  transform: translate3d(var(--lx, 50vw), var(--ly, 30vh), 0);
+  transition: opacity 600ms var(--ease-out);
+}
+.lamp.is-on {
+  opacity: 1;
+}
+
+/* Elements that light up under the pointer: they read --px/--py set by the
+   same script, relative to themselves. */
+.lit {
+  position: relative;
+  isolation: isolate;
+}
+.lit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    22rem circle at var(--px, 50%) var(--py, 50%),
+    color-mix(in oklch, var(--glow) 11%, transparent),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+.lit:hover::before {
+  opacity: 1;
+}
+
+/* Native cross-document view transitions: a project's title and image glide
+   from the list into its page. Browsers without support just navigate. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(*) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out-expo);
+}
+
+/* Entrance: content rises out of the dark once, on first paint. */
+.rise {
+  animation: rise 900ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .sea::before,
+  .sea::after {
+    animation: none;
+  }
+  .lamp {
+    display: none;
+  }
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* Buttons and inline links shared across pages. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--bg-raised) 70%, transparent);
+  color: var(--text);
+  font: 500 0.9375rem/1.2 var(--font-body);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    border-color 200ms var(--ease-out),
+    box-shadow 300ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+.btn:hover {
+  border-color: var(--glow);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--glow) 14%, transparent);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn--primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn--primary:hover {
+  border-color: transparent;
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--accent) 22%, transparent),
+    0 8px 28px -8px color-mix(in oklch, var(--glow) 60%, transparent);
+}
+.btn svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+}
+
+.link {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--accent) 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 200ms var(--ease-out);
+}
+.link:hover {
+  text-decoration-color: var(--glow);
+}
+
+/* Section heading with a hairline that fades into the sea. */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+  font-size: var(--step-2);
+}
+.section-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  align-self: center;
+  background: linear-gradient(90deg, var(--line-strong), transparent);
+}
+
+/* Long-form text from MDX. */
+.prose {
+  max-width: var(--measure);
+  color: var(--text-2);
+}
+.prose > * + * {
+  margin-top: 1.1em;
+}
+.prose p,
+.prose ul,
+.prose ol {
+  margin-block: 0;
+}
+.prose > * + p {
+  margin-top: 1.1em;
+}
+.prose h2,
+.prose h3 {
+  color: var(--text);
+  margin-top: 2.2em;
+}
+.prose h3 {
+  font-size: var(--step-1);
+}
+.prose a {
+  color: var(--accent-strong);
+  text-decoration-color: color-mix(in oklch, var(--accent) 40%, transparent);
+  text-underline-offset: 0.2em;
+}
+.prose a:hover {
+  text-decoration-color: var(--glow);
+}
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.prose ul {
+  padding-left: 1.2em;
+}
+.prose li::marker {
+  color: var(--glow);
+}
+.prose code {
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 0.3em;
+  background: var(--bg-sunk);
+}
