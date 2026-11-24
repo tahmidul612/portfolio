@@ -1,0 +1,90 @@
+{
+ "order": [
+  "01a20ae2",
+  "01a20ae0"
+ ],
+ "calls": {
+  "01a20ae2": {
+   "title": "A Saturday haircut",
+   "who": "Maya, salon receptionist",
+   "kind": "Booking",
+   "task": "a haircut on Saturday",
+   "outcome": "Edwin asked for late morning Saturday. 11 was taken, so it took 11:45 over 2:30 and gave the callback number for a text confirmation. Booked: Saturday at 11:45, a men's cut for 38 dollars.",
+   "moments": [
+    [
+     4.7,
+     "Says it's an AI in its first sentence"
+    ],
+    [
+     38.1,
+     "Picks 11:45 because the brief said late morning"
+    ],
+    [
+     61.3,
+     "Asks her to confirm the details before ending"
+    ]
+   ],
+   "issues": [
+    [
+     61.3,
+     "Asked for a last name, gives only 'Sam'"
+    ],
+    [
+     80.0,
+     "Maya reads the number back with an extra digit"
+    ],
+    [
+     115.3,
+     "Repeats her wrong number in its recap instead of correcting it"
+    ]
+   ]
+  },
+  "01a20ae0": {
+   "title": "Moving a cleaning",
+   "who": "Priya, dental front desk",
+   "kind": "Reschedule",
+   "task": "moving a cleaning appointment",
+   "outcome": "Priya asked for a date of birth. Edwin followed the brief, declined, and offered the name and callback number instead. The only evening slot next week was Tuesday at 6:15, so it took that. Thursday's cleaning was cancelled and Tuesday booked.",
+   "moments": [
+    [
+     34.9,
+     "Holds back the date of birth, as the brief asked"
+    ],
+    [
+     75.0,
+     "Takes the only evening slot"
+    ],
+    [
+     101.8,
+     "Recaps the new time and the cancelled one"
+    ]
+   ],
+   "issues": [
+    [
+     56.7,
+     "Says 'Thanks' over her while she's still talking"
+    ]
+   ]
+  }
+ },
+ "people": {
+  "Maya": {
+   "skin": "#c98e64",
+   "hair": "#2b1d16",
+   "style": "bun",
+   "shirt": "oklch(70% 0.12 340)",
+   "bg": "oklch(88% 0.06 340)",
+   "top": "tee"
+  },
+  "Priya": {
+   "skin": "#b07a52",
+   "hair": "#1c1410",
+   "style": "long",
+   "shirt": "oklch(72% 0.1 190)",
+   "bg": "oklch(89% 0.05 190)",
+   "top": "polo",
+   "glasses": "rect",
+   "frames": "#3a3330"
+  }
+ }
+}
