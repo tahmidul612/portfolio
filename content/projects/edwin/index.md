@@ -5,11 +5,13 @@ group: personal
 weight: 30
 status: "wip-private"
 demo: true
-feature: "demo-poster.webp"
-featureAlt: "The Edwin demo: a phone showing a call between Edwin and a salon receptionist."
+thumbnail: "demo-poster.webp"
+thumbnailAlt: "The Edwin demo: a phone showing a call between Edwin and a salon receptionist."
 ---
 
 {{< status "wip-private" >}}
+
+{{< video src="explainer.mp4" poster="explainer-poster.webp" caption="How a call with Edwin works, in under a minute" >}}
 
 I don't like making phone calls, so I built something that makes them for me. I tell Claude what I need, like booking a haircut for Saturday or asking the dealer whether a repair is under warranty. Claude writes a short brief, shows it to me, and places the call once I say yes. Edwin, the voice agent, does the talking. If it gets stuck or the other person asks for me, it rings my cell and hands the call over. Afterwards Claude reads the transcript back to me, and an optional n8n workflow emails the call report and puts any booking in my Google Calendar.
 

@@ -4,8 +4,8 @@ summary: "Turns any artwork into a wallpaper of a framed painting hanging in a m
 group: personal
 weight: 60
 oldAnchor: "art-gallery-wallpaper"
-feature: "art-gallery-wallpaper-met.jpg"
-featureAlt: "A painting in an ornate frame in a museum."
+thumbnail: "art-gallery-wallpaper-met.jpg"
+thumbnailAlt: "A painting in an ornate frame in a museum."
 ---
 
 {{< alert "github" >}}

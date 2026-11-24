@@ -3,12 +3,12 @@
 */}}
 <article class="mt-6 flex max-w-prose flex-row">
   {{- $images := .Resources.ByType "image" }}
-  {{- $feature := $images.GetMatch (.Params.feature | default "*feature*") }}
+  {{- $feature := $images.GetMatch (.Params.thumbnail | default "*thumb*") }}
   {{- with $feature }}
     <div class="flex-none pe-4 sm:pe-6">
       <a href="{{ $.RelPermalink }}" aria-label="{{ $.Title }}" tabindex="-1">
         <img
-          alt="{{ $.Params.featureAlt | default "" }}"
+          alt="{{ $.Params.thumbnailAlt | default "" }}"
           class="w-24 rounded-md sm:w-40"
           srcset="{{ (.Fill "160x120 smart").RelPermalink }} 160w, {{ (.Fill "320x240 smart").RelPermalink }} 2x"
           src="{{ (.Fill "160x120 smart").RelPermalink }}"

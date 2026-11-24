@@ -108,7 +108,7 @@ Deployment workflow: `.github/workflows/deploy-to-cf.yml`
 
 ### When Editing Content
 
-- New project: create `content/projects/<slug>/index.md` with `title`, `summary` (the card text), `group`, `weight`, and optional `status` / `demo` / `feature`
+- New project: create `content/projects/<slug>/index.md` with `title`, `summary` (the card text), `group`, `weight`, and optional `status` / `demo` / `thumbnail` (card image; `feature` would also become the page hero)
 - Use `{{< columns >}}` with `<--->` separator for tech stack listings
 - Images go in the project's bundle and are referenced by file name
 - Work (Raphael Porcelain) content is public: invented data only, and no client names, internal domains, hosts, or internal figures

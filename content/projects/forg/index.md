@@ -5,8 +5,8 @@ group: personal
 weight: 40
 status: "wip-private"
 demo: true
-feature: "demo-poster.webp"
-featureAlt: "The forg demo: a terminal on the left and the proposed plan on the right."
+thumbnail: "demo-poster.webp"
+thumbnailAlt: "The forg demo: a terminal on the left and the proposed plan on the right."
 ---
 
 {{< status "wip-private" >}}
