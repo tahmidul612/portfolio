@@ -5,10 +5,11 @@
   serves can never drift apart. Update vcard.vcf and this follows.
 
   Params:
-    src      path to the vCard, relative to the project root
-    href     URL the card links to
-    download filename browsers save it as
-*/ -}}
+  src      path to the vCard, relative to the project root
+  href     URL the card links to
+  download filename browsers save it as
+  */
+-}}
 {{- $src := .Get "src" | default "static/vcard.vcf" -}}
 {{- $href := .Get "href" | default "/vcard" -}}
 {{- $download := .Get "download" | default "Tahmidul_Islam.vcf" -}}
@@ -41,13 +42,13 @@
 {{- end -}}
 
 {{- /* not-prose opts out of Congo's link-highlight hover, which would
-       otherwise flood the whole card with the primary colour */ -}}
+  otherwise flood the whole card with the primary colour */
+-}}
 <a
   class="vcard not-prose"
   href="{{ $href }}"
   download="{{ $download }}"
-  aria-label="Save {{ $name }} as a contact card"
->
+  aria-label="Save {{ $name }} as a contact card">
   <span class="vcard__identity">
     <span class="vcard__name">{{ $name }}</span>
     {{- with $role }}<span class="vcard__role">{{ . }}</span>{{ end }}
@@ -64,8 +65,7 @@
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
-      focusable="false"
-    >
+      focusable="false">
       <path d="M12 3v12" />
       <path d="m7 10 5 5 5-5" />
       <path d="M5 21h14" />

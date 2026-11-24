@@ -1,0 +1,2 @@
+{{- $labels := dict "wip-private" "work in progress · private for now" "wip" "work in progress" "private" "private repo" -}}
+{{- return (index $labels . | default .) -}}

@@ -1,0 +1,38 @@
+{{/* Muted explainer video from the page bundle.
+  {{< video src="explainer.mp4" poster="explainer-poster.webp" caption="How it works"
+>}}
+A same-named .vtt next to the .mp4 is added as the captions track. Plays while
+on screen unless the visitor prefers reduced motion. */}}
+{{- $src := .Get "src" -}}
+{{- $res := .Page.Resources.GetMatch $src -}}
+{{- $url := cond (ne $res nil) (printf "%s" ($res.RelPermalink)) $src -}}
+{{- $poster := "" -}}
+{{- with .Get "poster" -}}
+  {{- with $.Page.Resources.GetMatch . }}
+    {{ $poster = .RelPermalink }}
+  {{ else }}
+    {{ $poster = . }}
+  {{ end -}}
+{{- end -}}
+{{- $vtt := $.Page.Resources.GetMatch (replace $src ".mp4" ".vtt") -}}
+{{- .Page.Store.Set "projectMedia" true -}}
+<figure class="pvideo">
+  <video
+    muted
+    playsinline
+    loop
+    controls
+    preload="none"
+    data-autoplay
+    {{ with $poster }}poster="{{ . }}"{{ end }}>
+    <source src="{{ $url }}" type="video/mp4" />
+    {{- with $vtt }}
+      <track
+        kind="captions"
+        src="{{ .RelPermalink }}"
+        srclang="en"
+        label="English" />
+    {{ end }}
+  </video>
+  {{ with .Get "caption" }}<figcaption>{{ . }}</figcaption>{{ end }}
+</figure>

@@ -1,0 +1,12 @@
+public/
+resources/
+themes/
+static/demos/_vendor/
+tools/
+content/resume/build/
+node_modules/
+package-lock.json
+.playwright-mcp/
+*.tex
+static/demos/*/calls.json
+static/demos/*/audio/

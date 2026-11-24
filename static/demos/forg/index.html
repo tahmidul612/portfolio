@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>forg, replayed</title>
+    <meta
+      name="description"
+      content="A replay of a real forg run on a folder of fake files: scan, plan, approve, apply, verify and undo."
+    />
+    <style>
+      :root {
+        --bg: #f4f7fa;
+        --panel: #ffffff;
+        --ink: #17212b;
+        --muted: #5b6b7a;
+        --line: #d8e0e8;
+        --accent: #0369a1;
+        --accent-soft: #e0f0fa;
+        --term-bg: #0f1720;
+        --term-ink: #d7e3ee;
+        --term-dim: #7f93a6;
+        --term-cmd: #7dd3fc;
+        --ok: #15803d;
+        --ok-soft: #dcfce7;
+        --warn: #b45309;
+        --warn-soft: #fef3c7;
+        --bad: #b91c1c;
+        --mono:
+          ui-monospace, "JetBrains Mono", "Cascadia Code", Menlo, Consolas,
+          monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0b1218;
+          --panel: #121c25;
+          --ink: #e3ebf2;
+          --muted: #93a5b5;
+          --line: #263544;
+          --accent: #38bdf8;
+          --accent-soft: #0c2a3d;
+          --term-bg: #070c11;
+          --ok: #4ade80;
+          --ok-soft: #12301f;
+          --warn: #fbbf24;
+          --warn-soft: #3a2c0b;
+          --bad: #f87171;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font: 14px/1.5 var(--sans);
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+      }
+      header h1 {
+        font-size: 15px;
+        margin: 0;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        flex: 1 1 260px;
+      }
+      .steps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 10px 16px 0;
+      }
+      .steps li {
+        font: 12px/1 var(--mono);
+        padding: 5px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .steps li.done {
+        color: var(--ink);
+      }
+      .steps li.now {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      main {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px 16px 16px;
+      }
+      @media (max-width: 760px) {
+        html,
+        body {
+          height: auto;
+        }
+        main {
+          grid-template-columns: 1fr;
+        }
+        .term {
+          height: 300px;
+        }
+        .side {
+          overflow: visible;
+        }
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .card h2 {
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0;
+        padding: 10px 12px 8px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .term {
+        background: var(--term-bg);
+        border-color: var(--term-bg);
+      }
+      .term h2 {
+        color: var(--term-dim);
+        border-color: #1e2b38;
+      }
+      #out {
+        flex: 1;
+        overflow: auto;
+        margin: 0;
+        padding: 12px;
+        color: var(--term-ink);
+        font: 12.5px/1.55 var(--mono);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      #out .cmd {
+        color: var(--term-cmd);
+      }
+      #out .dim {
+        color: var(--term-dim);
+      }
+      #out .err {
+        color: #fca5a5;
+      }
+      #out .ok {
+        color: #86efac;
+      }
+      #out .caret {
+        display: inline-block;
+        width: 0.6em;
+        background: var(--term-ink);
+        animation: blink 1s steps(1) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .side {
+        overflow: auto;
+      }
+      .explain {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
+        padding: 10px 16px 0;
+      }
+      .explain p {
+        margin: 0;
+        flex: 1 1 320px;
+        min-height: 3em;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      button {
+        font: 600 13px var(--sans);
+        border-radius: 8px;
+        padding: 8px 12px;
+        min-height: 38px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      button:focus-visible,
+      input:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .plan {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.5px;
+      }
+      .plan td {
+        padding: 6px 12px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .plan td:first-child {
+        width: 28px;
+        padding-right: 0;
+      }
+      .plan code {
+        font: 12px var(--mono);
+        word-break: break-all;
+      }
+      .plan .arrow {
+        color: var(--muted);
+      }
+      .op {
+        font: 600 11px var(--mono);
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      .op.quarantine {
+        background: var(--warn-soft);
+        color: var(--warn);
+      }
+      .op.link {
+        background: var(--ok-soft);
+        color: var(--ok);
+      }
+      .token {
+        font: 600 13px var(--mono);
+        color: var(--accent);
+      }
+      .tree {
+        font: 12.5px/1.6 var(--mono);
+        padding: 10px 12px;
+        margin: 0;
+        list-style: none;
+      }
+      .tree li {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .tree .dir {
+        color: var(--muted);
+      }
+      .tree .new {
+        color: var(--ok);
+      }
+      .tree .q {
+        color: var(--warn);
+      }
+      .tree .lnk {
+        color: var(--accent);
+      }
+      .legend {
+        font-size: 12px;
+        color: var(--muted);
+        padding: 0 12px 12px;
+      }
+      .sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #out .caret {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>forg, replayed</h1>
+      <p>
+        Real output from forg running on a folder of fake files. Step through
+        it, untick items in the plan, and undo the whole batch at the end.
+      </p>
+    </header>
+    <ol class="steps" id="steps" aria-label="Steps"></ol>
+    <div class="explain">
+      <p id="say"></p>
+      <div class="controls">
+        <button id="next" class="primary" type="button">Next step</button>
+        <button id="wrong" type="button" hidden>Try a wrong token</button>
+        <button id="restart" type="button">Restart</button>
+      </div>
+    </div>
+    <main>
+      <section class="card term" aria-label="Terminal">
+        <h2><span>terminal</span><span id="where">~/drive</span></h2>
+        <pre id="out" aria-live="polite"></pre>
+      </section>
+      <section class="card side" aria-label="Explanation and files">
+        <div id="planBox" hidden>
+          <h2>
+            <span>manifest.json</span
+            ><span>token <span class="token" id="tok"></span></span>
+          </h2>
+          <table class="plan" id="plan"></table>
+        </div>
+        <h2><span>files</span><span id="treeNote"></span></h2>
+        <ul class="tree" id="tree"></ul>
+        <p class="legend">
+          <span style="color: var(--ok)">green</span> moved here ·
+          <span style="color: var(--warn)">amber</span> quarantined ·
+          <span style="color: var(--accent)">blue</span> link left at the old
+          path
+        </p>
+      </section>
+    </main>
+
+    <script>
+      // Captured from forg v0.1.0 on 2026-11-23, run against a scratch folder of fake files.
+      // Paths are shortened to /mnt/media and /mnt/archive. Tokens are the real ones forg
+      // printed for each combination of the three items you can untick.
+      const M = "/mnt/media",
+        A = "/mnt/archive";
+      const ITEMS = [
+        {
+          op: "quarantine",
+          src: `${M}/Downloads/old-installer.run`,
+          dst: `${M}/_Quarantine/Downloads/old-installer.run`,
+          why: "listed in config",
+        },
+        {
+          op: "quarantine",
+          src: `${M}/Downloads/IMG_20250114_09301 (1).jpg`,
+          dst: `${M}/_Quarantine/Downloads/IMG_20250114_09301 (1).jpg`,
+          why: "exact duplicate of IMG_20250114_09301.jpg",
+        },
+        {
+          op: "quarantine",
+          src: `${M}/Downloads/photo copy.jpg`,
+          dst: `${M}/_Quarantine/Downloads/photo copy.jpg`,
+          why: "exact duplicate of IMG_20250214_09302.jpg",
+        },
+        {
+          op: "quarantine",
+          src: `${M}/Downloads/untitled.txt`,
+          dst: `${M}/_Quarantine/Downloads/untitled.txt`,
+          why: "zero-byte file",
+          toggle: 0,
+        },
+        {
+          op: "move_file",
+          src: `${M}/Film-Downloads/The.Grand.Budapest.Hotel.2014.1080p.BluRay.x264.mkv`,
+          dst: `${A}/Movies/The Grand Budapest Hotel (2014).mkv`,
+          why: "rule: rename by title",
+        },
+        {
+          op: "move_file",
+          src: `${M}/Film-Downloads/arrival.2016.720p.web.mkv`,
+          dst: `${A}/Movies/arrival (2016).mkv`,
+          why: "rule: rename by title",
+        },
+        {
+          op: "move_dir",
+          src: `${M}/Projects/finished-2023`,
+          dst: `${A}/Projects/2023`,
+          why: "rule: a video project moves as one unit",
+        },
+        {
+          op: "link",
+          src: `${M}/Projects/finished-2023`,
+          dst: `${A}/Projects/2023`,
+          why: "link = true, so the project still opens",
+        },
+        {
+          op: "move_file",
+          src: `${M}/Downloads/IMG_20250114_09301.jpg`,
+          dst: `${A}/Photos/2025/2025-01/2025-01-14_000000_img-20250114-09301.jpg`,
+          why: "loose image, dated from EXIF",
+        },
+        {
+          op: "move_file",
+          src: `${M}/Downloads/IMG_20250214_09302.jpg`,
+          dst: `${A}/Photos/2025/2025-02/2025-02-14_000000_img-20250214-09302.jpg`,
+          why: "loose image, dated from EXIF",
+        },
+        {
+          op: "move_file",
+          src: `${M}/Downloads/IMG_20250314_09303.jpg`,
+          dst: `${A}/Photos/2025/2025-03/2025-03-14_000000_img-20250314-09303.jpg`,
+          why: "loose image, dated from EXIF",
+        },
+        {
+          op: "move_file",
+          src: `${M}/Downloads/lease-final-FINAL.pdf`,
+          dst: `${A}/Documents/2025-03-20_other_lease-final-final.pdf`,
+          why: "loose document",
+          toggle: 1,
+        },
+        {
+          op: "move_file",
+          src: `${M}/Downloads/song_final_mix.flac`,
+          dst: `${A}/Audio/song_final_mix.flac`,
+          why: "loose audio",
+          toggle: 2,
+        },
+      ];
+      const TOKENS = {
+        0: "38def7c7",
+        1: "8b72b3f1",
+        2: "701b1e10",
+        3: "3ed852fc",
+        4: "22a047f1",
+        5: "c7cf5202",
+        6: "bf3f3c0f",
+        7: "9ee21c70",
+      };
+      const START_FILES = [
+        `${M}/Downloads/IMG_20250114_09301 (1).jpg`,
+        `${M}/Downloads/IMG_20250114_09301.jpg`,
+        `${M}/Downloads/IMG_20250214_09302.jpg`,
+        `${M}/Downloads/IMG_20250314_09303.jpg`,
+        `${M}/Downloads/lease-final-FINAL.pdf`,
+        `${M}/Downloads/old-installer.run`,
+        `${M}/Downloads/photo copy.jpg`,
+        `${M}/Downloads/setup-v2.3.1-linux.run`,
+        `${M}/Downloads/song_final_mix.flac`,
+        `${M}/Downloads/untitled.txt`,
+        `${M}/Film-Downloads/arrival.2016.720p.web.mkv`,
+        `${M}/Film-Downloads/The.Grand.Budapest.Hotel.2014.1080p.BluRay.x264.mkv`,
+        `${M}/Projects/finished-2023/footage/clip01.mp4`,
+        `${M}/Projects/finished-2023/wedding.kdenlive`,
+      ];
+
+      let mask = 0; // bit set = that toggleable item is unticked
+      const approved = (it) =>
+        it.toggle === undefined || !((mask >> it.toggle) & 1);
+      const token = () => TOKENS[mask];
+      const runCount = () => ITEMS.filter(approved).length;
+      let applied = false;
+
+      const STEPS = [
+        {
+          name: "scan",
+          say: "forg walks the scan roots and records every file with its BLAKE3 hash in a SQLite catalog. Nothing changes on disk.",
+          out: () => [
+            cmd("forg scan"),
+            "walking /mnt/media",
+            "hashing 14 files on media with 4 thread(s)",
+            "scan complete: 14 files, 0.0 GB, 0 unreadable entries, 0 hash failures, 0 symlinks not followed",
+          ],
+        },
+        {
+          name: "guard",
+          say: "guard finds editing projects and the media they point at, so a project folder only ever moves as one unit and keeps working.",
+          out: () => [
+            cmd("forg guard"),
+            "1 project folders, 2 files inside them",
+            "read 1 project sources (0 unreadable), 0 media references",
+          ],
+        },
+        {
+          name: "dedupe",
+          say: "Exact duplicates are found by hash. The oldest copy stays and the others are proposed for quarantine.",
+          out: () => [
+            cmd("forg dedupe"),
+            "2 duplicate sets, 2 removable copies, 0.00 GB",
+          ],
+        },
+        {
+          name: "propose",
+          say: "propose writes the plan to manifest.json (plus an HTML report) and prints a token: the first eight hex characters of the manifest's hash.",
+          out: () => [
+            cmd("forg propose"),
+            "13 items proposed",
+            "manifest: ~/.local/share/forg/manifest.json",
+            "report:   ~/.local/share/forg/report.html",
+            `token:    ${TOKENS[0]}`,
+          ],
+          plan: true,
+        },
+        {
+          name: "review",
+          say: "This is where I read the plan. In the demo you can untick the three items marked with a box. Any change to the manifest gives it a new token, so an old approval can't run an edited plan.",
+          out: () => [
+            dim("# review manifest.json, untick what shouldn't happen"),
+          ],
+          plan: true,
+          edit: true,
+        },
+        {
+          name: "dry run",
+          say: "apply without --execute is a dry run. It checks every destination first and prints what would happen.",
+          out: () => [
+            cmd("forg apply"),
+            "archive needs 0.0 GB, has 28.6 GB free",
+            `dry run: ${runCount()} items would run, token ${token()}`,
+            ...ITEMS.filter(approved).map(
+              (it) => `  ${it.op} ${it.src} -> ${it.dst}`,
+            ),
+          ],
+          plan: true,
+          wrong: true,
+        },
+        {
+          name: "apply",
+          say: "apply --execute only runs with the token for this exact manifest. Each move is hash checked and journaled. Duplicates go to a quarantine folder on the same drive, never straight to delete.",
+          out: () => [
+            cmd(`forg apply --execute --confirm ${token()}`),
+            "archive needs 0.0 GB, has 28.6 GB free",
+            ok(`applied ${runCount()} items in batch ${token()}`),
+          ],
+          act: () => (applied = true),
+        },
+        {
+          name: "verify",
+          say: "verify re-hashes a sample and checks that every catalogued file, link and shortcut is where the journal says.",
+          out: () => [
+            cmd("forg verify"),
+            "14 catalogued: 14 present (0.0 GB), 0 deleted with approval, 0 problems",
+            "re-hashed 14 sampled files",
+            ok("verify passed"),
+          ],
+        },
+        {
+          name: "undo",
+          say: "Changed my mind. undo replays the journal backwards, newest action first, and everything is back where it started.",
+          out: () => [
+            cmd(`forg undo --batch ${token()}`),
+            ok(`undid ${runCount()} actions from batch ${token()}`),
+            "",
+            cmd("forg verify"),
+            "14 catalogued: 14 present (0.0 GB), 0 deleted with approval, 0 problems",
+            "re-hashed 14 sampled files",
+            ok("verify passed"),
+          ],
+          act: () => (applied = false),
+        },
+      ];
+
+      const $ = (id) => document.getElementById(id);
+      const esc = (s) =>
+        s.replace(
+          /[&<>]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c],
+        );
+      function cmd(s) {
+        return { cls: "cmd", text: "$ " + s, typed: true };
+      }
+      function dim(s) {
+        return { cls: "dim", text: s };
+      }
+      function ok(s) {
+        return { cls: "ok", text: s };
+      }
+      function err(s) {
+        return { cls: "err", text: s };
+      }
+
+      const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let step = -1;
+      let busy = false;
+
+      async function print(lines) {
+        busy = true;
+        $("next").disabled = true;
+        const out = $("out");
+        for (const raw of lines) {
+          const line = typeof raw === "string" ? { text: raw } : raw;
+          const span = document.createElement("span");
+          if (line.cls) span.className = line.cls;
+          out.append(span);
+          if (line.typed && !calm) {
+            for (const ch of line.text) {
+              span.textContent += ch;
+              out.scrollTop = out.scrollHeight;
+              await wait(18);
+            }
+            await wait(160);
+          } else {
+            span.textContent = line.text;
+            if (!calm) await wait(45);
+          }
+          out.append("\n");
+          out.scrollTop = out.scrollHeight;
+        }
+        busy = false;
+        $("next").disabled = step >= STEPS.length - 1;
+      }
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      function renderSteps() {
+        $("steps").innerHTML = STEPS.map(
+          (s, i) =>
+            `<li class="${i < step ? "done" : i === step ? "now" : ""}"${i === step ? ' aria-current="step"' : ""}>${s.name}</li>`,
+        ).join("");
+      }
+
+      function renderPlan(editable) {
+        $("tok").textContent = token();
+        $("plan").innerHTML = ITEMS.map((it, i) => {
+          const box =
+            it.toggle === undefined
+              ? `<input type="checkbox" checked disabled aria-label="approved">`
+              : `<input type="checkbox" data-t="${it.toggle}" ${approved(it) ? "checked" : ""} ${editable ? "" : "disabled"} aria-label="approve ${esc(it.src.split("/").pop())}">`;
+          return `<tr><td>${box}</td><td><span class="op ${it.op === "quarantine" ? "quarantine" : it.op === "link" ? "link" : ""}">${it.op}</span> <code>${esc(short(it.src))}</code> <span class="arrow">→</span> <code>${esc(short(it.dst))}</code><br><span style="color:var(--muted)">${esc(it.why)}</span></td></tr>`;
+        }).join("");
+      }
+      const short = (p) => p.replace("/mnt/", "");
+
+      function files() {
+        if (!applied) return START_FILES.map((p) => ({ p }));
+        const moved = new Map();
+        let linked = null;
+        for (const it of ITEMS.filter(approved)) {
+          if (it.op === "link") linked = it;
+          else moved.set(it.src, it);
+        }
+        const outList = [];
+        for (const p of START_FILES) {
+          const dir = [...moved.keys()].find(
+            (k) => p === k || p.startsWith(k + "/"),
+          );
+          if (!dir) outList.push({ p });
+          else {
+            const it = moved.get(dir);
+            outList.push({
+              p: it.dst + p.slice(dir.length),
+              cls: it.op === "quarantine" ? "q" : "new",
+            });
+          }
+        }
+        if (linked)
+          outList.push({
+            p: linked.src,
+            cls: "lnk",
+            note: " → " + short(linked.dst),
+          });
+        return outList.sort((a, b) => a.p.localeCompare(b.p));
+      }
+
+      function renderTree() {
+        const rows = [];
+        let prev = [];
+        for (const f of files()) {
+          const parts = f.p.replace(/^\/mnt\//, "").split("/");
+          const name = parts.pop();
+          parts.forEach((d, i) => {
+            if (prev[i] !== d) {
+              rows.push(
+                `<li class="dir" style="padding-left:${i * 14}px">${esc(d)}/</li>`,
+              );
+              prev = parts.slice(0, i + 1);
+            }
+          });
+          prev = parts;
+          rows.push(
+            `<li class="${f.cls || ""}" style="padding-left:${parts.length * 14}px" title="${esc(f.p)}">${esc(name)}${f.note ? esc(f.note) : ""}</li>`,
+          );
+        }
+        $("tree").innerHTML = rows.join("");
+        $("treeNote").textContent = applied ? "after apply" : "on disk";
+      }
+
+      async function go(i) {
+        step = i;
+        const s = STEPS[i];
+        renderSteps();
+        $("say").textContent = s.say;
+        $("planBox").hidden = !s.plan;
+        if (s.plan) renderPlan(!!s.edit);
+        $("wrong").hidden = !s.wrong;
+        if (s.act) s.act();
+        await print([...(i > 0 ? [""] : []), ...s.out()]);
+        renderTree();
+      }
+
+      $("next").addEventListener(
+        "click",
+        () => !busy && step < STEPS.length - 1 && go(step + 1),
+      );
+      $("restart").addEventListener("click", () => {
+        if (busy) return;
+        mask = 0;
+        applied = false;
+        $("out").textContent = "";
+        go(0);
+      });
+      $("wrong").addEventListener("click", async () => {
+        if (busy) return;
+        const stale = mask ? TOKENS[0] : "deadbeef";
+        await print([
+          "",
+          cmd(`forg apply --execute --confirm ${stale}`),
+          "archive needs 0.0 GB, has 28.6 GB free",
+          err(
+            `Error: refusing to run: pass --confirm ${token()} after the manifest has been approved`,
+          ),
+        ]);
+      });
+      $("plan").addEventListener("change", (e) => {
+        const t = e.target.dataset.t;
+        if (t === undefined) return;
+        mask ^= 1 << Number(t);
+        $("tok").textContent = token();
+      });
+
+      renderTree();
+      go(0);
+    </script>
+  </body>
+</html>

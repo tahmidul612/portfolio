@@ -1,0 +1,2641 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edwin, demo calls</title>
+    <meta
+      name="description"
+      content="Two simulated calls placed by Edwin, an AI phone agent, with synced transcripts."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* Layout: a cobalt "stage" band with the story on the left and a live phone on the right; the call's tape, notes and transcript sit below on paper. */
+      :root {
+        --paper: oklch(97.2% 0.008 85);
+        --card: oklch(99% 0.004 85);
+        --ink: oklch(22% 0.02 265);
+        --muted: oklch(50% 0.02 265);
+        --rule: oklch(89% 0.012 85);
+        --cobalt: oklch(44% 0.19 266);
+        --cobalt-deep: oklch(34% 0.16 268);
+        --on-cobalt: oklch(97% 0.01 266);
+        --on-cobalt-dim: oklch(84% 0.05 266);
+        --edwin: oklch(80% 0.14 192);
+        --edwin-ink: oklch(45% 0.11 200);
+        --edwin-soft: oklch(93% 0.04 192);
+        --them: oklch(72% 0.15 45);
+        --them-ink: oklch(50% 0.14 45);
+        --them-soft: oklch(94% 0.035 55);
+        --good: oklch(52% 0.12 150);
+        --good-soft: oklch(94% 0.04 150);
+        --warn: oklch(55% 0.14 55);
+        --warn-soft: oklch(94% 0.045 65);
+        --glass: oklch(18% 0.02 265);
+        --screen: oklch(17% 0.025 266);
+        --screen-2: oklch(23% 0.03 266);
+        --screen-ink: oklch(96% 0.01 266);
+        --screen-dim: oklch(70% 0.03 266);
+        --call-green: oklch(68% 0.17 150);
+        --call-red: oklch(60% 0.2 27);
+        --display: "Unbounded", "Arial Black", system-ui, sans-serif;
+        --body:
+          "Hanken Grotesk", "Noto Sans Bengali", "Segoe UI", system-ui,
+          sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --paper: oklch(17% 0.02 266);
+          --card: oklch(21% 0.022 266);
+          --ink: oklch(94% 0.01 266);
+          --muted: oklch(70% 0.025 266);
+          --rule: oklch(30% 0.025 266);
+          --cobalt: oklch(36% 0.15 267);
+          --cobalt-deep: oklch(27% 0.12 268);
+          --edwin-ink: oklch(80% 0.12 192);
+          --edwin-soft: oklch(30% 0.05 200);
+          --them-ink: oklch(78% 0.12 50);
+          --them-soft: oklch(31% 0.05 50);
+          --good: oklch(76% 0.12 150);
+          --good-soft: oklch(29% 0.05 150);
+          --warn: oklch(78% 0.12 60);
+          --warn-soft: oklch(31% 0.05 60);
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --paper: oklch(17% 0.02 266);
+        --card: oklch(21% 0.022 266);
+        --ink: oklch(94% 0.01 266);
+        --muted: oklch(70% 0.025 266);
+        --rule: oklch(30% 0.025 266);
+        --cobalt: oklch(36% 0.15 267);
+        --cobalt-deep: oklch(27% 0.12 268);
+        --edwin-ink: oklch(80% 0.12 192);
+        --edwin-soft: oklch(30% 0.05 200);
+        --them-ink: oklch(78% 0.12 50);
+        --them-soft: oklch(31% 0.05 50);
+        --good: oklch(76% 0.12 150);
+        --good-soft: oklch(29% 0.05 150);
+        --warn: oklch(78% 0.12 60);
+        --warn-soft: oklch(31% 0.05 60);
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font: 16px/1.55 var(--body);
+        overflow-x: hidden;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+      }
+      .gutter {
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+      }
+      .inner {
+        max-width: 1160px;
+        margin: 0 auto;
+      }
+
+      /* ---------- stage ---------- */
+      .stage {
+        background: var(--cobalt);
+        color: var(--on-cobalt);
+        position: relative;
+        overflow: hidden;
+        margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+        padding-top: calc(
+          env(safe-area-inset-top, 0px) + clamp(28px, 5vw, 56px)
+        );
+        padding-bottom: clamp(32px, 5vw, 64px);
+      }
+      .stage::before {
+        content: "";
+        position: absolute;
+        inset: auto -10% -40% 30%;
+        height: 90%;
+        border-radius: 50%;
+        background: radial-gradient(
+          closest-side,
+          oklch(52% 0.2 262 / 0.9),
+          transparent
+        );
+        pointer-events: none;
+      }
+      .stage-grid {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        column-gap: clamp(28px, 5vw, 72px);
+        grid-template-areas: "head phone" "pick phone" "np phone";
+        grid-template-rows: auto auto 1fr;
+        align-items: start;
+      }
+      .head {
+        grid-area: head;
+      }
+      .contacts {
+        grid-area: pick;
+      }
+      .now-playing {
+        grid-area: np;
+      }
+      .device-wrap {
+        grid-area: phone;
+        align-self: center;
+      }
+      @media (max-width: 880px) {
+        .stage-grid {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas: "head" "pick" "phone" "np";
+          grid-template-rows: none;
+        }
+        .device-wrap {
+          margin-top: 22px;
+        }
+        .now-playing {
+          margin-top: 26px;
+        }
+      }
+      .kicker {
+        font: 500 13px/1 var(--mono);
+        color: var(--edwin);
+        letter-spacing: 0.02em;
+      }
+      h1 {
+        font: 700 clamp(30px, 4.6vw, 56px)/1.04 var(--display);
+        letter-spacing: -0.02em;
+        margin: 14px 0 16px;
+        text-wrap: balance;
+      }
+      h1 .w {
+        display: inline-block;
+      }
+      .lede {
+        color: var(--on-cobalt-dim);
+        max-width: 52ch;
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      @media (max-width: 520px) {
+        h1 {
+          font-size: clamp(27px, 8.4vw, 34px);
+          margin: 12px 0 12px;
+        }
+        .lede {
+          font-size: 15.5px;
+        }
+      }
+      .lede b {
+        color: var(--on-cobalt);
+        font-weight: 600;
+      }
+
+      .contacts {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 92px));
+        gap: 6px;
+        margin: 28px 0 0;
+      }
+      .contact {
+        all: unset;
+        cursor: pointer;
+        display: grid;
+        grid-template-rows: auto auto 2.5em;
+        justify-items: center;
+        align-content: start;
+        gap: 6px;
+        padding: 10px 4px 8px;
+        border-radius: 16px;
+        text-align: center;
+        transition: background 0.25s var(--ease-out);
+        min-width: 0;
+      }
+      @media (max-width: 520px) {
+        .contacts {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          gap: 0;
+          margin-top: 20px;
+        }
+        .contact {
+          grid-template-rows: auto auto;
+          padding: 8px 0 6px;
+        }
+        .contact .ln {
+          display: none;
+        }
+        .contact .av {
+          width: 46px;
+          height: 46px;
+        }
+        .contact .nm {
+          font-size: 12px;
+        }
+      }
+      .contact:hover {
+        background: oklch(100% 0 0 / 0.08);
+      }
+      .contact:focus-visible {
+        outline: 2px solid var(--edwin);
+        outline-offset: 2px;
+      }
+      .contact[aria-current="true"] {
+        background: oklch(100% 0 0 / 0.14);
+      }
+      .contact .av {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        position: relative;
+        transition: transform 0.3s var(--ease-out);
+      }
+      .contact:hover .av {
+        transform: translateY(-3px);
+      }
+      .contact[aria-current="true"] .av {
+        box-shadow:
+          0 0 0 3px var(--cobalt),
+          0 0 0 5px var(--edwin);
+      }
+      .contact .nm {
+        font: 600 13px/1.2 var(--body);
+      }
+      .contact .ln {
+        font: 11.5px/1.25 var(--body);
+        color: var(--on-cobalt-dim);
+      }
+      .now-playing {
+        margin-top: 30px;
+        max-width: 56ch;
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+      .now-playing .eyebrow {
+        font: 500 12.5px var(--mono);
+        color: var(--edwin);
+      }
+      .now-playing h2 {
+        font: 700 clamp(20px, 2.2vw, 26px)/1.15 var(--display);
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      .now-playing p {
+        margin: 0;
+        color: var(--on-cobalt-dim);
+      }
+      .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 16px;
+        font: 13px var(--mono);
+        color: var(--on-cobalt-dim);
+        font-variant-numeric: tabular-nums;
+      }
+      .facts b {
+        color: var(--on-cobalt);
+        font-weight: 500;
+      }
+
+      /* ---------- phone ---------- */
+      .device-wrap {
+        display: grid;
+        justify-items: center;
+        perspective: 1400px;
+      }
+      .device-wrap {
+        will-change: transform;
+        backface-visibility: hidden;
+      }
+      .device {
+        width: min(372px, 100%);
+        aspect-ratio: 9 / 18.6;
+        max-width: 100%;
+        border-radius: 48px;
+        padding: 11px;
+        background: var(--glass);
+        box-shadow:
+          0 0 0 1.5px oklch(40% 0.03 266),
+          0 40px 80px -30px oklch(10% 0.05 266 / 0.8),
+          inset 0 0 0 2px oklch(30% 0.02 266);
+        position: relative;
+      }
+      .device::before {
+        content: "";
+        position: absolute;
+        right: -3px;
+        top: 22%;
+        width: 3px;
+        height: 64px;
+        border-radius: 0 3px 3px 0;
+        background: oklch(30% 0.02 266);
+      }
+      .screen {
+        position: relative;
+        height: 100%;
+        border-radius: 38px;
+        overflow: hidden;
+        background: var(--screen);
+        color: var(--screen-ink);
+        display: grid;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+      }
+      .screen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          120% 60% at 50% 0%,
+          oklch(32% 0.08 266 / 0.9),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .island {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        translate: -50% 0;
+        width: 92px;
+        height: 26px;
+        border-radius: 20px;
+        background: oklch(8% 0.01 266);
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 10px;
+        gap: 2px;
+      }
+      .island i {
+        width: 3px;
+        border-radius: 2px;
+        background: var(--edwin);
+        height: 4px;
+        opacity: 0;
+      }
+      .statusbar {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 26px 0;
+        font: 600 12.5px var(--body);
+        font-variant-numeric: tabular-nums;
+      }
+      .statusbar .sig {
+        display: flex;
+        gap: 2px;
+        align-items: flex-end;
+        height: 11px;
+      }
+      .statusbar .sig span {
+        width: 3px;
+        background: var(--screen-ink);
+        border-radius: 1px;
+      }
+      .callhead {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+        padding: 26px 16px 12px;
+        text-align: center;
+      }
+      .pair {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        position: relative;
+        height: 86px;
+      }
+      .pair .slot {
+        width: 76px;
+        height: 76px;
+        position: relative;
+      }
+      .pair .slot.third {
+        width: 0;
+        margin-left: 0;
+        opacity: 0;
+      }
+      .pair .wire {
+        width: 34px;
+        height: 2px;
+        position: relative;
+        overflow: visible;
+      }
+      .pair .wire svg {
+        position: absolute;
+        inset: -6px 0;
+        width: 100%;
+        height: 14px;
+        overflow: visible;
+      }
+      .ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--edwin);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .callname {
+        font: 600 17px/1.2 var(--body);
+        margin-top: 6px;
+      }
+      .callstate {
+        font: 500 12.5px var(--mono);
+        color: var(--screen-dim);
+        font-variant-numeric: tabular-nums;
+        min-height: 1.3em;
+      }
+      .feed {
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        padding: 4px 14px 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 7px;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%);
+        mask-image: linear-gradient(to bottom, transparent, #000 22%);
+      }
+      .bub {
+        max-width: 86%;
+        padding: 8px 12px;
+        border-radius: 18px;
+        font-size: 14.5px;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+      }
+      .bub .en {
+        display: block;
+        font-size: 12.5px;
+        line-height: 1.35;
+        opacity: 0.72;
+        margin-top: 3px;
+      }
+      .turn .say .en {
+        display: block;
+        color: var(--muted);
+        font-size: 14.5px;
+        margin-top: 2px;
+      }
+      .bub em,
+      .turn em.aside {
+        font: italic 500 11.5px var(--body);
+        opacity: 0.75;
+        margin-left: 6px;
+        white-space: nowrap;
+      }
+      .bub.e {
+        align-self: flex-start;
+        background: var(--screen-2);
+        border-bottom-left-radius: 6px;
+      }
+      .bub.e::first-line {
+      }
+      .bub.t {
+        align-self: flex-end;
+        background: var(--them);
+        color: oklch(20% 0.04 45);
+        border-bottom-right-radius: 6px;
+      }
+      .bub.a {
+        align-self: flex-end;
+        background: oklch(78% 0.1 300);
+        color: oklch(20% 0.05 300);
+        border-bottom-right-radius: 6px;
+      }
+      .bub small {
+        display: block;
+        font: 500 10.5px var(--mono);
+        opacity: 0.7;
+        margin-bottom: 1px;
+      }
+      .sys {
+        align-self: center;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font: 500 11.5px var(--mono);
+        color: var(--edwin);
+        background: oklch(80% 0.14 192 / 0.12);
+        padding: 5px 11px;
+        border-radius: 99px;
+      }
+      .sys svg {
+        width: 13px;
+        height: 13px;
+        flex: none;
+      }
+      .feed:has(.brief) {
+        justify-content: center;
+        -webkit-mask-image: none;
+        mask-image: none;
+      }
+      .brief {
+        align-self: stretch;
+        text-align: center;
+        color: var(--screen-dim);
+        font-size: 13.5px;
+        padding: 18px 16px;
+        margin: 0 4px;
+        display: grid;
+        gap: 8px;
+        border-radius: 22px;
+        background: var(--screen-2);
+      }
+      .brief .lbl {
+        font: 500 11.5px var(--mono);
+        color: var(--edwin);
+      }
+      .brief b {
+        color: var(--screen-ink);
+        font: 600 17px/1.3 var(--body);
+        text-wrap: balance;
+      }
+      .brief .hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .brief .hint i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--call-green);
+      }
+      .controls {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 10px 26px 26px;
+        gap: 10px;
+      }
+      .ctl {
+        all: unset;
+        cursor: pointer;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: var(--screen-2);
+        display: grid;
+        place-items: center;
+        justify-self: center;
+        font: 600 12px var(--mono);
+        color: var(--screen-ink);
+        transition:
+          transform 0.15s var(--ease-out),
+          background 0.2s;
+      }
+      .ctl:hover {
+        background: oklch(30% 0.035 266);
+      }
+      .ctl:active {
+        transform: scale(0.93);
+      }
+      .ctl:focus-visible {
+        outline: 2px solid var(--edwin);
+        outline-offset: 2px;
+      }
+      .ctl svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+      .big {
+        width: 64px;
+        height: 64px;
+        background: var(--call-green);
+        color: oklch(18% 0.05 150);
+      }
+      .big:hover {
+        background: oklch(72% 0.17 150);
+      }
+      .big.live {
+        background: var(--call-red);
+        color: oklch(98% 0.01 27);
+      }
+      .big.live:hover {
+        background: oklch(64% 0.2 27);
+      }
+      .big svg {
+        width: 26px;
+        height: 26px;
+      }
+      .homebar {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        translate: -50% 0;
+        width: 110px;
+        height: 4px;
+        border-radius: 4px;
+        background: oklch(90% 0.01 266 / 0.7);
+        z-index: 3;
+      }
+
+      /* avatars */
+      .av svg,
+      .slot svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+      .talk-ring {
+        position: absolute;
+        inset: -5px;
+        border-radius: 50%;
+        border: 2.5px solid var(--c, var(--edwin));
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
+      }
+
+      /* ---------- detail ---------- */
+      .detail {
+        padding-block: clamp(30px, 4vw, 52px);
+      }
+      .call-title {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+      .call-title .pairs {
+        display: flex;
+        flex: none;
+      }
+      .call-title .pairs > span {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px var(--paper);
+      }
+      .call-title .pairs > span + span {
+        margin-left: -10px;
+      }
+      .call-title h2 {
+        font: 700 clamp(19px, 2.4vw, 26px)/1.15 var(--display);
+        margin: 0;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+      .call-title p {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 14.5px;
+      }
+      .tape {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 0 12px;
+        align-items: center;
+      }
+      .tape .lane-av {
+        width: 34px;
+        height: 34px;
+      }
+      .tape canvas {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        display: block;
+        width: 100%;
+        height: 132px;
+        cursor: pointer;
+        touch-action: none;
+        border-radius: 12px;
+      }
+      .tape-meta {
+        grid-column: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px 16px;
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        flex-wrap: wrap;
+      }
+      .tape-meta #clock {
+        font: 500 13px var(--mono);
+        color: var(--ink);
+      }
+      .key {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+      }
+      .key span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .key i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--c);
+      }
+      .key i.bar {
+        width: 3px;
+        height: 11px;
+        border-radius: 1px;
+      }
+      @media (max-width: 520px) {
+        .tape {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .tape .lane-av {
+          display: none;
+        }
+        .tape canvas,
+        .tape-meta {
+          grid-column: 1;
+        }
+        .tape canvas {
+          grid-row: auto;
+          height: 104px;
+        }
+      }
+      .sec-title {
+        font: 700 15px/1.2 var(--display);
+        margin: 0 0 12px;
+        letter-spacing: -0.005em;
+      }
+      .two {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(20px, 3vw, 40px);
+        margin-top: clamp(28px, 3vw, 40px);
+      }
+      @media (max-width: 700px) {
+        .two {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      .chips {
+        display: grid;
+        gap: 6px;
+      }
+      .chip {
+        all: unset;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 15px;
+        line-height: 1.4;
+        transition: transform 0.2s var(--ease-out);
+      }
+      .chip:hover {
+        transform: translateX(3px);
+      }
+      .chip:focus-visible {
+        outline: 2px solid var(--edwin-ink);
+      }
+      .chip .ts {
+        font: 12.5px var(--mono);
+        padding-top: 2px;
+        font-variant-numeric: tabular-nums;
+      }
+      .chip.good {
+        background: var(--good-soft);
+      }
+      .chip.good .ts {
+        color: var(--good);
+      }
+      .chip.warn {
+        background: var(--warn-soft);
+      }
+      .chip.warn .ts {
+        color: var(--warn);
+      }
+      .none {
+        color: var(--muted);
+        font-size: 15px;
+        margin: 0;
+      }
+
+      .tx-wrap {
+        margin-top: clamp(32px, 4vw, 48px);
+      }
+      .tx-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 6px 16px;
+        flex-wrap: wrap;
+      }
+      .tx-head .src {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-right: auto;
+      }
+      .tx-head label {
+        font-size: 14px;
+        color: var(--muted);
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        cursor: pointer;
+      }
+      .tx {
+        max-height: min(560px, 70vh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border-top: 1px solid var(--rule);
+        padding: 10px 0 4px;
+        margin-top: 10px;
+        display: grid;
+        gap: 2px;
+      }
+      .turn {
+        all: unset;
+        cursor: pointer;
+        position: relative;
+        display: grid;
+        grid-template-columns: 52px 36px minmax(0, 1fr);
+        gap: 12px;
+        padding: 10px 12px 10px 8px;
+        border-radius: 12px;
+        box-sizing: border-box;
+        transition: background 0.25s;
+      }
+      .turn:hover {
+        background: color-mix(in oklch, var(--rule) 50%, transparent);
+      }
+      .turn:focus-visible {
+        outline: 2px solid var(--edwin-ink);
+        outline-offset: -2px;
+      }
+      .turn .ts {
+        font: 12.5px var(--mono);
+        color: var(--muted);
+        padding-top: 3px;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+      }
+      .turn .mini {
+        width: 36px;
+        height: 36px;
+      }
+      .turn .say {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        font-size: 16px;
+        line-height: 1.55;
+        max-width: 72ch;
+      }
+      .turn .say b {
+        display: block;
+        font: 700 13px/1.4 var(--body);
+        color: var(--them-ink);
+        letter-spacing: 0.01em;
+      }
+      .turn.edwin .say b {
+        color: var(--edwin-ink);
+      }
+      .turn.sam .say b {
+        color: oklch(55% 0.13 300);
+      }
+      .turn .prog {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 3px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--edwin-ink);
+        transform-origin: 0 50%;
+        transform: scaleX(0);
+        opacity: 0;
+      }
+      .turn.them .prog {
+        background: var(--them-ink);
+      }
+      .turn.now {
+        background: var(--edwin-soft);
+      }
+      .turn.them.now {
+        background: var(--them-soft);
+      }
+      .turn.now .prog {
+        opacity: 0.7;
+      }
+      .turn.past .say > span {
+        color: var(--muted);
+      }
+      .note {
+        font-style: italic;
+        color: var(--muted);
+        font-size: 15px;
+        padding: 8px 12px 8px 108px;
+        max-width: 80ch;
+      }
+      .evt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 12px 6px 108px;
+        font: 500 12.5px var(--mono);
+        color: var(--edwin-ink);
+      }
+      .evt::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: color-mix(in oklch, var(--edwin-ink) 30%, transparent);
+      }
+      .evt svg {
+        width: 14px;
+        height: 14px;
+        flex: none;
+      }
+      @media (max-width: 520px) {
+        .turn {
+          grid-template-columns: 30px minmax(0, 1fr);
+          gap: 10px;
+          padding: 10px 8px;
+        }
+        .turn .ts {
+          display: none;
+        }
+        .turn .mini {
+          width: 30px;
+          height: 30px;
+        }
+        .turn .say {
+          font-size: 15.5px;
+        }
+        .note,
+        .evt {
+          padding-left: 48px;
+        }
+      }
+
+      /* mini player, shown when the phone is off screen */
+      .miniplayer {
+        position: fixed;
+        z-index: 20;
+        left: 50%;
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        width: min(
+          560px,
+          calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px)))
+        );
+        translate: -50% 0;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 10px 8px 8px;
+        border-radius: 22px;
+        background: var(--screen);
+        color: var(--screen-ink);
+        box-shadow:
+          0 18px 40px -16px oklch(15% 0.05 266 / 0.6),
+          0 0 0 1px oklch(35% 0.03 266);
+        overflow: hidden;
+      }
+      .miniplayer[hidden] {
+        display: none;
+      }
+      .miniplayer .who {
+        display: flex;
+      }
+      .miniplayer .who > span {
+        width: 40px;
+        height: 40px;
+        position: relative;
+      }
+      .miniplayer .who > span + span {
+        margin-left: -8px;
+      }
+      .miniplayer .txt {
+        min-width: 0;
+      }
+      .miniplayer .txt b {
+        display: block;
+        font: 600 14px/1.25 var(--body);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .miniplayer .txt span {
+        display: block;
+        font-size: 13px;
+        color: var(--screen-dim);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .miniplayer .ctl {
+        width: 42px;
+        height: 42px;
+      }
+      .miniplayer .ctl.big {
+        width: 44px;
+        height: 44px;
+      }
+      .miniplayer .ctl.big svg {
+        width: 20px;
+        height: 20px;
+      }
+      .miniplayer .bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: oklch(30% 0.03 266);
+      }
+      .miniplayer .bar i {
+        position: absolute;
+        inset: 0;
+        background: var(--edwin);
+        transform-origin: 0 50%;
+        transform: scaleX(0);
+      }
+      footer {
+        padding-block: 8px 48px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      footer .inner {
+        display: grid;
+        gap: 6px;
+        max-width: 1160px;
+      }
+      footer p {
+        margin: 0;
+        max-width: 80ch;
+      }
+      kbd {
+        font: 12px var(--mono);
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        padding: 0 5px;
+      }
+      .err {
+        color: var(--warn);
+        font-size: 13px;
+      }
+    </style>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="stage gutter">
+      <div class="inner stage-grid">
+        <div class="head">
+          <div class="kicker">AI phone assistant · demo calls</div>
+          <h1 id="h1">Edwin makes the calls Sam doesn't want to</h1>
+          <p class="lede">
+            Edwin is an AI voice agent. It <b>says up front that it's an AI</b>,
+            works through a brief, and hands the call over when a person is
+            needed. These calls are simulations: the businesses are AI
+            receptionists and Sam is made up, so nobody real is on the
+            recordings. Edwin itself runs with its real prompt and voice. Pick a
+            call, then press the green button.
+          </p>
+        </div>
+        <div
+          class="contacts"
+          id="contacts"
+          role="tablist"
+          aria-label="Calls"
+        ></div>
+        <div class="now-playing" id="np" aria-live="polite"></div>
+        <div class="device-wrap">
+          <div class="device" id="device">
+            <div class="screen" id="screen">
+              <div class="island" aria-hidden="true">
+                <i></i><i></i><i></i><i></i>
+              </div>
+              <div class="statusbar">
+                <span id="sclock">9:41</span
+                ><span class="sig" aria-hidden="true"
+                  ><span style="height: 4px"></span
+                  ><span style="height: 6px"></span
+                  ><span style="height: 8px"></span
+                  ><span style="height: 11px"></span
+                ></span>
+              </div>
+              <div class="callhead">
+                <div class="pair" aria-hidden="true">
+                  <div class="slot" id="slotE">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="talk-ring" id="trE"></div>
+                  </div>
+                  <div class="wire">
+                    <svg viewBox="0 0 34 14" preserveAspectRatio="none">
+                      <path
+                        id="wirePath"
+                        d="M0 7 L34 7"
+                        stroke="var(--edwin)"
+                        stroke-width="2"
+                        fill="none"
+                        stroke-dasharray="3 4"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </div>
+                  <div class="slot" id="slotT">
+                    <div
+                      class="talk-ring"
+                      id="trT"
+                      style="--c: var(--them)"
+                    ></div>
+                  </div>
+                  <div class="slot third" id="slotA">
+                    <div
+                      class="talk-ring"
+                      id="trA"
+                      style="--c: oklch(78% 0.1 300)"
+                    ></div>
+                  </div>
+                </div>
+                <div class="callname" id="callname"></div>
+                <div class="callstate" id="callstate"></div>
+              </div>
+              <div class="feed" id="feed"></div>
+              <div class="controls">
+                <button class="ctl" id="back" aria-label="Back 10 seconds">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 5V2L7 6l5 4V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"
+                    />
+                  </svg>
+                </button>
+                <button class="ctl big" id="call" aria-label="Play call">
+                  <svg viewBox="0 0 24 24" id="callIcon"></svg>
+                </button>
+                <button class="ctl" id="speed" aria-label="Playback speed">
+                  1×
+                </button>
+              </div>
+              <div class="homebar" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail gutter">
+      <div class="inner">
+        <div class="call-title" id="ctitle"></div>
+        <div class="tape">
+          <div class="lane-av" id="laneE"></div>
+          <canvas
+            id="cv"
+            aria-label="Call timeline. Edwin's voice on top, the other side below. Click to jump."
+          ></canvas>
+          <div class="lane-av" id="laneT"></div>
+          <div class="tape-meta">
+            <span id="clock">0:00 / 0:00</span>
+            <span class="key"
+              ><span
+                ><i class="bar" style="--c: var(--edwin-ink)"></i>Edwin</span
+              ><span
+                ><i class="bar" style="--c: var(--them-ink)"></i
+                ><span id="keyThem">Them</span></span
+              ><span><i style="--c: var(--good)"></i>Listen for</span
+              ><span><i style="--c: var(--warn)"></i>Rough spot</span></span
+            >
+          </div>
+        </div>
+        <div class="two">
+          <div>
+            <h3 class="sec-title">Listen for</h3>
+            <div class="chips" id="good"></div>
+          </div>
+          <div>
+            <h3 class="sec-title">Rough spots</h3>
+            <div class="chips" id="warn"></div>
+          </div>
+        </div>
+        <div class="tx-wrap">
+          <div class="tx-head">
+            <h3 class="sec-title" style="margin: 0">Transcript</h3>
+            <span class="src" id="src"></span
+            ><label
+              ><input type="checkbox" id="tones" checked /> Phone tones</label
+            ><label
+              ><input type="checkbox" id="follow" checked /> Follow along</label
+            >
+          </div>
+          <div class="tx" id="tx"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="gutter">
+      <div class="inner">
+        <p>
+          Both sides of each call are AI: Edwin with its real configuration and
+          made-up owner details, and a simulated receptionist from Vapi's
+          simulation testing. Transcripts come from Soniox, run separately on
+          each speaker's track, then tidied by hand for reading. The recordings
+          themselves are untouched. The ringing before each call is a
+          synthesized tone, since recordings start at pickup. The avatars'
+          mouths move with each speaker's real loudness.
+        </p>
+        <p>
+          Keyboard: <kbd>space</kbd> play or pause, <kbd>←</kbd>
+          <kbd>→</kbd> skip 5 seconds, <kbd>[</kbd> <kbd>]</kbd> previous or
+          next call.
+        </p>
+      </div>
+    </footer>
+
+    <div class="miniplayer" id="mini" hidden>
+      <span class="who" aria-hidden="true"
+        ><span id="miniE"></span><span id="miniT"></span
+      ></span>
+      <span class="txt"><b id="miniTitle"></b><span id="miniLine"></span></span>
+      <button class="ctl big" id="miniPlay" aria-label="Play call">
+        <svg viewBox="0 0 24 24" id="miniIcon"></svg>
+      </button>
+      <span class="bar" aria-hidden="true"><i id="miniBar"></i></span>
+    </div>
+
+    <audio id="audio" preload="metadata"></audio>
+
+    <script src="../_vendor/gsap.min.js"></script>
+    <script>
+      (() => {
+        const $ = (s, el = document) => el.querySelector(s);
+        const audio = $("#audio");
+        const G = window.gsap;
+        const fmt = (s) => {
+          s = Math.max(0, Math.floor(s || 0));
+          return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+        };
+        const esc = (s) =>
+          String(s).replace(
+            /[&<>"]/g,
+            (c) =>
+              ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+          );
+        const BN = /[\u0980-\u09FF]/; // Bengali script: mark it lang="bn" and show the English under it
+        const slug = (c) =>
+          c.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+        const css = (n) =>
+          getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+        const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+        const ENDED = {
+          "assistant-forwarded-call": "Forwarded to Sam",
+          "assistant-ended-call": "Edwin hung up",
+          "customer-ended-call": "They hung up",
+        };
+
+        /* ---------- avatars ---------- */
+        // Avatars come from calls.json ("people", built from reel.json). Unknown names get this neutral look.
+        const PEOPLE = {};
+        const DEFAULT_FACE = {
+          skin: "#b07c58",
+          hair: "#2a1f1a",
+          style: "short",
+          shirt: "oklch(58% 0.05 250)",
+          bg: "oklch(87% 0.03 250)",
+        };
+        // Mouth: an upper lip curve and a lower lip curve between two corners. Closed (open = 0) it's a thin smile;
+        // as it opens the lower lip drops, the corners widen a little, and a tongue shows inside (clipped to the mouth).
+        // Both lips are cubic curves with wide control points, so an open mouth is a rounded "D", not a pointed "V".
+        const MOUTH = {
+          orb: { cx: 50, y: 61, hw: 6.5, smile: 3.4, drop: 14, widen: 1.6 },
+          face: { cx: 50, y: 56, hw: 4.4, smile: 2.2, drop: 9.5, widen: 1.1 },
+        };
+        function mouthGeo(g, open) {
+          const hw = g.hw + g.widen * open;
+          const up = g.y + g.smile * (1 - open * 0.55); // upper lip flattens as the mouth opens
+          const lo = g.y + g.smile + 1.1 + g.drop * open; // lower lip drops
+          return { hw, up, lo, bottom: g.y + (lo - g.y) * 0.75 }; // a cubic with equal control heights reaches 3/4 of the way
+        }
+        function mouthD(g, open) {
+          const { hw, up, lo } = mouthGeo(g, open),
+            f = (n) => n.toFixed(2),
+            L = g.cx - hw,
+            R = g.cx + hw;
+          const k = 0.5 + 0.45 * Math.min(1, open * 3); // closed: lower lip hugs the upper one (a clean smile line); open: rounded bottom
+          return `M${f(L)} ${g.y} C${f(g.cx - hw * 0.5)} ${f(up)} ${f(g.cx + hw * 0.5)} ${f(up)} ${f(R)} ${g.y} C${f(g.cx + hw * k)} ${f(lo)} ${f(g.cx - hw * k)} ${f(lo)} ${f(L)} ${g.y}Z`;
+        }
+        // Hair, drawn for a head of half-width 21 centred at (50, 45); wider heads scale it. "back" layers go behind the body.
+        const HAIR = {
+          short:
+            '<path d="M29 45 Q28 21 50 20 Q72 21 71 45 Q68 33 58 31 Q46 35 34 33 Q31 38 29 45Z"/>',
+          curly:
+            '<g><circle cx="34" cy="32" r="8"/><circle cx="43" cy="25" r="9"/><circle cx="55" cy="24" r="9"/><circle cx="65" cy="30" r="8"/><circle cx="70" cy="39" r="5.5"/><circle cx="30" cy="40" r="5.5"/></g>',
+          curlyBig:
+            '<g><path d="M29.5 46 Q28 34 33 30 L67 30 Q72 34 70.5 46 Q69 38 64 35 L36 35 Q31 38 29.5 46Z"/><circle cx="32" cy="32" r="7"/><circle cx="37" cy="23" r="8.5"/><circle cx="46" cy="17" r="9"/><circle cx="56" cy="16.5" r="9.5"/><circle cx="65" cy="21" r="8.5"/><circle cx="69.5" cy="30" r="6.5"/><circle cx="41" cy="27" r="7"/><circle cx="51" cy="24" r="7.5"/><circle cx="60" cy="26" r="7"/><circle cx="44" cy="11.5" r="5"/><circle cx="57" cy="10.5" r="5.5"/></g>',
+          bun: '<g><circle cx="50" cy="16" r="8"/><path d="M29 47 Q27 22 50 21 Q73 22 71 47 Q70 34 61 30 Q50 27 39 30 Q31 34 29 47Z"/></g>',
+          wavy: '<path d="M28 46 Q25 20 50 19 Q75 19 72 44 Q69 35 63 34 Q60 29 53 31 Q47 27 41 31 Q35 30 33 36 Q30 39 28 46Z"/>',
+          fade: '<path d="M30 42 Q30 22 50 21 Q70 22 70 42 Q66 30 50 29 Q34 30 30 42Z"/>',
+          messy:
+            '<path d="M28.5 47 C26 34 27 22 37 17 C41 12 50 11 55 14 C61 12 69 16 71 24 C74 30 73 40 71.5 47 C70 40 67 34 62 32 C58 35 52 31 47 33.5 C43 31 37 34 34 37 C31 39 29.5 43 28.5 47Z"/><path d="M38 17 C35 14 31 16 30 19 C33 18 35 19 37 21Z"/><path d="M60 14 C63 10 68 11 70 15 C67 14 64 15 62 17Z"/>',
+          swept:
+            '<path d="M29 45 C27 31 32 19 45 15.5 C57 12.5 70 16 72 29 C73 35 72.5 41 71 45 C69.5 37 66 31.5 60 29.5 C53 27 44 28 37.5 31 C33 33.5 30.5 38.5 29 45Z"/><path d="M40 18 C48 13 60 13 67 19 C60 16 50 16 42 21Z" fill-opacity=".55" fill="oklch(45% 0.02 40)"/>',
+          long: '<path d="M28 50 C26 31 36 19 52 19.5 C66 20 74 31 72 50 C71 41 68 34 63 30 C58 27 50 26.5 44 29.5 C38 32 34 36 31.5 41 C30 44 28.8 47 28 50Z"/><path d="M44 29.5 C48 24 56 22.5 63 25 C57 25 50 27 46 31Z" fill-opacity=".35" fill="oklch(40% 0.03 40)"/>',
+        };
+        const HAIR_BACK = {
+          long: '<path d="M27 36 C20 52 19 66 22 78 C24 86 20 94 17 104 L83 104 C80 94 76 86 78 78 C81 66 80 52 73 36 C70 26 61 19 50 19 C39 19 30 26 27 36Z"/>',
+        };
+        const BEARD = {
+          full: '<path d="M30 49 C30.5 62 39.5 69.5 50 69.5 C60.5 69.5 69.5 62 70 49 C68 55.5 63.5 59 58 59.5 C55 61.6 45 61.6 42 59.5 C36.5 59 32 55.5 30 49Z" fill-opacity=".88"/><path d="M43.5 54.8 C45.8 53.2 48.3 53.5 50 54.2 C51.7 53.5 54.2 53.2 56.5 54.8 C54.4 55.5 52 55.2 50 55.4 C48 55.2 45.6 55.5 43.5 54.8Z" fill-opacity=".9"/>',
+          goatee:
+            '<path fill-opacity=".9" d="M43 54.6 C45.5 52.6 48.2 53 50 53.8 C51.8 53 54.5 52.6 57 54.6 C54.8 55.6 52 55.2 50 55.4 C48 55.2 45.2 55.6 43 54.6Z"/><path d="M44.5 60.5 C45.5 67.5 54.5 67.5 55.5 60.5 C53 62.4 47 62.4 44.5 60.5Z"/><path d="M42.5 57 C42 60.5 43.5 62 44.6 61.6 L44.5 60.2Z"/><path d="M57.5 57 C58 60.5 56.5 62 55.4 61.6 L55.5 60.2Z"/>',
+          stubble:
+            '<path d="M31 50 C31.5 61 40 69 50 69 C60 69 68.5 61 69 50 C67 56 63 59 58 59.5 C55 61.5 45 61.5 42 59.5 C37 59 33 56 31 50Z" fill-opacity=".18"/>',
+        };
+        const TOP = {
+          polo: (t) =>
+            `<path d="M41 71 L48 79 L44.5 71.5Z M59 71 L52 79 L55.5 71.5Z" fill="${t}"/><path d="M50 78 V92" stroke="${t}" stroke-width="1.2"/>`,
+          turtleneck: (t) =>
+            `<path d="M40 74 L50 104 L60 74 Q50 69 40 74Z" fill="${t}"/><rect x="41.5" y="60" width="17" height="15" rx="6" fill="${t}"/>`,
+          jacket: (t) =>
+            `<path d="M38.5 72 Q50 82 61.5 72 L64 77 Q50 89 36 77Z" fill="${t}"/><path d="M50 84 V104" stroke="${t}" stroke-width="1.6"/><path d="M22 92 Q26 84 33 82 L30 104 L20 104Z M78 92 Q74 84 67 82 L70 104 L80 104Z" fill="oklch(95% 0.01 230)" fill-opacity=".85"/>`,
+          tee: () => "",
+        };
+        const faceGeo = (p) => ({
+          ...MOUTH.face,
+          smile: p.smile ?? MOUTH.face.smile,
+        });
+        function face(name, cls = "") {
+          const p = PEOPLE[name] || DEFAULT_FACE,
+            id = `${name.replace(/\W/g, "")}-${cls}`;
+          const rx = p.wide || 21,
+            sx = (rx / 21).toFixed(3),
+            scale = `transform="translate(50 0) scale(${sx} 1) translate(-50 0)"`;
+          const g = faceGeo(p),
+            lip = p.lip || "oklch(30% 0.08 20)",
+            eyeRy = p.squint ? 1.8 : 3.1;
+          const glasses =
+            p.glasses === "rect"
+              ? `<g fill="oklch(85% 0.02 230 / .18)" stroke="${p.frames || "oklch(22% 0.02 250)"}" stroke-width="1.7"><rect x="35" y="41.5" width="12.5" height="9" rx="2.4"/><rect x="52.5" y="41.5" width="12.5" height="9" rx="2.4"/><path d="M47.5 45 H52.5 M35 44.5 H${50 - rx} M65 44.5 H${50 + rx}" fill="none"/></g>`
+              : p.glasses
+                ? `<g fill="none" stroke="${p.frames || "oklch(25% 0.02 250)"}" stroke-width="1.6"><circle cx="42" cy="46" r="5.5"/><circle cx="58" cy="46" r="5.5"/><path d="M47.5 46 H52.5"/></g>`
+                : "";
+          return `<svg viewBox="0 0 100 100" class="face ${cls}" data-smile="${g.smile}" aria-hidden="true">
+      <defs>
+        <linearGradient id="bg-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p.bg}"/><stop offset="1" stop-color="${p.bg2 || p.bg}"/></linearGradient>
+        ${p.dots ? `<pattern id="pt-${id}" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="${p.shirt}"/><circle cx="2.5" cy="2.5" r=".7" fill="${p.dots}"/></pattern>` : ""}
+        <clipPath id="c-${id}"><circle cx="50" cy="50" r="50"/></clipPath>
+      </defs>
+      <circle cx="50" cy="50" r="50" fill="url(#bg-${id})"/>
+      <g clip-path="url(#c-${id})">
+        ${HAIR_BACK[p.style] ? `<g fill="${p.hair}" ${scale}>${HAIR_BACK[p.style]}</g>` : ""}
+        <path d="M14 104 Q16 74 50 72 Q84 74 86 104Z" fill="${p.dots ? `url(#pt-${id})` : p.shirt}"/>
+        <rect x="43" y="58" width="14" height="16" rx="6" fill="${p.skin}"/>
+        ${(TOP[p.top] || TOP.tee)(p.trim || "oklch(25% 0.02 250)")}
+        <g class="head">
+          <ellipse cx="50" cy="45" rx="${rx}" ry="23" fill="${p.skin}"/>
+          ${p.style === "long" ? "" : `<ellipse cx="${50 - rx + 0.5}" cy="47" rx="3.5" ry="5" fill="${p.skin}"/><ellipse cx="${50 + rx - 0.5}" cy="47" rx="3.5" ry="5" fill="${p.skin}"/>`}
+          ${p.beard ? `<g fill="${p.hair}" ${scale}>${BEARD[p.beard]}</g>` : ""}
+          <g fill="${p.hair}" ${scale}>${HAIR[p.style] || HAIR.short}</g>
+          <ellipse cx="50" cy="51.6" rx="2" ry="1.2" fill="oklch(35% 0.06 40 / .16)"/>
+          <ellipse cx="37.5" cy="53" rx="3.6" ry="2.1" fill="oklch(70% 0.14 20 / ${p.blush ?? 0.16})"/><ellipse cx="62.5" cy="53" rx="3.6" ry="2.1" fill="oklch(70% 0.14 20 / ${p.blush ?? 0.16})"/>
+          ${p.stud ? '<circle cx="47.6" cy="52.2" r=".95" fill="oklch(92% 0.01 250)"/>' : ""}
+          <g class="eyes" fill="oklch(22% 0.03 40)"><ellipse cx="42" cy="46" rx="2.7" ry="${eyeRy}"/><ellipse cx="58" cy="46" rx="2.7" ry="${eyeRy}"/>
+            ${p.squint ? "" : '<circle cx="42.9" cy="44.9" r=".85" fill="oklch(98% 0.005 250)"/><circle cx="58.9" cy="44.9" r=".85" fill="oklch(98% 0.005 250)"/>'}
+            ${p.liner ? '<path d="M44.2 44.9 L46.8 43.4 M55.8 44.9 L53.2 43.4" stroke="oklch(20% 0.02 40)" stroke-width="1" stroke-linecap="round"/>' : ""}</g>
+          <path d="M37.5 40.5 Q42 38.3 46.2 39.8" stroke="${p.hair}" stroke-width="${p.brow || 1.6}" fill="none" stroke-linecap="round"/>
+          <path d="M53.8 39.8 Q58 38.3 62.5 40.5" stroke="${p.hair}" stroke-width="${p.brow || 1.6}" fill="none" stroke-linecap="round"/>
+          ${glasses}
+          <clipPath id="m-${id}"><path class="mclip" d="${mouthD(g, 0)}"/></clipPath>
+          <path class="mouth" d="${mouthD(g, 0)}" fill="oklch(28% 0.07 20)" stroke="${lip}" stroke-width="1.7" stroke-linejoin="round"/>
+          <ellipse class="tongue" cx="50" cy="60" rx="0" ry="0" fill="oklch(64% 0.16 15)" clip-path="url(#m-${id})"/>
+        </g>
+      </g></svg>`;
+        }
+        function orb(cls = "") {
+          const id = "o" + Math.random().toString(36).slice(2, 7);
+          return `<svg viewBox="0 0 100 100" class="orb ${cls}" aria-hidden="true">
+      <defs>
+        <radialGradient id="${id}a" cx="35%" cy="30%"><stop offset="0" stop-color="oklch(92% 0.1 190)"/><stop offset="1" stop-color="oklch(62% 0.16 210)"/></radialGradient>
+        <radialGradient id="${id}b"><stop offset="0" stop-color="oklch(80% 0.17 175 / .95)"/><stop offset="1" stop-color="oklch(80% 0.17 175 / 0)"/></radialGradient>
+        <radialGradient id="${id}c"><stop offset="0" stop-color="oklch(68% 0.2 270 / .9)"/><stop offset="1" stop-color="oklch(68% 0.2 270 / 0)"/></radialGradient>
+        <clipPath id="${id}k"><circle cx="50" cy="50" r="46"/></clipPath>
+      </defs>
+      <circle class="halo" cx="50" cy="50" r="48" fill="oklch(80% 0.14 192 / .18)"/>
+      <circle cx="50" cy="50" r="46" fill="url(#${id}a)"/>
+      <g clip-path="url(#${id}k)">
+        <g class="swirl"><circle cx="34" cy="64" r="30" fill="url(#${id}b)"/><circle cx="70" cy="38" r="28" fill="url(#${id}c)"/></g>
+        <g class="swirl2"><circle cx="66" cy="70" r="20" fill="url(#${id}b)"/></g>
+      </g>
+      <g class="eyes" fill="oklch(22% 0.05 250)"><rect x="37" y="42" width="7" height="12" rx="3.5"/><rect x="56" y="42" width="7" height="12" rx="3.5"/></g>
+      <clipPath id="${id}m"><path class="mclip" d="${mouthD(MOUTH.orb, 0)}"/></clipPath>
+      <path class="mouth" d="${mouthD(MOUTH.orb, 0)}" fill="oklch(22% 0.05 250)" stroke="oklch(22% 0.05 250)" stroke-width="2.4" stroke-linejoin="round"/>
+      <ellipse class="tongue" cx="50" cy="66" rx="0" ry="0" fill="oklch(68% 0.17 12)" clip-path="url(#${id}m)"/>
+    </svg>`;
+        }
+        const avatar = (who, cls) =>
+          who === "Edwin" ? orb(cls) : face(who, cls);
+
+        // Idle life: blinking, swirling. Started once per svg.
+        const lived = new WeakSet();
+        function bringToLife(root) {
+          if (!G || reduce.matches) return;
+          root.querySelectorAll("svg").forEach((svg) => {
+            if (lived.has(svg)) return;
+            lived.add(svg);
+            const eyes = svg.querySelector(".eyes");
+            if (eyes) {
+              const blink = () =>
+                G.timeline({
+                  onComplete: () => G.delayedCall(2 + Math.random() * 4, blink),
+                })
+                  .to(eyes, {
+                    scaleY: 0.1,
+                    transformOrigin: "50% 50%",
+                    duration: 0.07,
+                    ease: "power2.in",
+                  })
+                  .to(eyes, { scaleY: 1, duration: 0.12, ease: "power2.out" });
+              G.delayedCall(Math.random() * 3, blink);
+            }
+            const sw = svg.querySelector(".swirl"),
+              sw2 = svg.querySelector(".swirl2");
+            if (sw) {
+              G.to(sw, {
+                rotation: 360,
+                svgOrigin: "50 50",
+                duration: 9,
+                ease: "none",
+                repeat: -1,
+              });
+              G.to(sw2, {
+                rotation: -360,
+                svgOrigin: "50 50",
+                duration: 6,
+                ease: "none",
+                repeat: -1,
+              });
+            }
+            const head = svg.querySelector(".head");
+            if (head)
+              G.to(head, {
+                y: -1.2,
+                rotation: 1.5,
+                svgOrigin: "50 70",
+                duration: 2.2 + Math.random(),
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1,
+              });
+          });
+        }
+
+        /* ---------- phone tones (synthesized; recordings start at pickup) ---------- */
+        const Tones = (() => {
+          let ctx = null,
+            ring = null,
+            on = true;
+          try {
+            on = localStorage.getItem("tones") !== "0";
+          } catch (e) {}
+          const ac = () => {
+            if (!ctx) {
+              const C = window.AudioContext || window.webkitAudioContext;
+              if (!C) return null;
+              ctx = new C();
+            }
+            if (ctx.state === "suspended") ctx.resume();
+            return ctx;
+          };
+          // North American ringback: 440 + 480 Hz, 2 s on, 4 s off.
+          function ringback() {
+            if (!on || ring) return;
+            const c = ac();
+            if (!c) return;
+            const g = c.createGain();
+            g.gain.value = 0;
+            g.connect(c.destination);
+            const o1 = c.createOscillator(),
+              o2 = c.createOscillator();
+            o1.frequency.value = 440;
+            o2.frequency.value = 480;
+            o1.connect(g);
+            o2.connect(g);
+            const t0 = c.currentTime + 0.02;
+            o1.start(t0);
+            o2.start(t0);
+            for (let k = 0; k < 20; k++) {
+              const s = t0 + k * 6;
+              g.gain.setTargetAtTime(0.05, s, 0.01);
+              g.gain.setTargetAtTime(0, s + 2, 0.015);
+            }
+            ring = { g, o1, o2 };
+          }
+          function stop() {
+            if (!ring) return;
+            const c = ctx;
+            ring.g.gain.cancelScheduledValues(c.currentTime);
+            ring.g.gain.setTargetAtTime(0, c.currentTime, 0.02);
+            const r = ring;
+            setTimeout(() => {
+              try {
+                r.o1.stop();
+                r.o2.stop();
+              } catch (e) {}
+            }, 200);
+            ring = null;
+          }
+          function hangup() {
+            if (!on) return;
+            const c = ac();
+            if (!c) return;
+            [0, 0.22].forEach((d) => {
+              const o = c.createOscillator(),
+                g = c.createGain();
+              o.frequency.value = 620;
+              g.gain.value = 0;
+              o.connect(g);
+              g.connect(c.destination);
+              const s = c.currentTime + d;
+              g.gain.setTargetAtTime(0.05, s, 0.005);
+              g.gain.setTargetAtTime(0, s + 0.14, 0.01);
+              o.start(s);
+              o.stop(s + 0.3);
+            });
+          }
+          return {
+            ringback,
+            stop,
+            hangup,
+            unlock: ac,
+            get on() {
+              return on;
+            },
+            set on(v) {
+              on = v;
+              if (!v) stop();
+              try {
+                localStorage.setItem("tones", v ? "1" : "0");
+              } catch (e) {}
+            },
+            get ringing() {
+              return !!ring;
+            },
+          };
+        })();
+
+        /* ---------- state ---------- */
+        let calls = [],
+          cur = null,
+          follow = true,
+          raf = 0,
+          lastActive = -1,
+          shown = new Set(),
+          ringTl = null,
+          samIn = false,
+          thinkTween = null;
+        try {
+          follow = localStorage.getItem("follow") !== "0";
+        } catch (e) {}
+        $("#follow").checked = follow;
+        const otherName = (c) =>
+          c.turns.find((t) => t.who !== "Edwin" && t.who !== "note")?.who ||
+          "Tester";
+        const dur = () =>
+          (isFinite(audio.duration) && audio.duration) ||
+          cur?.audioDuration ||
+          1;
+        const firstSpeech = (c) =>
+          Math.min(...c.turns.filter((t) => t.t != null).map((t) => t.t));
+
+        function contacts() {
+          $("#contacts").innerHTML = calls
+            .map(
+              (c, i) => `
+      <button class="contact" role="tab" data-i="${i}" aria-current="${c === cur}" aria-label="${esc(c.title)}, ${esc(c.who)}">
+        <span class="av">${face(otherName(c), "ct" + i)}</span>
+        <span class="nm">${esc(otherName(c))}</span>
+        <span class="ln">${esc(c.kind)}</span>
+      </button>`,
+            )
+            .join("");
+        }
+        const markCurrent = () =>
+          document
+            .querySelectorAll(".contact")
+            .forEach((b) =>
+              b.setAttribute("aria-current", calls[+b.dataset.i] === cur),
+            );
+
+        // The silent stretch while Edwin dials Sam for a handover: from when both lines go quiet after the transfer until Sam speaks.
+        function holdWindow(c) {
+          const tr = c.events.find((e) => e.label.startsWith("Transfer")),
+            ar = c.turns.find((t) => t.who === "Sam");
+          if (!tr || !ar) return null;
+          const E = c.lanes.edwin,
+            O = c.lanes.other,
+            end = ar.t - 0.4;
+          // Walk back from Sam's first word to the start of the silent stretch before it.
+          let s = Math.floor(end * 10);
+          while (
+            s > tr.t * 10 &&
+            (E[s - 1] || 0) <= 0.3 &&
+            (O[s - 1] || 0) <= 0.3
+          )
+            s--;
+          s += 8; // let the last word finish
+          return end - s / 10 >= 3 ? [s / 10, end] : null;
+        }
+        const inHold = (t) => cur?.hold && t >= cur.hold[0] && t < cur.hold[1];
+
+        function nowPlaying(c) {
+          $("#np").innerHTML =
+            `<span class="eyebrow">Call ${calls.indexOf(c) + 1} of ${calls.length} · ${esc(c.who)}</span><h2>${esc(c.title)}</h2><p>${esc(c.outcome)}</p>
+      <div class="facts"><span><b>${fmt(c.duration)}</b> long</span><span>${ENDED[c.endedReason] || c.endedReason}</span><span>${c.date.slice(5).replace("-", "/")}</span></div>`;
+        }
+
+        const ICON = {
+          phone:
+            '<path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/>',
+          pause: '<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>',
+          cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+          fwd: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h14M13 6l6 6-6 6"/></svg>',
+          phoneSm:
+            '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>',
+          end: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+        };
+        const callIcon = () => {
+          const playing = !audio.paused || dialing;
+          [
+            ["#callIcon", "#call"],
+            ["#miniIcon", "#miniPlay"],
+          ].forEach(([i, b]) => {
+            $(i).innerHTML = playing ? ICON.pause : ICON.phone;
+            $(b).classList.toggle("live", playing);
+            $(b).setAttribute(
+              "aria-label",
+              playing ? "Pause call" : "Play call",
+            );
+          });
+        };
+
+        function select(i, opts = {}) {
+          const c = calls[i];
+          if (!c) return;
+          const wasPlaying = !audio.paused || dialing;
+          cancelDial();
+          audio.pause();
+          Tones.stop();
+          cur = c;
+          lastActive = -1;
+          shown = new Set();
+          samIn = false;
+          c.hold ??= holdWindow(c);
+          markCurrent();
+          nowPlaying(c);
+          const them = otherName(c);
+          $("#slotE").querySelector("svg")?.remove();
+          $("#slotT").querySelector("svg")?.remove();
+          $("#slotA").querySelector("svg")?.remove();
+          $("#slotE").insertAdjacentHTML("beforeend", orb("phoneE"));
+          $("#slotT").insertAdjacentHTML("beforeend", face(them, "phoneT"));
+          $("#slotA").insertAdjacentHTML("beforeend", face("Sam", "phoneA"));
+          G ? G.set("#slotA", { width: 0, autoAlpha: 0, marginLeft: 0 }) : null;
+          $("#laneE").innerHTML = orb("lane");
+          $("#laneT").innerHTML = face(them, "lane");
+          $("#miniE").innerHTML = orb("mini");
+          $("#miniT").innerHTML = face(them, "mini");
+          $("#miniTitle").textContent = `${c.title} · ${them}`;
+          $("#miniLine").textContent = c.kind;
+          $("#keyThem").textContent = them;
+          $("#ctitle").innerHTML =
+            `<span class="pairs"><span>${orb("ct")}</span><span>${face(them, "cth")}</span></span><div><h2>${esc(c.title)}</h2><p>Edwin calling ${esc(c.who)} · ${fmt(c.duration)} · ${esc(c.kind)}</p></div>`;
+          $("#callname").textContent = `Edwin → ${them}`;
+          $("#trT").style.setProperty("--c", "var(--them)");
+          idleFeed(c);
+          $("#good").innerHTML = c.moments.map((m) => chip(m, "good")).join("");
+          $("#warn").innerHTML = c.issues.length
+            ? c.issues.map((m) => chip(m, "warn")).join("")
+            : '<p class="none">None noticed on this call.</p>';
+          $("#src").textContent = c.source;
+          $("#tx").innerHTML = transcript(c);
+          audio.src = c.audio;
+          audio.load();
+          audio.currentTime = 0;
+          try {
+            history.replaceState(null, "", "#" + slug(c));
+          } catch (e) {}
+          bringToLife(document);
+          if (G && !reduce.matches && !opts.quiet) {
+            G.fromTo(
+              ".callhead, .feed",
+              { autoAlpha: 0, y: 14 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.55,
+                ease: "expo.out",
+                stagger: 0.08,
+              },
+            );
+            G.fromTo(
+              "#slotE svg, #slotT svg",
+              { scale: 0.6 },
+              {
+                scale: 1,
+                duration: 0.7,
+                ease: "expo.out",
+                stagger: 0.1,
+                transformOrigin: "50% 50%",
+              },
+            );
+            G.fromTo(
+              "#np > *",
+              { autoAlpha: 0, y: 10 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "expo.out",
+                stagger: 0.06,
+              },
+            );
+            G.fromTo(
+              "#good .chip, #warn .chip",
+              { autoAlpha: 0, x: -8 },
+              {
+                autoAlpha: 1,
+                x: 0,
+                duration: 0.45,
+                ease: "power3.out",
+                stagger: 0.04,
+              },
+            );
+          }
+          callIcon();
+          draw();
+          sync();
+          if (wasPlaying || opts.play) start();
+        }
+
+        function idleFeed(c) {
+          const task = c.task || c.kind;
+          $("#feed").innerHTML =
+            `<div class="brief"><span class="lbl">Edwin's brief</span><b>${esc(task.charAt(0).toUpperCase() + task.slice(1))}</b><span>with ${esc(c.who)}</span><span class="hint"><i></i>${fmt(c.duration)} call · press to listen</span></div>`;
+          $("#callstate").textContent = "Ready to call";
+        }
+
+        function chip(m, cls) {
+          return `<button class="chip ${cls}" data-seek="${m.t}"><span class="ts">${fmt(m.t)}</span><span>${esc(m.label)}</span></button>`;
+        }
+
+        function transcript(c) {
+          const items = [];
+          c.turns.forEach((t, i) => {
+            const at = t.t ?? (c.turns[i - 1]?.t ?? 0) + 0.01;
+            if (t.who === "note")
+              return items.push({
+                t: at,
+                html: `<div class="note">${esc(t.text)}</div>`,
+              });
+            const e = t.who === "Edwin";
+            items.push({
+              t: at,
+              html: `<button class="turn ${e ? "edwin" : t.who === "Sam" ? "them sam" : "them"}" data-seek="${t.t}" data-ti="${i}"><span class="ts">${fmt(t.t)}</span><span class="mini">${avatar(t.who, "tx" + i)}</span><span class="say"><b>${esc(t.who)}</b><span${BN.test(t.text) ? ' lang="bn"' : ""}>${esc(t.text)}${t.aside ? `<em class="aside">${esc(t.aside)}</em>` : ""}</span>${t.en && t.en !== t.text ? `<span class="en">${esc(t.en)}</span>` : ""}</span><span class="prog"></span></button>`,
+            });
+          });
+          const seen = new Set();
+          c.events.forEach((e) => {
+            const k = e.label + Math.round(e.t);
+            if (seen.has(k)) return;
+            seen.add(k);
+            const icon =
+              e.label === "Checked calendar"
+                ? ICON.cal
+                : e.label.startsWith("Transfer")
+                  ? ICON.fwd
+                  : ICON.end;
+            items.push({
+              t: e.t + 0.001,
+              html: `<div class="evt">${icon}<span>${fmt(e.t)} · ${esc(e.label === "Checked calendar" ? "Edwin checks Sam's calendar" : e.label)}</span></div>`,
+            });
+          });
+          if (c.hold)
+            items.push({
+              t: c.hold[0],
+              html: `<div class="evt">${ICON.fwd}<span>${fmt(c.hold[0])} · On hold while Edwin rings Sam</span></div>`,
+            });
+          return items
+            .sort((a, b) => a.t - b.t)
+            .map((x) => x.html)
+            .join("");
+        }
+
+        /* ---------- playback ---------- */
+        // Pressing call from the top rings first (one ringback cycle), then the recording starts at pickup.
+        let dialing = null;
+        function cancelDial() {
+          if (dialing) {
+            dialing.kill();
+            dialing = null;
+            Tones.stop();
+            ringTl?.kill();
+            G?.set("#slotE .ring", { autoAlpha: 0 });
+          }
+        }
+        function start() {
+          if (!cur) return;
+          Tones.unlock();
+          if (audio.currentTime < 0.2 && !dialing && G) {
+            $("#feed").innerHTML = "";
+            $("#callstate").textContent = `Calling ${otherName(cur)}…`;
+            if (!reduce.matches) ring();
+            Tones.ringback();
+            dialing = G.delayedCall(2.6, () => {
+              dialing = null;
+              Tones.stop();
+              audio.play().catch(() => {});
+            });
+            callIcon();
+            showMini();
+            return;
+          }
+          audio.play().catch(() => {});
+        }
+        function pauseAll() {
+          cancelDial();
+          audio.pause();
+          Tones.stop();
+          callIcon();
+          state();
+        }
+        function ring() {
+          ringTl?.kill();
+          ringTl = G.timeline({ repeat: -1 }).fromTo(
+            "#slotE .ring",
+            { scale: 1, autoAlpha: 0.8 },
+            {
+              scale: 1.9,
+              autoAlpha: 0,
+              duration: 1.3,
+              ease: "power2.out",
+              stagger: 0.45,
+            },
+          );
+          G.fromTo(
+            "#wirePath",
+            { strokeDashoffset: 0 },
+            { strokeDashoffset: -21, duration: 0.8, ease: "none", repeat: 3 },
+          );
+        }
+        function seek(t) {
+          audio.currentTime = Math.max(0, Math.min(dur() - 0.05, t));
+          if (audio.paused) audio.play().catch(() => {});
+          rebuildFeed();
+          draw();
+          sync();
+        }
+
+        // Loudness at time t, blended between the 0.1 s bins so it never steps. Below the floor counts as silence.
+        const level = (lane, t) => {
+          const x = t * 10,
+            i = Math.floor(x),
+            f = x - i;
+          const v = (lane[i] || 0) * (1 - f) + (lane[i + 1] || 0) * f;
+          return v < 0.3 ? 0 : Math.min(1, (v - 0.3) / 0.6);
+        };
+        // Envelope: the mouth opens fast and closes a little slower, like real speech, independent of frame rate.
+        const env = { e: 0, o: 0 };
+        let envAt = 0;
+        function envStep(cur, target, dt) {
+          const tau = target > cur ? 0.045 : 0.12;
+          return cur + (target - cur) * (1 - Math.exp(-dt / tau));
+        }
+        // Syllable flutter (~4 to 5 Hz) so a held loud stretch reads as words, not a frozen open mouth. Driven by audio time.
+        const flutter = (t, ph) =>
+          Math.min(
+            1,
+            Math.max(
+              0,
+              0.5 +
+                0.32 * Math.sin(2 * Math.PI * 4.3 * t + ph) +
+                0.18 * Math.sin(2 * Math.PI * 7.1 * t + ph * 2.3),
+            ),
+          );
+
+        function setMouth(svg, v, isOrb) {
+          const m = svg?.querySelector(".mouth");
+          if (!m) return;
+          const g = isOrb
+              ? MOUTH.orb
+              : {
+                  ...MOUTH.face,
+                  smile: +svg.dataset.smile || MOUTH.face.smile,
+                },
+            d = mouthD(g, v);
+          m.setAttribute("d", d);
+          svg.querySelector(".mclip")?.setAttribute("d", d);
+          const tg = svg.querySelector(".tongue");
+          if (tg) {
+            const m2 = mouthGeo(g, v),
+              depth = m2.bottom - g.y;
+            tg.setAttribute("cy", (g.y + depth * 0.82).toFixed(2));
+            tg.setAttribute("rx", (m2.hw * 0.6).toFixed(2));
+            tg.setAttribute("ry", Math.max(0, depth * 0.36 - 0.6).toFixed(2));
+          }
+        }
+
+        function liveAvatars() {
+          if (!cur) return;
+          const t = audio.currentTime || 0,
+            playing = !audio.paused;
+          if (ringTl && !dialing && t >= firstSpeech(cur) - 0.3 && !inHold(t)) {
+            ringTl.kill();
+            ringTl = null;
+            G?.to("#slotE .ring", { autoAlpha: 0, duration: 0.3 });
+          }
+          // Handover hold: ring Sam while the line is silent.
+          const holding = playing && inHold(t);
+          if (holding && !Tones.ringing) Tones.ringback();
+          if (!holding && Tones.ringing && !dialing) Tones.stop();
+          const now = performance.now(),
+            dt = Math.min(0.1, envAt ? (now - envAt) / 1000 : 0.016);
+          envAt = now;
+          env.e = envStep(env.e, playing ? level(cur.lanes.edwin, t) : 0, dt);
+          env.o = envStep(env.o, playing ? level(cur.lanes.other, t) : 0, dt);
+          if (env.e < 0.004) env.e = 0;
+          if (env.o < 0.004) env.o = 0;
+          const e = env.e * (playing ? flutter(t, 0) : 1),
+            o = env.o * (playing ? flutter(t, 1.9) : 1);
+          const remoteWho = currentRemote(t);
+          setMouth($("#slotE svg"), e, true);
+          setMouth($("#laneE svg"), e, true);
+          const remoteSlot = remoteWho === "Sam" ? "#slotA" : "#slotT";
+          setMouth($("#slotT svg"), remoteWho === "Sam" ? 0 : o);
+          setMouth($("#slotA svg"), remoteWho === "Sam" ? o : 0);
+          setMouth($("#laneT svg"), o);
+          const ringE = $("#trE"),
+            ringT = $("#trT"),
+            ringA = $("#trA");
+          // Rings and halo follow the smoothed envelope (no flutter), so they swell with speech instead of flickering.
+          ringE.style.opacity = Math.min(1, env.e * 1.6).toFixed(3);
+          ringE.style.transform = `scale(${(1 + env.e * 0.12).toFixed(3)})`;
+          const tr = remoteWho === "Sam" ? ringA : ringT,
+            other = remoteWho === "Sam" ? ringT : ringA;
+          tr.style.opacity = Math.min(1, env.o * 1.6).toFixed(3);
+          tr.style.transform = `scale(${(1 + env.o * 0.12).toFixed(3)})`;
+          other.style.opacity = 0;
+          if (holding) {
+            ringA.style.opacity = (
+              0.3 +
+              0.4 * Math.abs(Math.sin(t * 2.5))
+            ).toFixed(2);
+            ringA.style.transform = "scale(1.06)";
+          }
+          const halo = $("#slotE .halo");
+          if (halo) halo.setAttribute("r", (48 + env.e * 4).toFixed(2));
+          document.querySelectorAll(".island i").forEach((b, k) => {
+            const v = Math.max(e, o);
+            b.style.opacity = playing ? 1 : 0;
+            b.style.height = 4 + v * (6 + (k % 2) * 4) + "px";
+          });
+          // handover: Sam joins
+          setMouth($("#miniE svg"), e, true);
+          setMouth($("#miniT svg"), o);
+          const joinAt = cur.hold
+            ? cur.hold[0]
+            : cur.turns.find((x) => x.who === "Sam")?.t;
+          const shouldJoin = joinAt != null && t >= joinAt - 0.3;
+          if (shouldJoin !== samIn) {
+            samIn = shouldJoin;
+            if (G)
+              G.to("#slotA", {
+                width: samIn ? 76 : 0,
+                marginLeft: samIn ? -14 : 0,
+                autoAlpha: samIn ? 1 : 0,
+                duration: reduce.matches ? 0 : 0.6,
+                ease: "expo.out",
+              });
+            $("#callname").textContent = samIn
+              ? `Edwin → ${otherName(cur)} + Sam`
+              : `Edwin → ${otherName(cur)}`;
+          }
+        }
+        function currentRemote(t) {
+          let who = otherName(cur);
+          for (const x of cur.turns) {
+            if (
+              x.t != null &&
+              x.t <= t + 0.3 &&
+              x.who !== "Edwin" &&
+              x.who !== "note"
+            )
+              who = x.who;
+          }
+          return who;
+        }
+
+        function bubble(item) {
+          if (item.kind === "evt") {
+            const icon =
+              item.key === "hold"
+                ? ICON.phoneSm
+                : item.label === "Checked calendar"
+                  ? ICON.cal
+                  : item.label.startsWith("Transfer")
+                    ? ICON.fwd
+                    : ICON.end;
+            return `<div class="sys">${icon}<span>${esc(item.label === "Checked calendar" ? "Checking Sam's calendar" : item.label)}</span></div>`;
+          }
+          const cls =
+            item.who === "Edwin" ? "e" : item.who === "Sam" ? "a" : "t";
+          return `<div class="bub ${cls}"><small>${esc(item.who)}</small><span${BN.test(item.text) ? ' lang="bn"' : ""}>${esc(item.text)}</span>${item.aside ? `<em>${esc(item.aside)}</em>` : ""}${item.en && item.en !== item.text ? `<span class="en">${esc(item.en)}</span>` : ""}</div>`;
+        }
+        function feedItems() {
+          const list = [];
+          cur.turns.forEach((x, i) => {
+            if (x.t != null && x.who !== "note")
+              list.push({
+                key: "t" + i,
+                t: x.t,
+                who: x.who,
+                text: x.text,
+                en: x.en,
+                aside: x.aside,
+              });
+          });
+          if (cur.hold)
+            list.push({
+              key: "hold",
+              t: cur.hold[0],
+              kind: "evt",
+              label: "On hold · ringing Sam",
+            });
+          const seen = new Set();
+          cur.events.forEach((e, i) => {
+            const k = e.label + Math.round(e.t);
+            if (seen.has(k)) return;
+            seen.add(k);
+            list.push({ key: "e" + i, t: e.t, kind: "evt", label: e.label });
+          });
+          return list.sort((a, b) => a.t - b.t);
+        }
+        function rebuildFeed() {
+          if (!cur) return;
+          const t = audio.currentTime || 0,
+            items = feedItems()
+              .filter((x) => x.t <= t + 0.25)
+              .slice(-6);
+          shown = new Set(items.map((x) => x.key));
+          $("#feed").innerHTML = items.map(bubble).join("");
+        }
+        function stepFeed() {
+          const t = audio.currentTime || 0;
+          const fresh = feedItems().filter(
+            (x) => x.t <= t + 0.25 && !shown.has(x.key),
+          );
+          if (!fresh.length) return;
+          if (fresh.length > 2) {
+            rebuildFeed();
+            return;
+          } // a jump, not live flow: redraw in order
+          const feed = $("#feed");
+          if (feed.querySelector(".brief")) feed.innerHTML = "";
+          fresh.forEach((x) => {
+            shown.add(x.key);
+            feed.insertAdjacentHTML("beforeend", bubble(x));
+            const el = feed.lastElementChild;
+            if (G && !reduce.matches)
+              G.from(el, {
+                autoAlpha: 0,
+                y: 16,
+                scale: 0.92,
+                transformOrigin:
+                  x.who === "Edwin" || x.kind ? "0% 100%" : "100% 100%",
+                duration: 0.45,
+                ease: "expo.out",
+              });
+            if (x.kind && x.label === "Checked calendar") think();
+          });
+          while (feed.children.length > 6) feed.firstElementChild.remove();
+        }
+        function think() {
+          if (!G || reduce.matches) return;
+          const sw = $("#slotE .swirl");
+          if (!sw) return;
+          thinkTween?.kill();
+          thinkTween = G.timeline()
+            .to("#slotE .eyes", { x: -3, duration: 0.25, ease: "power2.out" })
+            .to("#slotE .eyes", { x: 3, duration: 0.4, ease: "power2.inOut" })
+            .to("#slotE .eyes", { x: 0, duration: 0.3, ease: "power2.out" })
+            .fromTo(
+              "#slotE .swirl",
+              { rotation: "+=0" },
+              {
+                rotation: "+=540",
+                svgOrigin: "50 50",
+                duration: 1.4,
+                ease: "power3.out",
+              },
+              0,
+            );
+        }
+
+        function state() {
+          if (!cur) return;
+          const t = audio.currentTime || 0,
+            fs = firstSpeech(cur);
+          let s;
+          if (dialing) s = `Calling ${otherName(cur)}…`;
+          else if (audio.ended)
+            s = `${ENDED[cur.endedReason] || "Call ended"} · ${fmt(cur.duration)}`;
+          else if (audio.paused && t < 0.1) s = "Ready to call";
+          else if (inHold(t)) s = `${fmt(t)} · on hold, ringing Sam`;
+          else s = `${fmt(t)}${audio.paused ? " · paused" : ""}`;
+          if ($("#callstate").textContent !== s)
+            $("#callstate").textContent = s;
+          $("#clock").textContent = `${fmt(t)} / ${fmt(dur())}`;
+          $("#sclock").textContent = cur.clock || "9:41";
+        }
+
+        /* ---------- tape ---------- */
+        function draw() {
+          const cv = $("#cv");
+          if (!cv || !cur) return;
+          const dpr = window.devicePixelRatio || 1,
+            w = cv.clientWidth,
+            h = cv.clientHeight;
+          if (
+            cv.width !== Math.round(w * dpr) ||
+            cv.height !== Math.round(h * dpr)
+          ) {
+            cv.width = Math.round(w * dpr);
+            cv.height = Math.round(h * dpr);
+          }
+          const g = cv.getContext("2d");
+          g.setTransform(dpr, 0, 0, dpr, 0, 0);
+          g.clearRect(0, 0, w, h);
+          const D = dur(),
+            mid = h / 2,
+            lane = h / 2 - 14,
+            now = audio.currentTime || 0;
+          g.fillStyle = css("--card");
+          g.beginPath();
+          g.roundRect ? g.roundRect(0, 0, w, h, 10) : g.rect(0, 0, w, h);
+          g.fill();
+          const bars = Math.max(60, Math.floor(w / 4)),
+            E = cur.lanes.edwin,
+            O = cur.lanes.other;
+          const peak = (arr, a, b) => {
+            let m = 0;
+            for (
+              let i = Math.floor(a * 10);
+              i < Math.ceil(b * 10) && i < arr.length;
+              i++
+            )
+              m = Math.max(m, arr[i]);
+            return m;
+          };
+          const ce = css("--edwin-ink"),
+            co = css("--them-ink");
+          for (let i = 0; i < bars; i++) {
+            const t0 = (i / bars) * D,
+              t1 = ((i + 1) / bars) * D,
+              x = i * (w / bars) + 1,
+              bw = Math.max(1, w / bars - 1.5);
+            g.globalAlpha = t1 <= now ? 1 : 0.35;
+            const e = peak(E, t0, t1),
+              o = peak(O, t0, t1);
+            g.fillStyle = ce;
+            g.beginPath();
+            g.roundRect
+              ? g.roundRect(
+                  x,
+                  mid - 2 - Math.max(1.5, e * lane),
+                  bw,
+                  Math.max(1.5, e * lane),
+                  1.5,
+                )
+              : g.rect(x, mid - 2 - e * lane, bw, e * lane);
+            g.fill();
+            g.fillStyle = co;
+            g.beginPath();
+            g.roundRect
+              ? g.roundRect(x, mid + 2, bw, Math.max(1.5, o * lane), 1.5)
+              : g.rect(x, mid + 2, bw, o * lane);
+            g.fill();
+          }
+          g.globalAlpha = 1;
+          g.fillStyle = css("--rule");
+          g.fillRect(0, mid - 0.5, w, 1);
+          const evs = [];
+          cur.events.forEach((e) => {
+            if (!evs.some((p) => Math.abs(p.t - e.t) < D * 0.02)) evs.push(e);
+          });
+          g.fillStyle = css("--muted");
+          evs.forEach((e) => g.fillRect((e.t / D) * w - 0.5, 8, 1, h - 16));
+          const dot = (t, c, y) => {
+            g.fillStyle = c;
+            g.beginPath();
+            g.arc(Math.min(w - 5, Math.max(5, (t / D) * w)), y, 4, 0, 7);
+            g.fill();
+          };
+          cur.moments.forEach((m) => dot(m.t, css("--good"), 7));
+          cur.issues.forEach((m) => dot(m.t, css("--warn"), h - 7));
+          if (cur.hold) {
+            g.fillStyle = css("--edwin-soft");
+            g.globalAlpha = 0.7;
+            g.fillRect(
+              (cur.hold[0] / D) * w,
+              0,
+              ((cur.hold[1] - cur.hold[0]) / D) * w,
+              h,
+            );
+            g.globalAlpha = 1;
+          }
+          g.font = `500 10.5px ${css("--mono")}`;
+          g.fillStyle = css("--muted");
+          g.textBaseline = "bottom";
+          const step = D > 150 ? 30 : D > 70 ? 15 : 10;
+          for (let s = step; s < D - step * 0.4; s += step) {
+            const x = (s / D) * w;
+            g.fillRect(x - 0.5, h - 4, 1, 4);
+            if (x > 24 && x < w - 24) g.fillText(fmt(s), x + 3, h - 1);
+          }
+          const px = (now / D) * w;
+          g.fillStyle = css("--ink");
+          g.fillRect(px - 1, 0, 2, h);
+        }
+
+        function sync() {
+          if (!cur) return;
+          state();
+          const t = (audio.currentTime || 0) + 0.25;
+          let a = -1;
+          cur.turns.forEach((x, i) => {
+            if (x.who !== "note" && x.t != null && x.t <= t) a = i;
+          });
+          const nowT = audio.currentTime || 0;
+          $("#miniBar").style.transform =
+            `scaleX(${(nowT / dur()).toFixed(4)})`;
+          if (a >= 0) {
+            const next =
+              cur.turns.slice(a + 1).find((x) => x.t != null)?.t ?? dur();
+            const p = Math.min(
+              1,
+              Math.max(
+                0,
+                (t - cur.turns[a].t) / Math.max(0.5, next - cur.turns[a].t),
+              ),
+            );
+            const bar = $(`#tx .turn[data-ti="${a}"] .prog`);
+            if (bar) bar.style.transform = `scaleX(${p.toFixed(3)})`;
+          }
+          if (a === lastActive) return;
+          lastActive = a;
+          $("#miniLine").textContent =
+            a >= 0
+              ? `${cur.turns[a].who}: ${cur.turns[a].en || cur.turns[a].text}`
+              : cur.kind;
+          const tx = $("#tx");
+          tx.querySelectorAll(".turn").forEach((el) => {
+            const i = +el.dataset.ti;
+            el.classList.toggle("now", i === a);
+            el.classList.toggle("past", i < a);
+          });
+          const el = tx.querySelector(".turn.now");
+          if (el && follow && !audio.paused)
+            tx.scrollTo({
+              top: el.offsetTop - tx.offsetTop - tx.clientHeight / 3,
+              behavior: reduce.matches ? "auto" : "smooth",
+            });
+        }
+
+        function loop() {
+          draw();
+          sync();
+          stepFeed();
+          liveAvatars();
+          raf = audio.paused ? 0 : requestAnimationFrame(loop);
+        }
+        audio.addEventListener("play", () => {
+          callIcon();
+          showMini();
+          if (!raf) raf = requestAnimationFrame(loop);
+        });
+        // After a pause, keep easing the mouths shut instead of freezing them mid-word.
+        function settle() {
+          liveAvatars();
+          if (audio.paused && (env.e || env.o)) requestAnimationFrame(settle);
+        }
+        audio.addEventListener("pause", () => {
+          Tones.stop();
+          callIcon();
+          draw();
+          envAt = 0;
+          settle();
+          state();
+        });
+        audio.addEventListener("ended", () => {
+          Tones.stop();
+          Tones.hangup();
+          callIcon();
+          draw();
+          liveAvatars();
+          state();
+          ringTl?.kill();
+          const feed = $("#feed");
+          feed.insertAdjacentHTML(
+            "beforeend",
+            `<div class="sys">${ICON.end}<span>${esc(ENDED[cur.endedReason] || "Call ended")}</span></div>`,
+          );
+          if (G && !reduce.matches)
+            G.from(feed.lastElementChild, {
+              autoAlpha: 0,
+              y: 12,
+              duration: 0.5,
+              ease: "expo.out",
+            });
+        });
+        audio.addEventListener("loadedmetadata", () => {
+          draw();
+          state();
+        });
+        audio.addEventListener("seeked", () => {
+          rebuildFeed();
+          draw();
+          sync();
+          liveAvatars();
+        });
+        audio.addEventListener("playing", () => {
+          if (audio.currentTime >= firstSpeech(cur) - 0.3) {
+            ringTl?.kill();
+            G?.set("#slotE .ring", { autoAlpha: 0 });
+          }
+        });
+        const retried = new Set();
+        audio.addEventListener("error", async () => {
+          if (!cur) return;
+          if (audio.src.startsWith("blob:") || retried.has(cur.audio)) {
+            $("#callstate").innerHTML =
+              '<span class="err">Recording didn\'t load. Reload to try again.</span>';
+            return;
+          }
+          retried.add(cur.audio);
+          try {
+            const r = await fetch(cur.audio);
+            if (!r.ok) throw 0;
+            audio.src = URL.createObjectURL(await r.blob());
+            audio.load();
+          } catch (e) {
+            $("#callstate").innerHTML =
+              '<span class="err">Recording didn\'t load. Reload to try again.</span>';
+          }
+        });
+
+        const toggle = () => (audio.paused && !dialing ? start() : pauseAll());
+        $("#call").onclick = toggle;
+        $("#miniPlay").onclick = toggle;
+        $("#tones").checked = Tones.on;
+        $("#tones").onchange = (e) => {
+          Tones.on = e.target.checked;
+        };
+        // Mini player: visible when the phone is scrolled out of view and a call is under way.
+        let phoneVisible = true,
+          miniShown = false;
+        function showMini() {
+          const want =
+            !phoneVisible &&
+            (!audio.paused || dialing || audio.currentTime > 0);
+          if (want === miniShown) return;
+          miniShown = want;
+          const m = $("#mini");
+          if (want) {
+            m.hidden = false;
+            if (G && !reduce.matches)
+              G.fromTo(
+                m,
+                { y: 30, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.5, ease: "expo.out" },
+              );
+            bringToLife(m);
+          } else if (G && !reduce.matches)
+            G.to(m, {
+              y: 30,
+              autoAlpha: 0,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => {
+                if (!miniShown) m.hidden = true;
+              },
+            });
+          else m.hidden = true;
+        }
+        new IntersectionObserver(
+          ([en]) => {
+            phoneVisible = en.intersectionRatio > 0.35;
+            showMini();
+          },
+          { threshold: [0, 0.35, 1] },
+        ).observe($("#device"));
+        $("#back").onclick = () => seek(Math.max(0, audio.currentTime - 10));
+        $("#speed").onclick = (e) => {
+          const r =
+            { 1: 1.25, 1.25: 1.5, 1.5: 2, 2: 1 }[audio.playbackRate] || 1;
+          audio.playbackRate = r;
+          e.currentTarget.textContent = r + "×";
+        };
+        $("#follow").onchange = (e) => {
+          follow = e.target.checked;
+          try {
+            localStorage.setItem("follow", follow ? "1" : "0");
+          } catch (x) {}
+        };
+        const cv = $("#cv");
+        const seekAt = (ev) => {
+          const r = cv.getBoundingClientRect();
+          seek(((ev.clientX - r.left) / r.width) * dur());
+        };
+        cv.onpointerdown = (ev) => {
+          seekAt(ev);
+          cv.setPointerCapture(ev.pointerId);
+          cv.onpointermove = seekAt;
+        };
+        cv.onpointerup = () => {
+          cv.onpointermove = null;
+        };
+
+        document.addEventListener("click", (e) => {
+          const s = e.target.closest("[data-seek]");
+          if (s) {
+            seek(+s.dataset.seek - 0.3);
+            return;
+          }
+          const b = e.target.closest(".contact");
+          if (b) {
+            const i = +b.dataset.i;
+            if (calls[i] !== cur) select(i);
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.target.matches("input, textarea") ||
+            e.metaKey ||
+            e.ctrlKey ||
+            e.altKey ||
+            !cur
+          )
+            return;
+          const i = calls.indexOf(cur);
+          if (e.key === " " && !e.target.matches("button")) {
+            e.preventDefault();
+            toggle();
+          } else if (e.key === "ArrowRight") seek(audio.currentTime + 5);
+          else if (e.key === "ArrowLeft") seek(audio.currentTime - 5);
+          else if (e.key === "]") select((i + 1) % calls.length);
+          else if (e.key === "[") select((i - 1 + calls.length) % calls.length);
+        });
+        window.addEventListener("resize", draw);
+        matchMedia("(prefers-color-scheme: dark)").addEventListener?.(
+          "change",
+          draw,
+        );
+        new MutationObserver(draw).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"],
+        });
+        window.addEventListener("hashchange", () => {
+          const i = calls.findIndex((c) => "#" + slug(c) === location.hash);
+          if (i >= 0 && calls[i] !== cur) select(i);
+        });
+
+        /* ---------- entrance ---------- */
+        function entrance() {
+          if (!G) return;
+          const mm = G.matchMedia();
+          mm.add({ ok: "(prefers-reduced-motion: no-preference)" }, (ctx) => {
+            if (!ctx.conditions.ok) return;
+            const h1 = $("#h1");
+            if (!h1.querySelector(".w"))
+              h1.innerHTML = h1.textContent
+                .split(" ")
+                .map((w) => `<span class="w">${esc(w)}</span>`)
+                .join(" ");
+            G.timeline({ defaults: { ease: "expo.out" } })
+              .from(".kicker", { autoAlpha: 0, y: 10, duration: 0.6 })
+              .from(
+                "#h1 .w",
+                {
+                  autoAlpha: 0,
+                  yPercent: 60,
+                  rotation: 3,
+                  duration: 0.9,
+                  stagger: 0.05,
+                },
+                "<.1",
+              )
+              .from(".lede", { autoAlpha: 0, y: 14, duration: 0.8 }, "<.3")
+              .from(
+                ".device",
+                {
+                  y: 70,
+                  rotationX: 14,
+                  rotationY: -10,
+                  autoAlpha: 0,
+                  duration: 1.3,
+                },
+                "<-.2",
+              )
+              .from(
+                ".contact",
+                {
+                  autoAlpha: 0,
+                  y: 18,
+                  scale: 0.8,
+                  duration: 0.7,
+                  stagger: 0.07,
+                },
+                "<.3",
+              )
+              .from("#np", { autoAlpha: 0, y: 12, duration: 0.7 }, "<.3")
+              .from(
+                ".detail .inner > *",
+                { autoAlpha: 0, y: 20, duration: 0.8, stagger: 0.1 },
+                "<.1",
+              );
+            // Idle float on the wrapper (not .device), so it never fights the entrance tween; starts once the entrance ends.
+            // force3D keeps it on the GPU so it moves in sub-pixel steps instead of snapping pixel to pixel.
+            G.fromTo(
+              ".device-wrap",
+              { y: 0 },
+              {
+                y: -12,
+                duration: 3.4,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1,
+                force3D: true,
+                delay: 2.1,
+              },
+            );
+          });
+        }
+
+        fetch("calls.json")
+          .then((r) => {
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+          })
+          .then((d) => {
+            calls = Array.isArray(d) ? d : d.calls;
+            Object.assign(PEOPLE, d.people || {});
+            contacts();
+            const i = Math.max(
+              0,
+              calls.findIndex((c) => "#" + slug(c) === location.hash),
+            );
+            select(i, { quiet: true });
+            bringToLife(document);
+            entrance();
+            document.fonts?.ready.then(draw);
+          })
+          .catch((err) => {
+            $("#np").innerHTML =
+              `<p class="err">The call data didn't load (${esc(err.message)}). Reload the page to try again.</p>`;
+          });
+      })();
+    </script>
+  </body>
+</html>

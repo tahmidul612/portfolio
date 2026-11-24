@@ -1,0 +1,25 @@
+WEBVTT
+
+1
+00:00:00.600 --> 00:00:04.600
+Edwin is an AI voice agent that makes phone calls so I don't have to.
+
+2
+00:00:05.000 --> 00:00:12.400
+You tell Claude what you need. It writes a short brief and waits for your OK before it dials.
+
+3
+00:00:12.800 --> 00:00:22.800
+Vapi runs the call: Soniox hears, Claude Haiku 5.5 decides what to say, ElevenLabs speaks. The call goes out from a Telnyx number.
+
+4
+00:00:23.200 --> 00:00:34.800
+Edwin says it's an AI, then works through the brief. It also handles voicemail, call screeners and phone menus.
+
+5
+00:00:35.200 --> 00:00:42.400
+If it gets stuck or they ask for you, it rings your cell and hands the call over. That part is built but still being tested.
+
+6
+00:00:42.800 --> 00:00:50.400
+Afterwards Claude reads back the transcript. An n8n workflow for emailing the report and adding the booking to the calendar is built too, not yet tested live.

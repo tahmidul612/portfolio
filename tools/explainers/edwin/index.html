@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Edwin explainer</title>
+    <!-- Rendered by ../render.py. Add ?play to the URL to watch it live. -->
+    <style>
+      :root {
+        --bg: #0b1620;
+        --panel: #122230;
+        --line: #24384a;
+        --ink: #e3ebf2;
+        --muted: #8ea3b6;
+        --accent: #38bdf8;
+        --edwin: #2dd4bf;
+        --them: #fb923c;
+        --amber: #fbbf24;
+        --green: #4ade80;
+        --mono: "JetBrains Mono", "DejaVu Sans Mono", ui-monospace, monospace;
+        --sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+      }
+      .abs {
+        position: absolute;
+        opacity: 0;
+      }
+      .step {
+        left: 100px;
+        top: 56px;
+        font: 600 44px var(--mono);
+        color: var(--accent);
+      }
+      .title {
+        left: 0;
+        width: 1920px;
+        top: 350px;
+        text-align: center;
+      }
+      .title h1 {
+        margin: 0;
+        font: 700 150px var(--mono);
+        color: var(--edwin);
+      }
+      .title p {
+        margin: 12px 0 0;
+        font: 40px var(--sans);
+        color: var(--muted);
+      }
+      .bubble {
+        max-width: 760px;
+        padding: 18px 26px;
+        border-radius: 22px;
+        font: 32px/1.35 var(--sans);
+      }
+      .bubble small {
+        display: block;
+        font: 600 20px var(--mono);
+        opacity: 0.75;
+        margin-bottom: 4px;
+      }
+      .me {
+        background: #1d4ed8;
+      }
+      .ed {
+        background: #134e4a;
+        border: 2px solid var(--edwin);
+      }
+      .th {
+        background: #7c2d12;
+        border: 2px solid var(--them);
+      }
+      .card {
+        border-radius: 18px;
+        border: 2px solid var(--line);
+        background: var(--panel);
+        padding: 26px 30px;
+        font: 28px/1.5 var(--sans);
+      }
+      .card .t {
+        font: 600 22px var(--mono);
+        color: var(--muted);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .card b {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .btn {
+        display: inline-block;
+        margin-top: 18px;
+        padding: 10px 26px;
+        border-radius: 999px;
+        background: var(--green);
+        color: #052e16;
+        font: 700 26px var(--sans);
+      }
+      .node {
+        width: 280px;
+        height: 150px;
+        border-radius: 18px;
+        border: 2px solid var(--line);
+        background: var(--panel);
+        text-align: center;
+        padding-top: 30px;
+        font: 600 32px var(--sans);
+      }
+      .node span {
+        display: block;
+        margin-top: 8px;
+        font: 22px var(--mono);
+        color: var(--muted);
+      }
+      .vapi {
+        border: 2px dashed var(--edwin);
+        border-radius: 24px;
+      }
+      .vapi .lbl {
+        position: absolute;
+        top: -22px;
+        left: 30px;
+        padding: 0 12px;
+        background: var(--bg);
+        font: 600 28px var(--mono);
+        color: var(--edwin);
+      }
+      .sub {
+        width: 250px;
+        height: 130px;
+        border-radius: 16px;
+        background: #0f2a2a;
+        border: 2px solid #1f5f5a;
+        text-align: center;
+        padding-top: 22px;
+        font: 600 28px var(--sans);
+      }
+      .sub span {
+        display: block;
+        margin-top: 6px;
+        font: 22px var(--mono);
+        color: var(--muted);
+      }
+      .pulse {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--edwin);
+        box-shadow: 0 0 24px var(--edwin);
+      }
+      .chip {
+        padding: 14px 24px;
+        border-radius: 14px;
+        border: 2px solid var(--line);
+        background: var(--panel);
+        font: 600 28px var(--sans);
+      }
+      .cell {
+        width: 200px;
+        height: 340px;
+        border-radius: 34px;
+        border: 4px solid var(--muted);
+        background: #0f1d29;
+        text-align: center;
+        padding-top: 110px;
+        font: 600 28px var(--sans);
+      }
+      .cell span {
+        display: block;
+        font: 22px var(--mono);
+        color: var(--green);
+        margin-top: 8px;
+      }
+      svg {
+        position: absolute;
+        inset: 0;
+      }
+      .caption {
+        left: 120px;
+        width: 1680px;
+        bottom: 36px;
+        text-align: center;
+        font: 500 42px/1.35 var(--sans);
+      }
+      .caption span {
+        background: rgba(5, 12, 18, 0.86);
+        padding: 6px 18px;
+        border-radius: 10px;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="../_vendor/gsap.min.js"></script>
+    <script>
+      // Call lines are from a simulated call in the Edwin demo (Edwin vs an AI receptionist).
+      const CAPTIONS = [
+        { start: 0.6, end: 4.6, text: "Edwin is an AI voice agent that makes phone calls so I don't have to." },
+        { start: 5.0, end: 12.4, text: "You tell Claude what you need. It writes a short brief and waits for your OK before it dials." },
+        { start: 12.8, end: 22.8, text: "Vapi runs the call: Soniox hears, Claude Haiku 5.5 decides what to say, ElevenLabs speaks. The call goes out from a Telnyx number." },
+        { start: 23.2, end: 34.8, text: "Edwin says it's an AI, then works through the brief. It also handles voicemail, call screeners and phone menus." },
+        { start: 35.2, end: 42.4, text: "If it gets stuck or they ask for you, it rings your cell and hands the call over. That part is built but still being tested." },
+        { start: 42.8, end: 50.4, text: "Afterwards Claude reads back the transcript. An n8n workflow for emailing the report and adding the booking to the calendar is built too, not yet tested live." },
+      ];
+
+      const stage = document.getElementById("stage");
+      const el = (html, parent = stage) => {
+        const t = document.createElement("template");
+        t.innerHTML = html.trim();
+        const n = t.content.firstChild;
+        parent.append(n);
+        return n;
+      };
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", 1920);
+      svg.setAttribute("height", 1080);
+      stage.append(svg);
+      const path = (d, color = "#2dd4bf") => {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.setAttribute("d", d);
+        p.setAttribute("fill", "none");
+        p.setAttribute("stroke", color);
+        p.setAttribute("stroke-width", "4");
+        p.setAttribute("stroke-dasharray", "2000");
+        p.setAttribute("stroke-dashoffset", "2000");
+        svg.append(p);
+        return p;
+      };
+
+      const title = el(`<div class="abs title"><h1>Edwin</h1><p>an AI that makes my phone calls</p></div>`);
+      const steps = Object.fromEntries(
+        ["the ask", "the call stack", "the call", "the handover", "after the call"].map((s) => [s, el(`<div class="abs step">${s}</div>`)]),
+      );
+
+      // Scene: the ask
+      const ask = el(`<div class="abs bubble me" style="left:120px;top:250px;max-width:640px"><small>you, to Claude</small>Can you book me a haircut at Northside on Saturday? Late morning if they have it.</div>`);
+      const brief = el(`<div class="abs card" style="left:900px;top:220px;width:880px">
+        <div class="t">Claude's brief</div>
+        Calling <b>Northside Hair Studio</b><br />
+        Goal: book a men's haircut this Saturday, ideally late morning<br />
+        Context: any time Saturday is fine, before 3 PM is better<br />
+        <span class="btn" id="go">Place the call?</span></div>`);
+
+      // Scene: the stack
+      const nClaude = el(`<div class="abs node" style="left:100px;top:420px">Claude<span>brief + approval</span></div>`);
+      const vapi = el(`<div class="abs vapi" style="left:470px;top:330px;width:900px;height:330px"><div class="lbl">Vapi</div></div>`);
+      const subs = [
+        ["Soniox", "hears"],
+        ["Claude Haiku 5.5", "decides"],
+        ["ElevenLabs", "speaks"],
+      ].map(([a, b], i) => el(`<div class="abs sub" style="left:${510 + i * 290}px;top:430px">${a}<span>${b}</span></div>`));
+      const nTelnyx = el(`<div class="abs node" style="left:1440px;top:250px;width:380px">Telnyx number<span>SIP trunk</span></div>`);
+      const nBiz = el(`<div class="abs node" style="left:1440px;top:560px;width:380px">The business<span>a real phone line</span></div>`);
+      // The drawn lines, and one route along all of them for the signal dot to follow.
+      const stackPaths = [
+        path("M 380 495 L 510 495"),
+        path("M 760 495 L 800 495"),
+        path("M 1050 495 L 1090 495"),
+        path("M 1340 495 L 1370 495 C 1405 495, 1405 325, 1440 325"),
+        path("M 1630 400 L 1630 560"),
+      ];
+      const route = path("M 380 495 L 1370 495 C 1405 495, 1405 325, 1440 325 L 1630 325 L 1630 560", "none");
+      const routeLen = route.getTotalLength();
+      const pulse = el(`<div class="abs pulse" style="left:367px;top:482px"></div>`);
+      // Boxes the route passes through: [element, left, top, right, bottom].
+      const routeBoxes = [
+        ...subs.map((sub, i) => [sub, 510 + i * 290, 430, 760 + i * 290, 564]),
+        [nTelnyx, 1440, 250, 1820, 404],
+        [nBiz, 1440, 560, 1820, 714],
+      ];
+      const inside = (x, y, b) => x >= b[1] && x <= b[3] && y >= b[2] && y <= b[4];
+      const dot = { p: 0 };
+      const placeDot = () => {
+        const pt = route.getPointAtLength(dot.p * routeLen);
+        pulse.style.left = `${pt.x - 13}px`;
+        pulse.style.top = `${pt.y - 13}px`;
+        // Hide the dot inside a box (the box lights up instead), so it never crosses a label.
+        pulse.style.visibility = routeBoxes.some((b) => inside(pt.x, pt.y, b)) ? "hidden" : "visible";
+      };
+
+      // Scene: the call (lines from the demo's haircut call, shortened where marked)
+      const lines = [
+        ["th", "Maya", "Northside Hair Studio, this is Maya.", 1080],
+        ["ed", "Edwin", "Hi, this is Edwin, an AI assistant calling on behalf of Sam.", 180],
+        ["ed", "Edwin", "I'd like to book a men's haircut for Sam this Saturday, ideally late morning.", 180],
+        ["th", "Maya", "11 AM is already taken, but we do have 11:45 AM open. And we also have 2:30 PM.", 1000],
+        ["ed", "Edwin", "Sam would prefer late morning, so 11:45 AM sounds good.", 180],
+      ];
+      let y = 140;
+      const bubbles = lines.map(([cls, who, text, left]) => {
+        const side = cls === "th" ? "right:140px" : "left:140px";
+        const b = el(`<div class="abs bubble ${cls}" style="${side};top:${y}px;max-width:1180px;font-size:30px"><small>${who}</small>${text}</div>`);
+        y += b.offsetHeight + 16; // stack by real height so two-line bubbles never overlap
+        return b;
+      });
+
+      // Scene: handover
+      const hEd = el(`<div class="abs bubble ed" style="left:180px;top:300px"><small>Edwin</small>One moment, let me connect you with Sam. Please hold.</div>`);
+      const cell = el(`<div class="abs cell" style="left:1480px;top:260px">Sam's cell<span id="ring">ringing…</span></div>`);
+      const hPath = path("M 960 380 C 1200 300, 1300 300, 1470 420", "#4ade80");
+
+      // Scene: after the call
+      const report = el(`<div class="abs card" style="left:120px;top:220px;width:820px">
+        <div class="t">What got booked</div>
+        Outcome: <b>booked</b><br />
+        Saturday, November 28 at 11:45 AM<br />
+        Men's cut, 38 dollars, about 40 minutes<br />
+        Confirmation by text, 24-hour cancellation policy</div>`);
+      const n8n = el(`<div class="abs node" style="left:1080px;top:300px;width:240px">n8n<span>workflow</span></div>`);
+      const email = el(`<div class="abs chip" style="left:1440px;top:250px">✉ Email with the report</div>`);
+      const cal = el(`<div class="abs chip" style="left:1440px;top:430px">📅 Calendar: haircut, Sat 11:45</div>`);
+      const aPaths = [path("M 940 380 L 1080 375"), path("M 1320 360 C 1380 330, 1390 290, 1440 285"), path("M 1320 400 C 1380 430, 1390 465, 1440 465")];
+
+      const captions = CAPTIONS.map((c) => el(`<div class="abs caption"><span>${c.text}</span></div>`));
+      const end = el(`<div class="abs title"><h1>Edwin</h1><p>Vapi · Claude · Telnyx · private repo for now</p><p>tahmidul612.com</p></div>`);
+
+      // Timeline
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.out", duration: 0.5 } });
+      const show = (els, at, opts = {}) => tl.fromTo(els, { opacity: 0, y: 16 }, { opacity: 1, y: 0, ...opts }, at);
+      const hide = (els, at) => tl.to(els, { opacity: 0, duration: 0.4 }, at);
+      const step = (name, at, until) => {
+        show(steps[name], at);
+        hide(steps[name], until);
+      };
+      CAPTIONS.forEach((c, i) => {
+        tl.fromTo(captions[i], { opacity: 0 }, { opacity: 1, duration: 0.3 }, c.start).to(captions[i], { opacity: 0, duration: 0.3 }, c.end - 0.3);
+      });
+
+      tl.fromTo(title, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.8 }, 0.2);
+      hide(title, 4.3);
+
+      // The ask
+      step("the ask", 4.8, 12.4);
+      show(ask, 5.2);
+      show(brief, 7.0);
+      tl.to("#go", { scale: 1.08, duration: 0.25, yoyo: true, repeat: 1 }, 10.2).to("#go", { backgroundColor: "#38bdf8" }, 10.6);
+      tl.set("#go", { textContent: "Approved ✓" }, 10.7);
+      hide([ask, brief], 12.3);
+
+      // The stack
+      step("the call stack", 12.8, 22.8);
+      show([nClaude, vapi, ...subs, nTelnyx, nBiz], 13.0, { stagger: 0.25 });
+      stackPaths.forEach((p, i) => tl.to(p, { attr: { "stroke-dashoffset": 0 }, duration: 0.7 }, 15.0 + i * 0.4));
+      const DOT_START = 16.6,
+        DOT_TIME = 4.6;
+      tl.set(pulse, { opacity: 1 }, DOT_START);
+      tl.fromTo(dot, { p: 0 }, { p: 1, duration: DOT_TIME, ease: "none", onUpdate: placeDot, immediateRender: false }, DOT_START);
+      // Light each box while the dot is inside it (found by sampling the route).
+      for (const b of routeBoxes) {
+        let enter = null,
+          exit = null;
+        for (let i = 0; i <= 400; i++) {
+          const pt = route.getPointAtLength((i / 400) * routeLen);
+          if (inside(pt.x, pt.y, b)) {
+            if (enter === null) enter = i / 400;
+            exit = i / 400;
+          }
+        }
+        if (enter === null) continue;
+        tl.to(b[0], { borderColor: "#2dd4bf", duration: 0.15 }, DOT_START + enter * DOT_TIME);
+        const own = getComputedStyle(b[0]).borderTopColor;
+        if (b[0] !== nBiz) tl.to(b[0], { borderColor: own, duration: 0.3 }, DOT_START + exit * DOT_TIME);
+      }
+      hide([nClaude, vapi, ...subs, nTelnyx, nBiz, pulse, ...stackPaths], 22.6);
+
+      // The call
+      step("the call", 23.2, 34.8);
+      bubbles.forEach((b, i) => show(b, 23.6 + i * 2.1));
+      hide(bubbles, 34.6);
+
+      // Handover
+      step("the handover", 35.2, 42.4);
+      show(hEd, 35.5);
+      show(cell, 36.6);
+      tl.to(hPath, { attr: { "stroke-dashoffset": 0 }, duration: 1.0 }, 37.0);
+      tl.to(cell, { rotation: 3, duration: 0.08, yoyo: true, repeat: 9, ease: "none" }, 38.0);
+      tl.set("#ring", { textContent: "picked up" }, 39.6);
+      tl.to(cell, { borderColor: "#4ade80", duration: 0.3 }, 39.6);
+      hide([hEd, cell, hPath], 42.2);
+
+      // After the call
+      step("after the call", 42.8, 50.4);
+      show(report, 43.0);
+      show(n8n, 44.6);
+      aPaths.forEach((p, i) => tl.to(p, { attr: { "stroke-dashoffset": 0 }, duration: 0.6 }, 45.0 + i * 0.5));
+      show(email, 46.4);
+      show(cal, 47.0);
+      hide([report, n8n, email, cal, ...aPaths], 50.4);
+
+      tl.fromTo(end, { opacity: 0 }, { opacity: 1, duration: 0.6 }, 51.0);
+      tl.set({}, {}, 55);
+
+      window.EXPLAINER = { duration: 55, poster: 28.5, captions: CAPTIONS };
+      window.seek = (t) => {
+        tl.seek(t, false);
+      };
+      tl.seek(0);
+      if (location.search.includes("play")) tl.play();
+    </script>
+  </body>
+</html>

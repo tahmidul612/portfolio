@@ -13,7 +13,7 @@ Personal portfolio website at <https://tahmidul612.com> built with Hugo static s
 ```bash
 hugo server                    # Start dev server with live reload (http://localhost:1313)
 hugo                           # Build static files to public/ directory
-npx prettier --write .         # Format files (Go template support via prettier-plugin-go-template)
+npm run format                 # Format files (run npm install first; format:check to verify)
 ```
 
 ### VS Code Shortcuts
@@ -73,16 +73,26 @@ Left column content
 Right column content
 {{< /columns >}}
 {{< embed-pdf url="./file.pdf" >}}
+{{< status "wip-private" >}} <!-- status badge on a project page -->
+{{< demo src="/demos/forg/" title="…" poster="poster.webp" >}} <!-- click-to-load iframe -->
+{{< video src="explainer.mp4" poster="explainer-poster.webp" caption="…" >}}
 ```
 
 **Content locations:**
 
-- `content/projects/_index.md` - Main portfolio page with all project descriptions
+- `content/projects/_index.md` - Projects overview: intro only. The cards come from the child pages.
+- `content/projects/<slug>/index.md` - One page bundle per project. Images, `explainer.mp4` (+ same-named `.vtt`) and posters live in the bundle.
+- `content/projects/smaller/index.md` - Headless bundle rendered as "Smaller things" at the bottom of the overview.
+- `static/demos/<slug>/` - Self-contained interactive demos (fake data, no backend), embedded with `{{< demo >}}`.
+- `tools/explainers/<slug>/index.html` - GSAP composition for a project's explainer video. `uv run tools/explainers/render.py <slug>` renders `explainer.mp4`, the poster and the `.vtt` into the project bundle (`--preview 5,20` saves single frames). Not part of the Hugo build.
 - `content/resume/` - Resume content + LaTeX source (`resume.tex`) + compiled PDF in `build/`
 
 ### Custom Layouts Override
 
-`layouts/shortcodes/columns.html` - Custom implementation of columns shortcode using `<--->` separator. Splits inner content and renders side-by-side with flexbox. Sourced from hugo-geekdoc theme.
+- `layouts/projects/list.html` + `layouts/_partials/project-card.html` - Overview cards grouped by the `group` front matter param (`work` | `personal`), ordered by `weight`. Also redirects old `/projects/#anchor` links using each page's `oldAnchor`.
+- `layouts/_partials/project-badges.html` - Card badges from `status`, `demo: true`, and an `.mp4` in the bundle.
+- `layouts/_shortcodes/{demo,video,status}.html` + `assets/js/project-media.js` (loaded only on pages that use them) + styles at the end of `assets/css/custom.css`.
+- `layouts/_shortcodes/columns.html` - Columns shortcode using a `<--->` separator, from hugo-geekdoc.
 
 ### Build & Deploy Pipeline
 
@@ -98,9 +108,11 @@ Deployment workflow: `.github/workflows/deploy-to-cf.yml`
 
 ### When Editing Content
 
-- Projects are in single file: `content/projects/_index.md` with multiple headings
+- New project: create `content/projects/<slug>/index.md` with `title`, `summary` (the card text), `group`, `weight`, and optional `status` / `demo` / `thumbnail` (card image; `feature` would also become the page hero)
 - Use `{{< columns >}}` with `<--->` separator for tech stack listings
-- Images in `content/projects/images/` referenced relatively
+- Images go in the project's bundle and are referenced by file name
+- Work (Raphael Porcelain) content is public: invented data only, and no client names, internal domains, hosts, or internal figures
+- Keep each video file well under 25 MiB, the Cloudflare Pages per-file limit
 - Never break existing shortcode syntax
 
 ### When Modifying Theme Behavior
@@ -117,14 +129,14 @@ Deployment workflow: `.github/workflows/deploy-to-cf.yml`
 
 ### Prettier Configuration
 
-`.prettierrc` specifies `prettier-plugin-go-template` for Hugo template syntax. Run formatting before commits to avoid template syntax breaking.
+`.prettierrc` uses `prettier-plugin-go-template`, with the `go-template` parser for `layouts/**/*.html`. `.prettierignore` skips themes, build output, `static/demos/_vendor/` and `.tex`. Run `npm run format` before commits.
 
 ## Output Formats
 
 Site generates multiple formats defined in `config.toml`: `["HTML", "RSS", "JSON"]`
 
 - HTML for browsing
-- RSS for feed readers  
+- RSS for feed readers
 - JSON for API consumption
 
 ## VS Code Integration

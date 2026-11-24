@@ -16,37 +16,37 @@ Source code for my personal portfolio at [tahmidul612.com](https://tahmidul612.c
 ## Getting Started
 
 1. **Prerequisites**:
-    - [Hugo (Extended version)](https://gohugo.io/installation/)
-    - [Node.js](https://nodejs.org/en/download/) (for formatting)
+   - [Hugo (Extended version)](https://gohugo.io/installation/)
+   - [Node.js](https://nodejs.org/en/download/) (for formatting)
 
 2. **Clone the repository**:
 
-    ```bash
-    git clone https://github.com/tahmidul612/portfolio.git
-    cd portfolio
-    ```
+   ```bash
+   git clone https://github.com/tahmidul612/portfolio.git
+   cd portfolio
+   ```
 
 3. **Initialize themes (Git Submodules)**:
 
-    ```bash
-    git submodule update --init --recursive
-    ```
+   ```bash
+   git submodule update --init --recursive
+   ```
 
 4. **Install dependencies**:
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
-    This installs Prettier and the Go template plugin for code formatting.
+   This installs Prettier and the Go template plugin for code formatting.
 
 5. **Run the dev server**:
 
-    ```bash
-    hugo server
-    ```
+   ```bash
+   hugo server
+   ```
 
-    The site will be available at `http://localhost:1313`.
+   The site will be available at `http://localhost:1313`.
 
 ### VS Code Integration
 
