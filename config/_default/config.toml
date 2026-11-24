@@ -4,6 +4,8 @@
 
 theme = ["hugo-embed-pdf-shortcode", "congo"]
 enableInlineShortcodes = true
+# Keep the LaTeX source and build leftovers in content/resume/ off the site; only the PDF is published.
+ignoreFiles = ['\.tex$', '\.log$', '\.aux$', '\.fdb_latexmk$', '\.fls$', '\.out$', '\.synctex\.gz$']
 baseURL = "https://tahmidul612.com/"
 defaultContentLanguage = "en"
 
