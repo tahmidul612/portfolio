@@ -4,6 +4,9 @@ summary: "Claude writes a brief and places the call. Edwin talks to the business
 group: personal
 weight: 30
 status: "wip-private"
+demo: true
+feature: "demo-poster.webp"
+featureAlt: "The Edwin demo: a phone showing a call between Edwin and a salon receptionist."
 ---
 
 {{< status "wip-private" >}}
@@ -13,6 +16,10 @@ I don't like making phone calls, so I built something that makes them for me. I 
 Edwin runs on Vapi, with Soniox for speech to text, Claude Haiku 5.5 for the conversation, and an ElevenLabs voice. It started on Opus 4.6, but Opus spent more than half of every reply just getting to its first word, so I moved to Haiku and tightened the prompt instead. It deals with voicemail, call screeners, and phone menus. Calls go out from a Telnyx number over a SIP trunk, because Vapi's free numbers are US only and can't dial out. One base assistant holds my standing details, and each call fills in four variables: who is being called, the task, extra context, and a label for the voicemail. A Python script renders the config and pushes it to Vapi, and a Claude skill lets me place a call from any conversation. At my volume it costs about five to ten dollars a month.
 
 Outbound calls, voicemail, and the per-call brief have been tested on real calls. The newer handover, scheduling, call reports, and calls in Bengali are built but not tested live yet.
+
+The demo below plays two calls I ran as simulations, so nobody real is on them. The receptionists are AI testers from Vapi, and Sam is a made-up owner. Edwin is the real thing, with its own prompt and voice. The transcripts follow the audio, and each call has notes on what went well and what didn't.
+
+{{< demo src="/demos/edwin/" title="Edwin, two demo calls" poster="demo-poster.webp" >}}
 
 {{< columns >}}
 

@@ -8,3 +8,5 @@ node_modules/
 package-lock.json
 .playwright-mcp/
 *.tex
+static/demos/*/calls.json
+static/demos/*/audio/
