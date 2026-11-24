@@ -8,39 +8,49 @@
       name="description"
       content="A replay of a real forg run on a folder of fake files: scan, plan, approve, apply, verify and undo."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap"
+    />
     <style>
+      /* Colours follow tahmidul612.com: sunlit shallows in light mode, deep
+         sea in dark. Monospace is only for the terminal, paths and tokens. */
       :root {
-        --bg: #f4f7fa;
-        --panel: #ffffff;
-        --ink: #17212b;
-        --muted: #5b6b7a;
-        --line: #d8e0e8;
-        --accent: #0369a1;
-        --accent-soft: #e0f0fa;
-        --term-bg: #0f1720;
-        --term-ink: #d7e3ee;
-        --term-dim: #7f93a6;
-        --term-cmd: #7dd3fc;
+        --bg: oklch(97.5% 0.01 225);
+        --panel: oklch(99.3% 0.005 225);
+        --ink: oklch(24% 0.04 258);
+        --muted: oklch(42% 0.035 256);
+        --line: oklch(86% 0.02 240);
+        --accent: oklch(50% 0.19 260);
+        --on-accent: oklch(99% 0.005 225);
+        --accent-soft: oklch(93% 0.035 240);
+        --term-bg: oklch(15.5% 0.026 255);
+        --term-ink: oklch(94% 0.012 230);
+        --term-dim: oklch(70% 0.028 244);
+        --term-cmd: oklch(85% 0.13 200);
         --ok: #15803d;
         --ok-soft: #dcfce7;
         --warn: #b45309;
         --warn-soft: #fef3c7;
         --bad: #b91c1c;
         --mono:
-          ui-monospace, "JetBrains Mono", "Cascadia Code", Menlo, Consolas,
+          "JetBrains Mono", ui-monospace, "Cascadia Code", Menlo, Consolas,
           monospace;
-        --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --sans: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --display: "Unbounded", system-ui, sans-serif;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #0b1218;
-          --panel: #121c25;
-          --ink: #e3ebf2;
-          --muted: #93a5b5;
-          --line: #263544;
-          --accent: #38bdf8;
-          --accent-soft: #0c2a3d;
-          --term-bg: #070c11;
+          --bg: oklch(15.5% 0.026 255);
+          --panel: oklch(19.5% 0.03 255);
+          --ink: oklch(94% 0.012 230);
+          --muted: oklch(72% 0.028 244);
+          --line: oklch(30% 0.03 250);
+          --accent: oklch(74% 0.14 250);
+          --on-accent: oklch(16% 0.03 255);
+          --accent-soft: oklch(28% 0.06 252);
+          --term-bg: oklch(13% 0.024 255);
           --ok: #4ade80;
           --ok-soft: #12301f;
           --warn: #fbbf24;
@@ -73,7 +83,8 @@
         background: var(--panel);
       }
       header h1 {
-        font-size: 15px;
+        font: 500 15px/1.2 var(--display);
+        letter-spacing: -0.02em;
         margin: 0;
       }
       header p {
@@ -91,7 +102,7 @@
         padding: 10px 16px 0;
       }
       .steps li {
-        font: 12px/1 var(--mono);
+        font: 500 12px/1 var(--sans);
         padding: 5px 8px;
         border-radius: 999px;
         border: 1px solid var(--line);
@@ -103,7 +114,7 @@
       .steps li.now {
         background: var(--accent);
         border-color: var(--accent);
-        color: #fff;
+        color: var(--on-accent);
       }
       main {
         flex: 1;

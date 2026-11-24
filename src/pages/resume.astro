@@ -34,6 +34,7 @@ const pdf = "/resume/build/resume.pdf";
         priority
       />
     </a>
+    <p class="hint">Tap the page to open the full PDF.</p>
   </section>
 </Base>
 
@@ -65,10 +66,20 @@ const pdf = "/resume/build/resume.pdf";
     max-width: 52rem;
     overflow: hidden;
     border-radius: var(--radius-sm);
-    background: oklch(0.99 0 0);
+    background: oklch(0.99 0.004 225);
     box-shadow:
       0 0 0 1px var(--line),
       0 40px 100px -40px color-mix(in oklch, var(--glow) 50%, transparent);
+  }
+  .hint {
+    margin: 0.75rem 0 0;
+    color: var(--text-3);
+    font-size: var(--step--1);
+  }
+  @media (pointer: fine) {
+    .hint {
+      display: none;
+    }
   }
   .sheet :global(img) {
     width: 100%;

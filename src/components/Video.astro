@@ -38,7 +38,11 @@ const posterImg = await getImage({ src: poster, width: 1280, format: "webp" });
 </figure>
 
 <script>
-  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Visitors who ask for reduced motion or less data get a still poster.
+  const calm =
+    matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData ===
+      true;
   const videos = document.querySelectorAll<HTMLVideoElement>("video[data-autoplay]");
   if (!calm && videos.length && "IntersectionObserver" in window) {
     const autoPaused = new WeakSet<HTMLVideoElement>();
@@ -70,7 +74,7 @@ const posterImg = await getImage({ src: poster, width: 1280, format: "webp" });
 
 <style>
   .pvideo {
-    margin: 0 0 2.5rem;
+    margin: 2rem 0 2.5rem;
   }
   video {
     width: 100%;

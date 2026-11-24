@@ -55,6 +55,12 @@ const hasBadges = Boolean(project.data.status || project.data.demo || hasVideo(p
   .item {
     border-radius: var(--radius);
     transition: background-color 300ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Tap feedback on touch screens, where there is no hover. */
+  .item:active {
+    background-color: color-mix(in oklch, var(--glow) 7%, transparent);
+    transition-duration: 0ms;
   }
   /* The whole item is the link target; the title link stretches over it. */
   .item__title a {
@@ -82,7 +88,7 @@ const hasBadges = Boolean(project.data.status || project.data.demo || hasVideo(p
   .item__period {
     margin: 0.3rem 0 0;
     color: var(--glow-text);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
@@ -165,6 +171,13 @@ const hasBadges = Boolean(project.data.status || project.data.demo || hasVideo(p
     }
     .item--feature .item__title {
       font-size: var(--step-2);
+    }
+    /* Alternate sides down the list for rhythm. */
+    .item--feature:nth-child(even) {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    }
+    .item--feature:nth-child(even) .item__media {
+      order: 2;
     }
   }
 </style>

@@ -15,6 +15,9 @@ const current = (href: string) => path === href || path.startsWith(href);
     <a class="brand" href="/" aria-label="Tahmidul Islam, home">
       <span class="brand__mark" aria-hidden="true"></span>
       <span class="brand__name">tahmidul612</span>
+      <span class="brand__short" aria-hidden="true">
+        TI
+      </span>
     </a>
     <nav aria-label="Main">
       <ul>
@@ -37,7 +40,7 @@ const current = (href: string) => path === href || path.startsWith(href);
     top: 0;
     z-index: 20;
     padding-top: env(safe-area-inset-top);
-    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    background: color-mix(in oklch, var(--bg) 92%, transparent);
     backdrop-filter: blur(14px) saturate(1.2);
     -webkit-backdrop-filter: blur(14px) saturate(1.2);
     border-bottom: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
@@ -54,6 +57,8 @@ const current = (href: string) => path === href || path.startsWith(href);
     align-items: center;
     gap: 0.6rem;
     margin-right: auto;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
     padding: 0.4rem 0.2rem;
     text-decoration: none;
     font: 500 0.95rem/1 var(--font-display);
@@ -86,9 +91,16 @@ const current = (href: string) => path === href || path.startsWith(href);
       opacity: 0;
     }
   }
+  /* Phones: initials next to the mark, so the home link still has a label. */
+  .brand__short {
+    display: none;
+  }
   @media (max-width: 26rem) {
     .brand__name {
       display: none;
+    }
+    .brand__short {
+      display: inline;
     }
   }
   nav ul {
@@ -100,8 +112,10 @@ const current = (href: string) => path === href || path.startsWith(href);
   }
   nav a {
     position: relative;
-    display: block;
-    padding: 0.55rem 0.7rem;
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.7rem;
     border-radius: 999px;
     color: var(--text-2);
     font-size: 0.9375rem;

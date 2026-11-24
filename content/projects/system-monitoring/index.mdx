@@ -16,4 +16,4 @@ tech:
   - "uv"
 ---
 
-A small tool that runs every hour from a systemd timer on my Arch desktop. It gathers anything worrying from the system and user journals, Docker container logs, and the pacman log, groups duplicates with counts and time ranges, and posts one JSON payload to an n8n webhook with retries. It remembers its place in the pacman log between runs so nothing gets reported twice, and one collector failing never blocks the others. It is a oneshot script rather than a daemon: collect, post, exit.
+A small tool that runs every hour from a systemd timer on my Arch desktop. It gathers anything worrying from the system and user journals, Docker container logs, and the pacman log, groups duplicates with counts and time ranges, and posts one JSON payload to an n8n webhook with retries. It remembers its place in the pacman log between runs so nothing gets reported twice, and one collector failing never blocks the others. Each run is a oneshot that collects, posts, and exits.

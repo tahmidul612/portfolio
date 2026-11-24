@@ -22,6 +22,8 @@ const projects = defineCollection({
       weight: z.number(),
       // Work entries: when it ran, shown next to the title.
       period: z.string().optional(),
+      // Work entries: the job title, from the resume.
+      role: z.string().optional(),
       // Shown on the home page under "Selected projects".
       featured: z.boolean().default(false),
       status: z.enum(["wip-private", "wip", "private"]).optional(),

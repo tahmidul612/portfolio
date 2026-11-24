@@ -11,11 +11,11 @@ Personal portfolio at <https://tahmidul612.com>, built with Astro (static output
 
 ## Gotchas
 
-- **Video lives on R2.** Pages ignores Range requests, and iOS Safari won't play video without them. `<Video>` loads the MP4 from `media.tahmidul612.com` (R2 bucket `portfolio-media`, same path as the bundle). After rendering a video, run `tools/upload-media.sh`. The MP4 in the bundle is the source copy and drives the card's Video badge; it is not part of the build.
-- **Resume:** edit `content/resume/resume.tex`. GitHub Actions compiles it to `content/resume/build/resume.pdf`, renders `resume.png` for the page, and commits both. Locally: `pdftoppm -png -r 200 -singlefile -hide-annotations` on the PDF.
-- **Old URLs keep working:** `/resume/build/resume.pdf` is a static endpoint, `/projects/#<oldAnchor>` redirects to the project's page, and `/vcard` and `/ssh` live in `static/_redirects`.
-- **MDX:** comments are `{/* */}`, and a bare `<` or `{` in prose needs escaping.
-- **Work content (Raphael Porcelain) is public:** use invented data only, with no client names, internal domains, hosts or internal figures.
+- Video lives on R2. Pages ignores Range requests, and iOS Safari won't play video without them. `<Video>` loads the MP4 from `media.tahmidul612.com` (R2 bucket `portfolio-media`, same path as the bundle). After rendering a video, run `tools/upload-media.sh`. The MP4 in the bundle is the source copy and drives the card's Video badge; it is not part of the build.
+- Resume: edit `content/resume/resume.tex`. GitHub Actions compiles it to `content/resume/build/resume.pdf`, renders `resume.png` for the page, and commits both. Locally: `pdftoppm -png -r 200 -singlefile -hide-annotations` on the PDF.
+- Old URLs keep working: `/resume/build/resume.pdf` is a static endpoint, `/projects/#<oldAnchor>` redirects to the project's page, and `/vcard` and `/ssh` live in `static/_redirects`.
+- MDX: comments are `{/* */}`, and a bare `<` or `{` in prose needs escaping.
+- Work content (Raphael Porcelain) is public: use invented data only, with no client names, internal domains, hosts or internal figures.
 
 ## Design
 

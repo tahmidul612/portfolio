@@ -5,18 +5,32 @@
     <title>forg explainer</title>
     <!-- Rendered by ../render.py. Open in a browser and add ?play to watch it live. -->
     <style>
+      /* Same look as tahmidul612.com in dark mode: deep-sea blues, cyan light,
+         Unbounded for display, Onest for prose. Monospace stays for what is
+         literally a command or a path. */
+      @font-face {
+        font-family: "Unbounded";
+        src: url("../_fonts/Unbounded.woff2") format("woff2");
+        font-weight: 200 900;
+      }
+      @font-face {
+        font-family: "Onest";
+        src: url("../_fonts/Onest.woff2") format("woff2");
+        font-weight: 100 900;
+      }
       :root {
-        --bg: #0b1620;
-        --panel: #122230;
-        --line: #24384a;
-        --ink: #e3ebf2;
-        --muted: #8ea3b6;
-        --accent: #38bdf8;
+        --bg: oklch(15.5% 0.026 255);
+        --panel: oklch(19.5% 0.03 255);
+        --line: #222f3c;
+        --ink: oklch(94% 0.012 230);
+        --muted: oklch(72% 0.028 244);
+        --accent: #44e7ef;
         --amber: #fbbf24;
-        --green: #4ade80;
+        --green: #5edb81;
         --red: #f87171;
+        --display: "Unbounded", "DejaVu Sans", sans-serif;
         --mono: "JetBrains Mono", "DejaVu Sans Mono", ui-monospace, monospace;
-        --sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
+        --sans: "Onest", "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
       }
       * {
         box-sizing: border-box;
@@ -27,9 +41,13 @@
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: var(--bg);
+        background:
+          radial-gradient(60% 55% at 10% 0%, oklch(78% 0.14 205 / 0.13), transparent),
+          radial-gradient(55% 60% at 100% 75%, oklch(50% 0.18 262 / 0.18), transparent),
+          var(--bg);
         color: var(--ink);
         font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
       }
       .abs {
         position: absolute;
@@ -106,7 +124,7 @@
         width: 418px;
         border-radius: 14px;
         border: 2px solid var(--line);
-        background: #0f1d29;
+        background: oklch(18% 0.03 255);
         padding: 18px 20px;
         opacity: 0;
         font: 24px/1.5 var(--mono);
@@ -128,7 +146,7 @@
       .db .body {
         position: absolute;
         inset: 22px 0 0;
-        background: #10283a;
+        background: oklch(23% 0.045 235);
         border: 3px solid var(--accent);
         border-top: 0;
         border-radius: 0 0 100px 100px / 0 0 30px 30px;
@@ -141,7 +159,7 @@
         height: 44px;
         border: 3px solid var(--accent);
         border-radius: 50%;
-        background: #163a52;
+        background: oklch(28% 0.06 225);
       }
       .db .label {
         position: absolute;
@@ -214,7 +232,7 @@
         opacity: 0;
       }
       .caption span {
-        background: rgba(5, 12, 18, 0.86);
+        background: oklch(12% 0.022 255 / 0.86);
         padding: 6px 18px;
         border-radius: 10px;
         box-decoration-break: clone;
@@ -229,13 +247,15 @@
       }
       .title h1 {
         margin: 0;
-        font: 700 150px var(--mono);
-        color: var(--accent);
+        font: 500 150px/1.05 var(--display);
+        letter-spacing: -0.045em;
+        color: var(--ink);
+        text-shadow: 0 0 80px oklch(78% 0.14 205 / 0.45);
       }
       .title p {
         margin: 10px 0 0;
         font: 40px var(--sans);
-        color: var(--muted);
+        color: var(--accent);
       }
       .end p {
         font-size: 34px;
@@ -246,6 +266,10 @@
     <div id="stage"></div>
     <script src="../_vendor/gsap.min.js"></script>
     <script>
+      // Start the font loads now so render.py's document.fonts.ready waits for them.
+      document.fonts.load('500 40px "Unbounded"');
+      document.fonts.load('400 40px "Onest"');
+      document.fonts.load('600 26px "Onest"');
       // Data from a real forg run on a folder of fake files (2026-11-23).
       // Hashes are the first 8 hex characters of each file's BLAKE3 hash in forg's catalog.
       const FILES = [
@@ -328,7 +352,7 @@
           y2 = f.dest.top + 30;
         p.setAttribute("d", `M ${LEFT + 650} ${y1} C 960 ${y1}, 960 ${y2}, ${RIGHT - 10} ${y2}`);
         p.setAttribute("fill", "none");
-        p.setAttribute("stroke", f.dup ? "#fbbf24" : "#38bdf8");
+        p.setAttribute("stroke", f.dup ? "#fbbf24" : "#44e7ef");
         p.setAttribute("stroke-width", "3");
         p.setAttribute("stroke-opacity", "0.7");
         const len = 1200;
@@ -394,9 +418,9 @@
       showStep("dedupe", 12.0, 18.4);
       [[0, 1], [2, 3]].forEach(([a, b], k) => {
         const t = 12.6 + k * 1.6;
-        tl.to([FILES[a].el, FILES[b].el], { borderColor: "#4ade80", duration: 0.4 }, t)
+        tl.to([FILES[a].el, FILES[b].el], { borderColor: "#5edb81", duration: 0.4 }, t)
           .to(FILES[b].el, { borderColor: "#fbbf24", duration: 0.4 }, t + 0.9)
-          .to(FILES[a].el, { borderColor: "#24384a", duration: 0.4 }, t + 0.9);
+          .to(FILES[a].el, { borderColor: "#222f3c", duration: 0.4 }, t + 0.9);
       });
       tl.to(FILES[5].el, { borderColor: "#fbbf24", duration: 0.4 }, 16.0);
 
@@ -433,7 +457,7 @@
         if (f.newName) {
           tl.to(f.el.querySelector(".n1"), { opacity: 0, duration: 0.3 }, t + 0.5).to(f.el.querySelector(".n2"), { opacity: 1, duration: 0.3 }, t + 0.6);
         }
-        tl.to(f.el, { borderColor: f.dup ? "#fbbf24" : "#4ade80", duration: 0.3 }, t + 0.6);
+        tl.to(f.el, { borderColor: f.dup ? "#fbbf24" : "#5edb81", duration: 0.3 }, t + 0.6);
         tl.to(jLines[k], { opacity: 1, duration: 0.3 }, t + 0.7);
       });
       tl.to(batch, { opacity: 1, duration: 0.3 }, 43.4);
@@ -446,7 +470,7 @@
           line = jLines[order.length - 1 - k];
         tl.to(line.querySelector(".strike"), { scaleX: 1, duration: 0.3 }, t);
         tl.to(line, { opacity: 0.45, duration: 0.3 }, t + 0.2);
-        tl.to(f.el, { left: f.home.left, top: f.home.top, borderColor: "#24384a", duration: 0.6, ease: "power2.inOut" }, t);
+        tl.to(f.el, { left: f.home.left, top: f.home.top, borderColor: "#222f3c", duration: 0.6, ease: "power2.inOut" }, t);
         if (f.newName) {
           tl.to(f.el.querySelector(".n2"), { opacity: 0, duration: 0.2 }, t + 0.3).to(f.el.querySelector(".n1"), { opacity: 1, duration: 0.2 }, t + 0.35);
         }

@@ -11,23 +11,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500&family=Onest:wght@400;500;600;700&display=swap"
     />
     <style>
-      /* Layout: a cobalt "stage" band with the story on the left and a live phone on the right; the call's tape, notes and transcript sit below on paper. */
+      /* Layout: a deep-sea "stage" band with the story on the left and a live phone on the right; the call's tape, notes and transcript sit below on paper. */
       :root {
-        --paper: oklch(97.2% 0.008 85);
-        --card: oklch(99% 0.004 85);
-        --ink: oklch(22% 0.02 265);
-        --muted: oklch(50% 0.02 265);
-        --rule: oklch(89% 0.012 85);
-        --cobalt: oklch(44% 0.19 266);
-        --cobalt-deep: oklch(34% 0.16 268);
-        --on-cobalt: oklch(97% 0.01 266);
-        --on-cobalt-dim: oklch(84% 0.05 266);
-        --edwin: oklch(80% 0.14 192);
-        --edwin-ink: oklch(45% 0.11 200);
-        --edwin-soft: oklch(93% 0.04 192);
+        --paper: oklch(97.5% 0.01 225);
+        --card: oklch(99.3% 0.005 225);
+        --ink: oklch(24% 0.04 258);
+        --muted: oklch(42% 0.035 256);
+        --rule: oklch(86% 0.02 240);
+        /* The stage is deep water in both themes, like the site's dark mode. */
+        --cobalt: oklch(21% 0.04 252);
+        --cobalt-deep: oklch(16% 0.03 255);
+        --on-cobalt: oklch(94% 0.012 230);
+        --on-cobalt-dim: oklch(79% 0.022 238);
+        --edwin: oklch(85% 0.13 200);
+        --edwin-ink: oklch(50% 0.1 220);
+        --edwin-soft: oklch(93% 0.04 205);
         --them: oklch(72% 0.15 45);
         --them-ink: oklch(50% 0.14 45);
         --them-soft: oklch(94% 0.035 55);
@@ -35,31 +36,31 @@
         --good-soft: oklch(94% 0.04 150);
         --warn: oklch(55% 0.14 55);
         --warn-soft: oklch(94% 0.045 65);
-        --glass: oklch(18% 0.02 265);
-        --screen: oklch(17% 0.025 266);
-        --screen-2: oklch(23% 0.03 266);
-        --screen-ink: oklch(96% 0.01 266);
-        --screen-dim: oklch(70% 0.03 266);
+        --glass: oklch(14% 0.024 255);
+        --screen: oklch(15.5% 0.026 255);
+        --screen-2: oklch(19.5% 0.03 255);
+        --screen-ink: oklch(94% 0.012 230);
+        --screen-dim: oklch(72% 0.028 244);
         --call-green: oklch(68% 0.17 150);
         --call-red: oklch(60% 0.2 27);
         --display: "Unbounded", "Arial Black", system-ui, sans-serif;
-        --body:
-          "Hanken Grotesk", "Noto Sans Bengali", "Segoe UI", system-ui,
-          sans-serif;
-        --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+        --body: "Onest", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif;
+        /* Labels, timestamps and durations: Onest with tabular figures. The
+           demo has no real code, so there is no monospace face. */
+        --mono: "Onest", "Noto Sans Bengali", system-ui, sans-serif;
         --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
       }
       @media (prefers-color-scheme: dark) {
         :root:not([data-theme="light"]) {
-          --paper: oklch(17% 0.02 266);
-          --card: oklch(21% 0.022 266);
-          --ink: oklch(94% 0.01 266);
-          --muted: oklch(70% 0.025 266);
-          --rule: oklch(30% 0.025 266);
-          --cobalt: oklch(36% 0.15 267);
-          --cobalt-deep: oklch(27% 0.12 268);
-          --edwin-ink: oklch(80% 0.12 192);
-          --edwin-soft: oklch(30% 0.05 200);
+          --paper: oklch(15.5% 0.026 255);
+          --card: oklch(19.5% 0.03 255);
+          --ink: oklch(94% 0.012 230);
+          --muted: oklch(72% 0.028 244);
+          --rule: oklch(30% 0.03 250);
+          --cobalt: oklch(19.5% 0.03 255);
+          --cobalt-deep: oklch(13% 0.024 255);
+          --edwin-ink: oklch(85% 0.13 200);
+          --edwin-soft: oklch(28% 0.05 215);
           --them-ink: oklch(78% 0.12 50);
           --them-soft: oklch(31% 0.05 50);
           --good: oklch(76% 0.12 150);
@@ -70,15 +71,15 @@
         }
       }
       :root[data-theme="dark"] {
-        --paper: oklch(17% 0.02 266);
-        --card: oklch(21% 0.022 266);
-        --ink: oklch(94% 0.01 266);
-        --muted: oklch(70% 0.025 266);
-        --rule: oklch(30% 0.025 266);
-        --cobalt: oklch(36% 0.15 267);
-        --cobalt-deep: oklch(27% 0.12 268);
-        --edwin-ink: oklch(80% 0.12 192);
-        --edwin-soft: oklch(30% 0.05 200);
+        --paper: oklch(15.5% 0.026 255);
+        --card: oklch(19.5% 0.03 255);
+        --ink: oklch(94% 0.012 230);
+        --muted: oklch(72% 0.028 244);
+        --rule: oklch(30% 0.03 250);
+        --cobalt: oklch(19.5% 0.03 255);
+        --cobalt-deep: oklch(13% 0.024 255);
+        --edwin-ink: oklch(85% 0.13 200);
+        --edwin-soft: oklch(28% 0.05 215);
         --them-ink: oklch(78% 0.12 50);
         --them-soft: oklch(31% 0.05 50);
         --good: oklch(76% 0.12 150);
@@ -94,7 +95,9 @@
       body {
         background: var(--paper);
         color: var(--ink);
-        font: 16px/1.55 var(--body);
+        font: 16px/1.6 var(--body);
+        font-variant-numeric: tabular-nums;
+        -webkit-font-smoothing: antialiased;
         overflow-x: hidden;
       }
       button {
@@ -130,7 +133,7 @@
         border-radius: 50%;
         background: radial-gradient(
           closest-side,
-          oklch(52% 0.2 262 / 0.9),
+          oklch(78% 0.14 205 / 0.22),
           transparent
         );
         pointer-events: none;
@@ -176,8 +179,8 @@
         letter-spacing: 0.02em;
       }
       h1 {
-        font: 700 clamp(30px, 4.6vw, 56px)/1.04 var(--display);
-        letter-spacing: -0.02em;
+        font: 500 clamp(30px, 4.6vw, 56px)/1.04 var(--display);
+        letter-spacing: -0.035em;
         margin: 14px 0 16px;
         text-wrap: balance;
       }
@@ -290,7 +293,7 @@
         color: var(--edwin);
       }
       .now-playing h2 {
-        font: 700 clamp(20px, 2.2vw, 26px)/1.15 var(--display);
+        font: 500 clamp(20px, 2.2vw, 26px)/1.15 var(--display);
         margin: 0;
         letter-spacing: -0.01em;
       }
@@ -329,9 +332,9 @@
         padding: 11px;
         background: var(--glass);
         box-shadow:
-          0 0 0 1.5px oklch(40% 0.03 266),
-          0 40px 80px -30px oklch(10% 0.05 266 / 0.8),
-          inset 0 0 0 2px oklch(30% 0.02 266);
+          0 0 0 1.5px oklch(40% 0.03 255),
+          0 40px 80px -30px oklch(10% 0.05 255 / 0.8),
+          inset 0 0 0 2px oklch(30% 0.02 255);
         position: relative;
       }
       .device::before {
@@ -342,7 +345,7 @@
         width: 3px;
         height: 64px;
         border-radius: 0 3px 3px 0;
-        background: oklch(30% 0.02 266);
+        background: oklch(30% 0.02 255);
       }
       .screen {
         position: relative;
@@ -360,7 +363,7 @@
         inset: 0;
         background: radial-gradient(
           120% 60% at 50% 0%,
-          oklch(32% 0.08 266 / 0.9),
+          oklch(32% 0.08 255 / 0.9),
           transparent 70%
         );
         pointer-events: none;
@@ -373,7 +376,7 @@
         width: 92px;
         height: 26px;
         border-radius: 20px;
-        background: oklch(8% 0.01 266);
+        background: oklch(8% 0.01 255);
         z-index: 3;
         display: flex;
         align-items: center;
@@ -612,7 +615,7 @@
           background 0.2s;
       }
       .ctl:hover {
-        background: oklch(30% 0.035 266);
+        background: oklch(30% 0.035 255);
       }
       .ctl:active {
         transform: scale(0.93);
@@ -654,7 +657,7 @@
         width: 110px;
         height: 4px;
         border-radius: 4px;
-        background: oklch(90% 0.01 266 / 0.7);
+        background: oklch(90% 0.01 255 / 0.7);
         z-index: 3;
       }
 
@@ -700,7 +703,7 @@
         margin-left: -10px;
       }
       .call-title h2 {
-        font: 700 clamp(19px, 2.4vw, 26px)/1.15 var(--display);
+        font: 500 clamp(19px, 2.4vw, 26px)/1.15 var(--display);
         margin: 0;
         letter-spacing: -0.01em;
         text-wrap: balance;
@@ -784,7 +787,7 @@
         }
       }
       .sec-title {
-        font: 700 15px/1.2 var(--display);
+        font: 500 15px/1.2 var(--display);
         margin: 0 0 12px;
         letter-spacing: -0.005em;
       }
@@ -1021,8 +1024,8 @@
         background: var(--screen);
         color: var(--screen-ink);
         box-shadow:
-          0 18px 40px -16px oklch(15% 0.05 266 / 0.6),
-          0 0 0 1px oklch(35% 0.03 266);
+          0 18px 40px -16px oklch(15% 0.05 255 / 0.6),
+          0 0 0 1px oklch(35% 0.03 255);
         overflow: hidden;
       }
       .miniplayer[hidden] {
@@ -1075,7 +1078,7 @@
         right: 0;
         bottom: 0;
         height: 3px;
-        background: oklch(30% 0.03 266);
+        background: oklch(30% 0.03 255);
       }
       .miniplayer .bar i {
         position: absolute;

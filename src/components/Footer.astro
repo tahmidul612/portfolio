@@ -1,12 +1,14 @@
 ---
 import Icon from "./Icon.astro";
 import { email, socials } from "@lib/site";
+
+const year = new Date().getFullYear();
 ---
 
 <footer class="foot">
   <div class="wrap foot__inner">
     <p class="foot__note">
-      Copy, <em>right?</em> 🤔
+      © {year} Tahmidul Islam · Copy, <em>right?</em> 🤔
     </p>
     <ul class="foot__links" aria-label="Elsewhere">
       <li>
@@ -56,8 +58,8 @@ import { email, socials } from "@lib/site";
   .foot__links a {
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
     color: var(--text-3);
     transition: color 200ms var(--ease-out);

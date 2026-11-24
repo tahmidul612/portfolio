@@ -14,7 +14,7 @@ A personal portfolio for an automation engineer. Success means a reader leaves k
 
 ## Brand Personality
 
-Calm, curious, quietly technical. "Deep-sea glow": near-black blue water with cyan light that responds to the visitor, like bioluminescence; in light mode, sunlit shallows. Modern and a little futuristic, but minimal and elegant. Copy is plain, first person and a bit self-deprecating ("my laziness compels me…"). It never sounds like marketing.
+Calm and curious, technical without showing off. "Deep-sea glow": near-black blue water with cyan light that responds to the visitor, like bioluminescence; in light mode, sunlit shallows. Modern and a little futuristic, but minimal and elegant. Copy is plain, first person and a bit self-deprecating ("my laziness compels me…"), written the way they'd explain a project to a friend.
 
 ## Anti-references
 
@@ -27,7 +27,7 @@ Calm, curious, quietly technical. "Deep-sea glow": near-black blue water with cy
 
 1. Phone first. Every page is designed at 390 px before desktop.
 2. Show the work. Demos and videos beat adjectives.
-3. Light with purpose. Glow marks interaction and focus, never decoration for its own sake.
+3. Light with purpose. Glow marks what you can interact with and what has focus.
 4. Fast by default. Zero JS unless a feature needs it; images optimized at build.
 5. Honest copy: no inflated claims; status badges say when something is unfinished.
 

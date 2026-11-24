@@ -276,3 +276,6 @@ tools/explainers/*/preview/
 
 # Astro
 .astro/
+
+# impeccable critique snapshots (local backlog)
+.impeccable/

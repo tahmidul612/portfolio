@@ -155,7 +155,6 @@ main {
   content: "";
   position: absolute;
   border-radius: 50%;
-  filter: blur(10px);
   will-change: transform;
 }
 
@@ -242,6 +241,48 @@ main {
   opacity: 1;
 }
 
+/* Scroll light, the touch version of the lamp. Scroll-driven animations,
+   no JS; browsers without animation-timeline just skip it.
+   - Descent: the surface light fades as you scroll deeper into a page.
+   - Catching the light: on touch screens a .lit element glows while it
+     crosses the middle of the screen, the way the lamp lights it on hover. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sea::before {
+      animation:
+        drift-a 38s var(--ease-out) infinite alternate,
+        descend linear both;
+      animation-timeline: auto, scroll(root);
+    }
+    @keyframes descend {
+      to {
+        opacity: 0.3;
+      }
+    }
+  }
+  @media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+    .lit::before {
+      background: radial-gradient(
+        26rem circle at 30% 50%,
+        color-mix(in oklch, var(--glow) 12%, transparent),
+        transparent 70%
+      );
+      animation: catch-light linear both;
+      animation-timeline: view();
+      animation-range: cover 20% cover 80%;
+    }
+    @keyframes catch-light {
+      0%,
+      100% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+  }
+}
+
 /* Native cross-document view transitions: a project's title and image glide
    from the list into its page. Browsers without support just navigate. */
 @view-transition {
@@ -325,6 +366,11 @@ main {
   box-shadow:
     0 0 0 4px color-mix(in oklch, var(--accent) 22%, transparent),
     0 8px 28px -8px color-mix(in oklch, var(--glow) 60%, transparent);
+}
+.btn--icon {
+  justify-content: center;
+  width: 2.75rem;
+  padding: 0;
 }
 .btn svg {
   width: 1.05em;
