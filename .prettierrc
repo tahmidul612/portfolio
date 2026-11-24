@@ -1,15 +1,20 @@
 {
-  "plugins": ["prettier-plugin-go-template"],
+  "plugins": ["prettier-plugin-astro"],
   "overrides": [
     {
-      "files": ["layouts/**/*.html"],
+      "files": ["src/**", "astro.config.mjs"],
       "options": {
-        "parser": "go-template",
-        "bracketSameLine": true
+        "printWidth": 100
       }
     },
     {
-      "files": ["content/**/*.md"],
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    },
+    {
+      "files": ["content/**/*.mdx", "content/**/*.md"],
       "options": {
         "proseWrap": "preserve"
       }

@@ -1,0 +1,30 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found">
+  <section class="wrap lost">
+    <h1>404</h1>
+    <p>Nothing down here but dark water.</p>
+    <a class="btn btn--primary" href="/">
+      Back to the surface
+    </a>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    padding-block: clamp(5rem, 18vw, 10rem);
+  }
+  h1 {
+    font-size: clamp(5rem, 22vw, 11rem);
+    letter-spacing: -0.06em;
+    color: color-mix(in oklch, var(--glow) 70%, var(--text));
+    text-shadow: 0 0 60px color-mix(in oklch, var(--glow) 40%, transparent);
+  }
+  p {
+    margin: 0.5rem 0 2rem;
+    color: var(--text-2);
+    font-size: var(--step-1);
+  }
+</style>

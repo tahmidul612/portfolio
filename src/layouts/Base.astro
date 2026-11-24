@@ -1,0 +1,147 @@
+---
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const site = "Tahmidul Islam";
+const { title, description = "Automation engineer in Toronto. Projects, resume and contact." } =
+  Astro.props;
+const fullTitle = title ? `${title} · ${site}` : `${site} · Automation engineer`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#f3f7fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Font cssVariable="--font-display" preload={[{ weight: "400" }]} />
+    <Font cssVariable="--font-body" preload={[{ weight: "400" }]} />
+    <script is:inline>
+      // Apply a theme the visitor picked before first paint, so there's no flash.
+      try {
+        const t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div class="sea" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="lamp" aria-hidden="true"></div>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  // Return-to-list. Opening a project from Home or Projects remembers that
+  // page and its scroll position; the project page's back controls use it
+  // (see projects/[slug].astro). Coming back by link rather than the
+  // browser's Back restores the position here.
+  const lists = ["/", "/projects/"];
+  const KEY = "returnTo";
+  if (lists.includes(location.pathname)) {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(KEY) ?? "null");
+      if (saved?.restore && saved.path === location.pathname) {
+        scrollTo({ top: saved.y, behavior: "instant" });
+        sessionStorage.setItem(KEY, JSON.stringify({ ...saved, restore: false }));
+      }
+    } catch {}
+    document.addEventListener("click", (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>("a[href^='/projects/']");
+      if (!a || a.pathname === "/projects/") return;
+      try {
+        sessionStorage.setItem(
+          KEY,
+          JSON.stringify({ path: location.pathname, y: scrollY, restore: false }),
+        );
+      } catch {}
+    });
+  }
+</script>
+
+<script>
+  // Pointer light. A mouse or pen moves the lamp, and the .lit element under
+  // it gets a glow at the pointer. Touch screens and reduced motion skip it.
+  const fine = matchMedia("(pointer: fine)").matches;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const lamp = document.querySelector<HTMLElement>(".lamp");
+  if (fine && !calm && lamp) {
+    let x = 0;
+    let y = 0;
+    let target: Element | null = null;
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      lamp.style.setProperty("--lx", `${x}px`);
+      lamp.style.setProperty("--ly", `${y}px`);
+      const lit = target?.closest<HTMLElement>(".lit");
+      if (lit) {
+        const r = lit.getBoundingClientRect();
+        lit.style.setProperty("--px", `${x - r.left}px`);
+        lit.style.setProperty("--py", `${y - r.top}px`);
+      }
+    };
+    addEventListener(
+      "pointermove",
+      (e) => {
+        if (e.pointerType === "touch") return;
+        x = e.clientX;
+        y = e.clientY;
+        target = e.target as Element;
+        lamp.classList.add("is-on");
+        if (!queued) {
+          queued = true;
+          requestAnimationFrame(paint);
+        }
+      },
+      { passive: true },
+    );
+    document.documentElement.addEventListener("pointerleave", () => lamp.classList.remove("is-on"));
+  }
+</script>
+
+<style>
+  .skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 50;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--on-accent);
+    text-decoration: none;
+  }
+  .skip:focus {
+    top: 0.75rem;
+  }
+</style>

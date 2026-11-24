@@ -1,8 +1,7 @@
 {
   "recommendations": [
-    "budparr.language-hugo-vscode",
-    "fivethree.vscode-hugo-snippets",
-    "kaellarkin.hugo-shortcode-syntax",
+    "astro-build.astro-vscode",
+    "unifiedjs.vscode-mdx",
     "esbenp.prettier-vscode",
     "edwinkofler.vscode-hyperupcall-pack-latex"
   ]

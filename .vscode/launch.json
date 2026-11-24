@@ -4,12 +4,12 @@
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "hugo: Serve site",
-      "command": "hugo server",
+      "name": "astro: Dev server",
+      "command": "npm run dev",
       "cwd": "${workspaceFolder}",
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "Web Server is available at (https?://\\S+|[0-9]+)",
+        "pattern": "Local\\s+(https?://\\S+)",
         "uriFormat": "%s"
       }
     }

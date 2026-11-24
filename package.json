@@ -1,14 +1,29 @@
 {
   "name": "portfolio",
   "private": true,
-  "description": "Dev tooling. hugo-extended pins the Hugo version used by the Cloudflare Pages build (Congo v2.14.0 needs Hugo >= 0.158.0 and the Pages image ships 0.147.7; Hugo has no file-based version override). Prettier with prettier-plugin-go-template formats the content, templates, CSS and JS.",
+  "type": "module",
+  "description": "tahmidul612.com, built with Astro. Prettier with prettier-plugin-astro formats the source.",
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/sitemap": "^3.7.6",
+    "astro": "^7.4.13"
+  },
   "devDependencies": {
-    "hugo-extended": "0.165.0",
-    "prettier": "3.10.1",
-    "prettier-plugin-go-template": "0.0.15"
+    "@astrojs/check": "^0.9.12",
+    "lucide-static": "^1.78.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript": "^6.0.3"
   }
 }

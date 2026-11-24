@@ -1,0 +1,43 @@
+---
+title: "Art Gallery Wallpaper"
+summary: "Turns any artwork into a wallpaper of a framed painting hanging in a museum."
+group: personal
+weight: 60
+oldAnchor: "art-gallery-wallpaper"
+thumbnail: "farmhouse-provence-wallpaper.webp"
+thumbnailAlt: "A generated wallpaper: Van Gogh's Farmhouse in Provence in a gold frame on a dark wall, with a museum placard beside it."
+links:
+  - label: "artgallery-wallpaper"
+    url: "https://github.com/tahmidul612/artgallery-wallpaper"
+tech:
+  - "Python"
+  - "OpenCV"
+  - "Pillow"
+  - "NumPy"
+  - "Typer"
+  - "OpenAI and Gemini SDKs"
+  - "Stable Diffusion XL"
+  - "uv"
+---
+
+import Figure from "@components/Figure.astro";
+import wallpaper from "./farmhouse-provence-wallpaper.webp";
+import metPhoto from "./art-gallery-wallpaper-met.jpg";
+
+Turns any artwork into a desktop wallpaper that looks like a painting hanging in a museum. The tool rebuilds a full ornate frame from a single scanned frame corner, inlays the artwork with depth and shadow, hangs it on a dark velvet wall under a picture light, and adds a museum placard.
+
+<Figure
+  src={wallpaper}
+  alt="Van Gogh's Farmhouse in Provence in a gold Cassetta frame on a dark blue wall. A placard on the left gives the artist, title, year and a short note on the painting."
+  caption="Van Gogh's Farmhouse in Provence (1888), generated at 2560×1440 from a scan of one corner of a Cassetta frame"
+/>
+
+It works offline out of the box: the corner scans come from the Met's public domain collection, and you don't need an API key or a GPU. The same artwork and seed always produce the same wallpaper, byte for byte. You can pick the resolution, the wall color, and which side of the screen the painting hangs on.
+
+With an OpenAI key, it identifies each piece and writes the placard: artist, title, year, and a short curatorial note. Frames can also come from OpenAI or Gemini image models, or a local SDXL model can repair the seams of the rebuilt frame. Version 1.0.0 shipped in June 2026. I vibe coded it with Claude Opus 4.8 and Fable 5, and the README says so.
+
+<Figure
+  src={metPhoto}
+  alt="A painting in an ornate frame in a museum."
+  caption="This photo I took at the MET museum is what I was going for"
+/>

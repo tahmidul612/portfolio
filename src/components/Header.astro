@@ -1,0 +1,144 @@
+---
+import ThemeToggle from "./ThemeToggle.astro";
+
+const nav = [
+  { href: "/projects/", label: "Projects" },
+  { href: "/resume/", label: "Resume" },
+  { href: "/contact/", label: "Contact" },
+];
+const path = Astro.url.pathname;
+const current = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="bar">
+  <div class="wrap bar__inner">
+    <a class="brand" href="/" aria-label="Tahmidul Islam, home">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">tahmidul612</span>
+      <span class="brand__short" aria-hidden="true">
+        TI
+      </span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        {nav.map(({ href, label }) => (
+          <li>
+            <a href={href} aria-current={current(href) ? "page" : undefined}>
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<style>
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding-top: env(safe-area-inset-top);
+    background: color-mix(in oklch, var(--bg) 97%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
+    view-transition-name: site-header;
+  }
+  .bar__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 3.75rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-right: auto;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.2rem;
+    text-decoration: none;
+    font: 500 0.95rem/1 var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  /* A small bioluminescent body: a cyan core with a breathing halo. */
+  .brand__mark {
+    position: relative;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--glow);
+    box-shadow: 0 0 12px 2px color-mix(in oklch, var(--glow) 55%, transparent);
+  }
+  .brand__mark::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in oklch, var(--glow) 50%, transparent);
+    animation: breathe 4.5s var(--ease-out) infinite;
+  }
+  @keyframes breathe {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+  /* Phones: initials next to the mark, so the home link still has a label. */
+  .brand__short {
+    display: none;
+  }
+  @media (max-width: 26rem) {
+    .brand__name {
+      display: none;
+    }
+    .brand__short {
+      display: inline;
+    }
+  }
+  nav ul {
+    display: flex;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 200ms var(--ease-out);
+  }
+  nav a:hover {
+    color: var(--text);
+  }
+  nav a[aria-current="page"] {
+    color: var(--text);
+  }
+  nav a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0.2rem;
+    width: 1rem;
+    height: 2px;
+    margin-left: -0.5rem;
+    border-radius: 2px;
+    background: var(--glow);
+    box-shadow: 0 0 8px var(--glow);
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+// The resume as an image of the page (rendered from the PDF by GitHub
+// Actions, see .github/workflows/deploy-to-cf.yml), so it reads the same on
+// every phone, plus the PDF to open or save.
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Icon from "@components/Icon.astro";
+import page from "../../content/resume/build/resume.png";
+
+const pdf = "/resume/build/resume.pdf";
+---
+
+<Base title="Resume" description="Resume of Tahmidul Islam, automation engineer.">
+  <section class="wrap resume">
+    <header class="resume__head">
+      <h1 class="rise">Resume</h1>
+      <div class="resume__actions rise" style="--i: 1">
+        <a class="btn btn--primary" href={pdf} download="Tahmidul_Islam_Resume.pdf">
+          <Icon name="download" />
+          Download PDF
+        </a>
+        <a class="btn" href={pdf} target="_blank" rel="noopener">
+          <Icon name="arrow-up-right" />
+          Open PDF
+        </a>
+      </div>
+    </header>
+    <a class="sheet rise" style="--i: 2" href={pdf} target="_blank" rel="noopener">
+      <Image
+        src={page}
+        alt="Page one of Tahmidul Islam's resume. Open the PDF for selectable text and links."
+        widths={[480, 800, 1100, 1700]}
+        sizes="(min-width: 60rem) 52rem, 100vw"
+        priority
+      />
+    </a>
+    <p class="hint">Tap the page to open the full PDF.</p>
+  </section>
+</Base>
+
+<style>
+  .resume {
+    padding-top: clamp(3rem, 8vw, 5rem);
+  }
+  .resume__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.25rem;
+    max-width: 52rem;
+    margin-bottom: 2rem;
+  }
+  h1 {
+    font-size: var(--step-4);
+    letter-spacing: -0.045em;
+  }
+  .resume__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  /* The page sits on the sea like a lit sheet of paper. */
+  .sheet {
+    display: block;
+    max-width: 52rem;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: oklch(0.99 0.004 225);
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 40px 100px -40px color-mix(in oklch, var(--glow) 50%, transparent);
+  }
+  .hint {
+    margin: 0.75rem 0 0;
+    color: var(--text-3);
+    font-size: var(--step--1);
+  }
+  @media (pointer: fine) {
+    .hint {
+      display: none;
+    }
+  }
+  .sheet :global(img) {
+    width: 100%;
+    height: auto;
+  }
+</style>

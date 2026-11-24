@@ -5,19 +5,33 @@
     <title>Edwin explainer</title>
     <!-- Rendered by ../render.py. Add ?play to the URL to watch it live. -->
     <style>
+      /* Same look as tahmidul612.com in dark mode: deep-sea blues, cyan light,
+         Unbounded for display and Onest for everything else. Nothing here is
+         code, so there is no monospace face; labels use tabular Onest. */
+      @font-face {
+        font-family: "Unbounded";
+        src: url("../_fonts/Unbounded.woff2") format("woff2");
+        font-weight: 200 900;
+      }
+      @font-face {
+        font-family: "Onest";
+        src: url("../_fonts/Onest.woff2") format("woff2");
+        font-weight: 100 900;
+      }
       :root {
-        --bg: #0b1620;
-        --panel: #122230;
-        --line: #24384a;
-        --ink: #e3ebf2;
-        --muted: #8ea3b6;
-        --accent: #38bdf8;
-        --edwin: #2dd4bf;
+        --bg: oklch(15.5% 0.026 255);
+        --panel: oklch(19.5% 0.03 255);
+        --line: oklch(30% 0.03 250);
+        --ink: oklch(94% 0.012 230);
+        --muted: oklch(72% 0.028 244);
+        --accent: #60b0ff;
+        --edwin: #44e7ef;
         --them: #fb923c;
         --amber: #fbbf24;
-        --green: #4ade80;
-        --mono: "JetBrains Mono", "DejaVu Sans Mono", ui-monospace, monospace;
-        --sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
+        --green: #5edb81;
+        --display: "Unbounded", "DejaVu Sans", sans-serif;
+        --mono: "Onest", "DejaVu Sans", sans-serif;
+        --sans: "Onest", "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
       }
       * {
         box-sizing: border-box;
@@ -28,9 +42,14 @@
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: var(--bg);
+        background:
+          radial-gradient(60% 55% at 10% 0%, oklch(78% 0.14 205 / 0.13), transparent),
+          radial-gradient(55% 60% at 100% 75%, oklch(50% 0.18 262 / 0.18), transparent),
+          var(--bg);
         color: var(--ink);
         font-family: var(--sans);
+        font-variant-numeric: tabular-nums;
+        -webkit-font-smoothing: antialiased;
       }
       .abs {
         position: absolute;
@@ -39,8 +58,9 @@
       .step {
         left: 100px;
         top: 56px;
-        font: 600 44px var(--mono);
-        color: var(--accent);
+        font: 500 40px var(--display);
+        letter-spacing: -0.02em;
+        color: var(--edwin);
       }
       .title {
         left: 0;
@@ -50,13 +70,15 @@
       }
       .title h1 {
         margin: 0;
-        font: 700 150px var(--mono);
-        color: var(--edwin);
+        font: 500 150px/1.05 var(--display);
+        letter-spacing: -0.045em;
+        color: var(--ink);
+        text-shadow: 0 0 80px oklch(78% 0.14 205 / 0.45);
       }
       .title p {
         margin: 12px 0 0;
         font: 40px var(--sans);
-        color: var(--muted);
+        color: var(--edwin);
       }
       .bubble {
         max-width: 760px;
@@ -71,14 +93,14 @@
         margin-bottom: 4px;
       }
       .me {
-        background: #1d4ed8;
+        background: oklch(45% 0.17 262);
       }
       .ed {
-        background: #134e4a;
+        background: oklch(28% 0.06 215);
         border: 2px solid var(--edwin);
       }
       .th {
-        background: #7c2d12;
+        background: oklch(36% 0.09 45);
         border: 2px solid var(--them);
       }
       .card {
@@ -91,8 +113,6 @@
       .card .t {
         font: 600 22px var(--mono);
         color: var(--muted);
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
         margin-bottom: 12px;
       }
       .card b {
@@ -105,7 +125,7 @@
         padding: 10px 26px;
         border-radius: 999px;
         background: var(--green);
-        color: #052e16;
+        color: oklch(22% 0.06 150);
         font: 700 26px var(--sans);
       }
       .node {
@@ -141,8 +161,8 @@
         width: 250px;
         height: 130px;
         border-radius: 16px;
-        background: #0f2a2a;
-        border: 2px solid #1f5f5a;
+        background: oklch(24% 0.045 220);
+        border: 2px solid oklch(42% 0.07 210);
         text-align: center;
         padding-top: 22px;
         font: 600 28px var(--sans);
@@ -172,7 +192,7 @@
         height: 340px;
         border-radius: 34px;
         border: 4px solid var(--muted);
-        background: #0f1d29;
+        background: oklch(18% 0.03 255);
         text-align: center;
         padding-top: 110px;
         font: 600 28px var(--sans);
@@ -195,7 +215,7 @@
         font: 500 42px/1.35 var(--sans);
       }
       .caption span {
-        background: rgba(5, 12, 18, 0.86);
+        background: oklch(12% 0.022 255 / 0.86);
         padding: 6px 18px;
         border-radius: 10px;
         box-decoration-break: clone;
@@ -207,6 +227,10 @@
     <div id="stage"></div>
     <script src="../_vendor/gsap.min.js"></script>
     <script>
+      // Start the font loads now so render.py's document.fonts.ready waits for them.
+      document.fonts.load('500 40px "Unbounded"');
+      document.fonts.load('400 32px "Onest"');
+      document.fonts.load('600 32px "Onest"');
       // Call lines are from a simulated call in the Edwin demo (Edwin vs an AI receptionist).
       const CAPTIONS = [
         { start: 0.6, end: 4.6, text: "Edwin is an AI voice agent that makes phone calls so I don't have to." },
@@ -229,7 +253,7 @@
       svg.setAttribute("width", 1920);
       svg.setAttribute("height", 1080);
       stage.append(svg);
-      const path = (d, color = "#2dd4bf") => {
+      const path = (d, color = "#44e7ef") => {
         const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
         p.setAttribute("d", d);
         p.setAttribute("fill", "none");
@@ -311,7 +335,7 @@
       // Scene: handover
       const hEd = el(`<div class="abs bubble ed" style="left:180px;top:300px"><small>Edwin</small>One moment, let me connect you with Sam. Please hold.</div>`);
       const cell = el(`<div class="abs cell" style="left:1480px;top:260px">Sam's cell<span id="ring">ringing…</span></div>`);
-      const hPath = path("M 960 380 C 1200 300, 1300 300, 1470 420", "#4ade80");
+      const hPath = path("M 960 380 C 1200 300, 1300 300, 1470 420", "#5edb81");
 
       // Scene: after the call
       const report = el(`<div class="abs card" style="left:120px;top:220px;width:820px">
@@ -347,7 +371,7 @@
       step("the ask", 4.8, 12.4);
       show(ask, 5.2);
       show(brief, 7.0);
-      tl.to("#go", { scale: 1.08, duration: 0.25, yoyo: true, repeat: 1 }, 10.2).to("#go", { backgroundColor: "#38bdf8" }, 10.6);
+      tl.to("#go", { scale: 1.08, duration: 0.25, yoyo: true, repeat: 1 }, 10.2).to("#go", { backgroundColor: "#60b0ff" }, 10.6);
       tl.set("#go", { textContent: "Approved ✓" }, 10.7);
       hide([ask, brief], 12.3);
 
@@ -371,7 +395,7 @@
           }
         }
         if (enter === null) continue;
-        tl.to(b[0], { borderColor: "#2dd4bf", duration: 0.15 }, DOT_START + enter * DOT_TIME);
+        tl.to(b[0], { borderColor: "#44e7ef", duration: 0.15 }, DOT_START + enter * DOT_TIME);
         const own = getComputedStyle(b[0]).borderTopColor;
         if (b[0] !== nBiz) tl.to(b[0], { borderColor: own, duration: 0.3 }, DOT_START + exit * DOT_TIME);
       }
@@ -389,7 +413,7 @@
       tl.to(hPath, { attr: { "stroke-dashoffset": 0 }, duration: 1.0 }, 37.0);
       tl.to(cell, { rotation: 3, duration: 0.08, yoyo: true, repeat: 9, ease: "none" }, 38.0);
       tl.set("#ring", { textContent: "picked up" }, 39.6);
-      tl.to(cell, { borderColor: "#4ade80", duration: 0.3 }, 39.6);
+      tl.to(cell, { borderColor: "#5edb81", duration: 0.3 }, 39.6);
       hide([hEd, cell, hPath], 42.2);
 
       // After the call
