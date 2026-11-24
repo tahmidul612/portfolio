@@ -9,6 +9,10 @@ Personal portfolio at <https://tahmidul612.com>, built with Astro (static output
 - `static/`: served as-is (Astro's `publicDir`): favicons, `_headers`, `_redirects`, `vcard.vcf`, and the self-contained demos under `static/demos/<slug>/`, which use fake data and no backend.
 - `tools/explainers/<slug>/`: GSAP compositions. `uv run tools/explainers/render.py <slug>` renders `explainer.mp4`, the poster and the `.vtt` into the project bundle.
 
+## Deploys
+
+Every push to `main` runs `.github/workflows/deploy-to-cf.yml`. It rebuilds the resume when a `.tex` file changed, then calls the Cloudflare Pages deploy hook, which builds `main` with `npm run build` into `dist`. Automatic Git builds are turned off in Pages, so the workflow is the only way production deploys. For a preview of a branch, run `npx cf pages deployments create portfolio --branch <branch>`.
+
 ## Gotchas
 
 - Video lives on R2. Pages ignores Range requests, and iOS Safari won't play video without them. `<Video>` loads the MP4 from `media.tahmidul612.com` (R2 bucket `portfolio-media`, same path as the bundle). After rendering a video, run `tools/upload-media.sh`. The MP4 in the bundle is the source copy and drives the card's Video badge; it is not part of the build.
