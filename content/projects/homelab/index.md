@@ -14,7 +14,7 @@ I have run a homelab for about eight years. These days it lives on my main deskt
 
 The services I would miss most are Immich for photos and Paperless-ngx for documents, which now runs its AI features against the local GPU. There's also Plex with Kometa, Audiobookshelf and Storyteller for audiobooks, Jellyfin, n8n, Ollama, Guacamole, and a Minecraft server. Most of what I know about networking, Linux, and containers came from breaking and fixing this setup. My Arch setup notes outgrew a README and became a MkDocs site.
 
-The newest part is a Windows 11 VM for the games that won't run on Linux. Its display comes back to the host through Looking Glass with FSR upscaling, a virtual DualShock 4 only exists while Remote Play is open, and the LG monitor switches inputs over DDC/CI, so one launcher moves the whole desk between host and guest. The resource monitor and the guest agent helpers started as Python scripts and are Rust now. My laptop got a TV mode too, with a gamepad launcher for Plex. All of it is written up on the setup guide site.
+The newest part is a Windows 11 VM for the games that won't run on Linux. Its display comes back to the host through Looking Glass with FSR upscaling, a virtual DualShock 4 only exists while Remote Play is open, and the LG monitor switches inputs over DDC/CI, so one launcher moves the whole desk between host and guest. The resource monitor and the guest agent helpers started as Python scripts and are Rust now. All of that is written up on the setup guide site. My laptop got a TV mode too, with a gamepad launcher for Plex, but that one lives in my private dotfiles.
 
 {{< columns >}}
 

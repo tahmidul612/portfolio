@@ -290,7 +290,10 @@
 
       const title = el(`<div class="abs title"><h1>forg</h1><p>audit, organise and verify your drives</p></div>`);
       const steps = Object.fromEntries(
-        ["scan", "dedupe", "propose", "review", "apply --execute", "undo"].map((s) => [s, el(`<div class="abs step">$ forg ${s}</div>`)]),
+        ["scan", "dedupe", "propose", "review", "apply --execute", "undo"].map((s) => [
+          s,
+          el(`<div class="abs step">${s === "review" ? "# review manifest.json" : "$ forg " + s}</div>`),
+        ]),
       );
       const headL = el(`<div class="abs colhead" style="left:${LEFT}px">media/Downloads/</div>`);
       const headR = el(`<div class="abs colhead" style="left:${RIGHT}px;display:none"></div>`);

@@ -18,8 +18,8 @@ Edwin says it's an AI, then works through the brief. It also handles voicemail, 
 
 5
 00:00:35.200 --> 00:00:42.400
-If it gets stuck, or they ask for you, it rings your cell and hands the call over.
+If it gets stuck or they ask for you, it rings your cell and hands the call over. That part is built but still being tested.
 
 6
 00:00:42.800 --> 00:00:50.400
-Afterwards Claude reads back the transcript, and an n8n workflow emails the report and adds the booking to the calendar.
+Afterwards Claude reads back the transcript. An n8n workflow for emailing the report and adding the booking to the calendar is built too, not yet tested live.

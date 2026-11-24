@@ -213,8 +213,8 @@
         { start: 5.0, end: 12.4, text: "You tell Claude what you need. It writes a short brief and waits for your OK before it dials." },
         { start: 12.8, end: 22.8, text: "Vapi runs the call: Soniox hears, Claude Haiku 5.5 decides what to say, ElevenLabs speaks. The call goes out from a Telnyx number." },
         { start: 23.2, end: 34.8, text: "Edwin says it's an AI, then works through the brief. It also handles voicemail, call screeners and phone menus." },
-        { start: 35.2, end: 42.4, text: "If it gets stuck, or they ask for you, it rings your cell and hands the call over." },
-        { start: 42.8, end: 50.4, text: "Afterwards Claude reads back the transcript, and an n8n workflow emails the report and adds the booking to the calendar." },
+        { start: 35.2, end: 42.4, text: "If it gets stuck or they ask for you, it rings your cell and hands the call over. That part is built but still being tested." },
+        { start: 42.8, end: 50.4, text: "Afterwards Claude reads back the transcript. An n8n workflow for emailing the report and adding the booking to the calendar is built too, not yet tested live." },
       ];
 
       const stage = document.getElementById("stage");
@@ -265,8 +265,32 @@
       ].map(([a, b], i) => el(`<div class="abs sub" style="left:${510 + i * 290}px;top:430px">${a}<span>${b}</span></div>`));
       const nTelnyx = el(`<div class="abs node" style="left:1440px;top:250px;width:380px">Telnyx number<span>SIP trunk</span></div>`);
       const nBiz = el(`<div class="abs node" style="left:1440px;top:560px;width:380px">The business<span>a real phone line</span></div>`);
-      const stackPaths = [path("M 380 495 L 470 495"), path("M 1370 495 C 1405 495, 1405 325, 1440 325"), path("M 1630 400 L 1630 560")];
+      // The drawn lines, and one route along all of them for the signal dot to follow.
+      const stackPaths = [
+        path("M 380 495 L 510 495"),
+        path("M 760 495 L 800 495"),
+        path("M 1050 495 L 1090 495"),
+        path("M 1340 495 L 1370 495 C 1405 495, 1405 325, 1440 325"),
+        path("M 1630 400 L 1630 560"),
+      ];
+      const route = path("M 380 495 L 1370 495 C 1405 495, 1405 325, 1440 325 L 1630 325 L 1630 560", "none");
+      const routeLen = route.getTotalLength();
       const pulse = el(`<div class="abs pulse" style="left:367px;top:482px"></div>`);
+      // Boxes the route passes through: [element, left, top, right, bottom].
+      const routeBoxes = [
+        ...subs.map((sub, i) => [sub, 510 + i * 290, 430, 760 + i * 290, 564]),
+        [nTelnyx, 1440, 250, 1820, 404],
+        [nBiz, 1440, 560, 1820, 714],
+      ];
+      const inside = (x, y, b) => x >= b[1] && x <= b[3] && y >= b[2] && y <= b[4];
+      const dot = { p: 0 };
+      const placeDot = () => {
+        const pt = route.getPointAtLength(dot.p * routeLen);
+        pulse.style.left = `${pt.x - 13}px`;
+        pulse.style.top = `${pt.y - 13}px`;
+        // Hide the dot inside a box (the box lights up instead), so it never crosses a label.
+        pulse.style.visibility = routeBoxes.some((b) => inside(pt.x, pt.y, b)) ? "hidden" : "visible";
+      };
 
       // Scene: the call (lines from the demo's haircut call, shortened where marked)
       const lines = [
@@ -291,7 +315,7 @@
 
       // Scene: after the call
       const report = el(`<div class="abs card" style="left:120px;top:220px;width:820px">
-        <div class="t">Call report</div>
+        <div class="t">What got booked</div>
         Outcome: <b>booked</b><br />
         Saturday, November 28 at 11:45 AM<br />
         Men's cut, 38 dollars, about 40 minutes<br />
@@ -331,12 +355,26 @@
       step("the call stack", 12.8, 22.8);
       show([nClaude, vapi, ...subs, nTelnyx, nBiz], 13.0, { stagger: 0.25 });
       stackPaths.forEach((p, i) => tl.to(p, { attr: { "stroke-dashoffset": 0 }, duration: 0.7 }, 15.0 + i * 0.4));
-      tl.set(pulse, { opacity: 1 }, 16.6);
-      tl.to(pulse, { left: 490, duration: 0.6, ease: "none" }, 16.6)
-        .to(pulse, { left: 1350, duration: 2.4, ease: "none" }, 17.2)
-        .to(pulse, { left: 1620, top: 330, duration: 0.8, ease: "none" }, 19.6)
-        .to(pulse, { top: 560, duration: 0.8, ease: "none" }, 20.4);
-      subs.forEach((s, i) => tl.to(s, { borderColor: "#2dd4bf", duration: 0.3, yoyo: true, repeat: 1 }, 17.4 + i * 0.75));
+      const DOT_START = 16.6,
+        DOT_TIME = 4.6;
+      tl.set(pulse, { opacity: 1 }, DOT_START);
+      tl.fromTo(dot, { p: 0 }, { p: 1, duration: DOT_TIME, ease: "none", onUpdate: placeDot, immediateRender: false }, DOT_START);
+      // Light each box while the dot is inside it (found by sampling the route).
+      for (const b of routeBoxes) {
+        let enter = null,
+          exit = null;
+        for (let i = 0; i <= 400; i++) {
+          const pt = route.getPointAtLength((i / 400) * routeLen);
+          if (inside(pt.x, pt.y, b)) {
+            if (enter === null) enter = i / 400;
+            exit = i / 400;
+          }
+        }
+        if (enter === null) continue;
+        tl.to(b[0], { borderColor: "#2dd4bf", duration: 0.15 }, DOT_START + enter * DOT_TIME);
+        const own = getComputedStyle(b[0]).borderTopColor;
+        if (b[0] !== nBiz) tl.to(b[0], { borderColor: own, duration: 0.3 }, DOT_START + exit * DOT_TIME);
+      }
       hide([nClaude, vapi, ...subs, nTelnyx, nBiz, pulse, ...stackPaths], 22.6);
 
       // The call
