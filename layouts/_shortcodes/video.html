@@ -2,10 +2,18 @@
   {{< video src="explainer.mp4" poster="explainer-poster.webp" caption="How it works"
 >}}
 A same-named .vtt next to the .mp4 is added as the captions track. Plays while
-on screen unless the visitor prefers reduced motion. */}}
+on screen unless the visitor prefers reduced motion. The MP4 itself is served
+from R2 when mediaBase is set; run tools/upload-media.sh after re-rendering.
+*/}}
 {{- $src := .Get "src" -}}
 {{- $res := .Page.Resources.GetMatch $src -}}
 {{- $url := cond (ne $res nil) (printf "%s" ($res.RelPermalink)) $src -}}
+{{- /* Serve from R2 (site.Params.mediaBase): Pages ignores Range requests,
+  which iOS Safari needs to play video. */
+-}}
+{{- with and $res site.Params.mediaBase -}}
+  {{- $url = printf "%s%s" (strings.TrimSuffix "/" site.Params.mediaBase) $res.RelPermalink -}}
+{{- end -}}
 {{- $poster := "" -}}
 {{- with .Get "poster" -}}
   {{- with $.Page.Resources.GetMatch . }}

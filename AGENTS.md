@@ -84,7 +84,7 @@ Right column content
 - `content/projects/<slug>/index.md` - One page bundle per project. Images, `explainer.mp4` (+ same-named `.vtt`) and posters live in the bundle.
 - `content/projects/smaller/index.md` - Headless bundle rendered as "Smaller things" at the bottom of the overview.
 - `static/demos/<slug>/` - Self-contained interactive demos (fake data, no backend), embedded with `{{< demo >}}`.
-- `tools/explainers/<slug>/index.html` - GSAP composition for a project's explainer video. `uv run tools/explainers/render.py <slug>` renders `explainer.mp4`, the poster and the `.vtt` into the project bundle (`--preview 5,20` saves single frames). Not part of the Hugo build.
+- `tools/explainers/<slug>/index.html` - GSAP composition for a project's explainer video. `uv run tools/explainers/render.py <slug>` renders `explainer.mp4`, the poster and the `.vtt` into the project bundle (`--preview 5,20` saves single frames). Not part of the Hugo build. The page loads the MP4 from R2 (`mediaBase` in `params.toml`, bucket `portfolio-media`), because Pages ignores Range requests and iOS Safari needs them: run `tools/upload-media.sh` after rendering.
 - `content/resume/` - Resume content + LaTeX source (`resume.tex`) + compiled PDF in `build/`
 
 ### Custom Layouts Override
