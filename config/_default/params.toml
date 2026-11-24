@@ -12,6 +12,11 @@ autoSwitchAppearance = true
 enableSearch = false
 enableCodeCopy = false
 
+# Explainer MP4s are served from the R2 bucket "portfolio-media" at
+# <mediaBase>/<page path>/<file>, because Pages ignores Range requests and
+# iOS Safari won't play a video without them. Upload: tools/upload-media.sh
+mediaBase = "https://media.tahmidul612.com"
+
 # robots = ""
 
 [header]
